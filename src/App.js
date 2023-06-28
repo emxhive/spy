@@ -1,27 +1,41 @@
-import './App.css';
+import "./App.css";
+import BalContainer from "./components/BalContainer";
+import icon from "./img/icons.jpg";
+import React from "react";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src="Octocat.png" className="App-logo" alt="logo" />
-        <p>
-          GitHub Codespaces <span className="heart">♥️</span> React
-        </p>
-        <p className="small">
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </p>
-      </header>
+    <div className="main-container">
+      {/* navigation  bar to the left  */}
+      <div className="left-nav">
+        <a href=".">
+          <img src={icon} alt="LOGO" />
+          <h2>emxhive</h2>
+
+        </a>
+        <a href=".">Dashbord</a>
+        <a href=".">Income History</a>
+        <a href=".">Expenses</a>
+        <a href=".">Settings</a>
+      </div>
+
+      {/* main content */}
+      <div className="main-content">
+        <h1>... S ⭐ P ⭐ Y</h1>
+        <div className="balance-container">
+          <BalContainer amount={0} currency=" USD" />
+          <BalContainer amount={0} currency=" NGN" />
+        </div>
+        <hr />
+
+
+        {/* progress Bar section*/}
+
+        <div className="mid"> 
+        
+        </div>
+
+      </div>
     </div>
   );
 }
