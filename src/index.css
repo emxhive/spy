@@ -36,7 +36,7 @@ body {
 
 .left-nav>a>img {
   height: 170px;
-  border-radius: 100px;
+  border-radius: 50%;
 }
 
 .left-nav>a>h2{
@@ -79,4 +79,18 @@ h1 {
 hr {
   border: 1px solid lightgray;
   margin: 20px 0;
+}
+
+/* mid section */
+
+
+.mid-section{
+  display: flex;
+}
+.progress-box{
+  display: grid;
+}
+
+.remainder-box{}
+.total-bothcurrencies{
 }
