@@ -1,5 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap");
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -12,50 +11,46 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
-
-
 .main-container {
   max-width: 90%;
   display: flex;
 }
 
 /* navigation to the left  START*/
+
 .left-nav {
   width: 25%;
   height: 100vh;
   max-width: 210px;
   background-color: rgb(141, 201, 201);
   overflow: hidden;
-
 }
 
-.left-nav>a {
+.left-nav > a {
   display: block;
   padding: 15px;
 }
 
-.left-nav>a>img {
+.left-nav > a > img {
   height: 170px;
   border-radius: 50%;
 }
 
-.left-nav>a>h2{
+.left-nav > a > h2 {
   text-align: center;
   color: snow;
   margin-bottom: 50px;
 }
 
-
 /* navigation ends here */
 
-
 /* content to the right/main content  START*/
+
 .main-content {
   padding: 20px 15px 0 30px;
   min-width: 60%;
   border-right: 2px solid red;
 }
-
 
 h1 {
   position: relative;
@@ -83,14 +78,19 @@ hr {
 
 /* mid section */
 
-
-.mid-section{
+.mid-section {
   display: flex;
-}
-.progress-box{
-  display: grid;
+  justify-content: space-between;
 }
 
-.remainder-box{}
-.total-bothcurrencies{
+.progress-box {
+  display: flex;
+  justify-content: space-between;
 }
+
+.remainder-box {
+}
+
+.total-bothcurrencies {
+  
+} 
