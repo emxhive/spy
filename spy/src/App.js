@@ -2,115 +2,69 @@ import BalContainer from "./components/BalContainer";
 import Progress from "./components/Progress";
 import logo from "./img/icons.jpg";
 import React, { useState } from "react";
-import palm from "./img/palmpay.png";
-import opayImg from "./img/opay.png";
+import mthdss from './consts/functions';
+import objss from './consts/objects';
+
+
 
 function App() {
+
+
+  
   const [pmState, setpmState] = useState(
     {
-      rate: 770,
-      opay: {
-        get rate() {
-          return this.parent.rate;
-        },
-        balance: 500000,
-        isUsd: false,
-      },
-      palmpay: {
-        get rate() {
-          return this.parent.rate;
-        },
-        balance: 500000,
-        isUsd: false,
+      binance: {
+        rate: 770,
+        isUsd: true,
+        balance: 1000
       },
       wise: {
         get rate() {
-          return this.parent.rate;
+          return this.parent.binance.rate - 4;
         },
         isUsd: true,
-        balance: 1000,
+        balance: 1000
       },
       airtm: {
         get rate() {
-          return this.parent.rate;
+          return this.parent.binance.rate - 20;
         },
         isUsd: true,
-        balance: 1000,
+        balance: 1000
       },
+
+      opay: {
+        get rate() {
+          return this.parent.airtm.rate;
+        },
+        balance: 500000,
+        isUsd: false
+      },
+      palmpay: {
+        get rate() {
+          return this.parent.airtm.rate;
+        },
+        balance: 500000,
+        isUsd: false
+      },
+
       init() {
         this.opay.parent = this;
         this.palmpay.parent = this;
         this.wise.parent = this;
         this.airtm.parent = this;
+        this.binance.parent = this;
 
         delete this.init;
         return this;
-      },
+      }
     }.init()
   );
+  const objs = objss(pmState);
+  const mthds = mthdss(pmState, setpmState);
 
-  const pmFunc = {
-    updateRate(newState, newRate) {
-      setpmState(...pmState, ...newState);
-    }
-  }
 
-  const pmAmount = {
-    rate: pmState.rate,
-    ngn: {
-      palmpay: {
-        balance: pmState.palmpay.balance,
-        limit: 5000000,
-        spend: 1000000,
-        get leftover() {
-          return this.limit - this.spend;
-        },
-        get leftoverStr() {
-          return this.leftover.toLocaleString();
-        },
-
-        get percentSpend() {
-          return (this.spend / this.limit) * 100;
-        },
-      },
-      opay: {
-        balance: pmState.opay.balance,
-        limit: 5000000,
-        spend: 2000000,
-        get leftover() {
-          return this.limit - this.spend;
-        },
-        get leftoverStr() {
-          return this.leftover.toLocaleString();
-        },
-        get percentSpend() {
-          return (this.spend / this.limit) * 100;
-        },
-      },
-      get total() {
-        let sum;
-        this.forEach((pm) => {
-          sum += pm.balance;
-        });
-        return sum;
-      },
-    },
-    usd: {},
-  };
-
-  const pmProgress = {
-    palmpay: {
-      pmcolor: "rgb(144, 0, 255)",
-      percent: pmAmount.ngn.palmpay.percentSpend,
-      pmicon: palm,
-    },
-
-    opay: {
-      pmcolor: "rgba(29,207,159,255)",
-      percent: pmAmount.ngn.opay.percentSpend,
-      pmicon: opayImg,
-    },
-  };
+ 
   return (
     <div className="main-container">
       {" "}
@@ -127,27 +81,42 @@ function App() {
       <div className="main-content">
         <h1> ...S⭐ P⭐ Y </h1>{" "}
         <div className="balance-container">
-          <BalContainer amount={0} currency=" USD" />
-          <BalContainer amount={0} currency=" NGN" />
+          <BalContainer amount={mthds.tidyFig(objs.pmAmount.netUsd)} currency="$" />
+          <BalContainer amount={mthds.tidyFig(objs.pmAmount.netNgn)} currency="₦" />
         </div>
         <hr />
         {/* progress Bar section*/}
+        {/* ------------------------------------------------------- */}
         <div className="mid-section">
-          <div className="progress-box">
-            <Progress {...pmProgress.palmpay} />
-            <Progress {...pmProgress.opay} />
+          <div className="progress-group">
+            <div className="progress-box">
+              <Progress {...objs.pmProgress.palmpay} />
+              <Progress {...objs.pmProgress.opay} />
+            </div>
+
+            <div className="remainder-box">
+              <div> {objs.symbols.ngn + objs.pmAmount.ngn.palmpay.leftoverStr}</div>
+              <div> {objs.symbols.ngn + objs.pmAmount.ngn.opay.leftoverStr}</div>
+            </div>
           </div>
 
-          <div className="remainder-box">
-            <div> ₦{pmAmount.ngn.palmpay.leftoverStr}</div>
-            <div> ₦{pmAmount.ngn.opay.leftoverStr}</div>
-          </div>
-
+          {/* ------------------------------------------------------------mess of amounts- both currencies____________ */}
           <div className="total-bothcurrencies">
-            <div></div>
-            <div></div>
-            <div></div>
+            <div className="mid-labels">active</div>
+            <div className="mid-labels"> frozen</div>
+            <div className="mid-labels">total</div>
+            <div className="mid-main-value">
+              {objs.symbols.usd}{mthds.tidyFig(objs.pmAmount.netInUsd - objs.pmAmount.netInUsdF)}
+            </div>
+            <div className="mid-minor-value"> {objs.symbols.usd}{mthds.tidyFig(objs.pmAmount.netInUsdF)}</div>
+            <div className="mid-minor-value"> {objs.symbols.usd}{mthds.tidyFig(objs.pmAmount.netInUsd)}</div>
+            <div className="mid-main-value">
+              {objs.symbols.ngn}{mthds.tidyFig(objs.pmAmount.netInNgn - objs.pmAmount.netInNgnF)}</div>
+            <div className="mid-minor-value"> {objs.symbols.ngn}{mthds.tidyFig(objs.pmAmount.netInNgnF)}</div>
+            <div className="mid-minor-value"> {objs.symbols.ngn}{mthds.tidyFig(objs.pmAmount.netInNgn)}</div>
           </div>
+
+          {/* -------------------------------------------------------------------end------------------------------------------------- */}
         </div>
       </div>
     </div>

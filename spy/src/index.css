@@ -79,18 +79,35 @@ hr {
 /* mid section */
 
 .mid-section {
+  width: 100%;
   display: flex;
   justify-content: space-between;
+}
+
+.progress-group {
+  display: flex;
+  gap: 15px;
 }
 
 .progress-box {
   display: flex;
   justify-content: space-between;
+  max-height: 50px;
 }
 
 .remainder-box {
+  font-size: 0.9em;
 }
 
 .total-bothcurrencies {
-  
-} 
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.total-bothcurrencies>div {
+  text-align: center;
+  font-size: 0.8em;
+}
+.mid-labels{
+
+}
