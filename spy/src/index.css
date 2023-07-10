@@ -9,6 +9,7 @@
 
 body {
   font-family: "Poppins", sans-serif;
+  max-height: 100vh;
 }
 
 .main-container {
@@ -47,7 +48,9 @@ body {
 /* content to the right/main content  START*/
 
 .main-content {
-  padding: 20px 15px 0 30px;
+  overflow: hidden;
+  max-height: 100vh;
+  padding: 20px 15px 0 0;
   min-width: 60%;
   border-right: 2px solid red;
 }
@@ -104,10 +107,18 @@ hr {
   grid-template-columns: repeat(3, 1fr);
 }
 
-.total-bothcurrencies>div {
+.total-bothcurrencies > div {
   text-align: center;
   font-size: 0.8em;
 }
-.mid-labels{
-
+/* -------------------------------------pm section---------------------- */
+.pm-box {
+  min-width: 100%;
+  min-height: 100%;
+  margin-top: 30px;
+  padding-top: 30px;
+  padding-left: 20px;
+  background-color: aliceblue ;
+  border-top-left-radius: 6% ;
+  border-top-right-radius: 6%;
 }

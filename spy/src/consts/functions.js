@@ -5,9 +5,21 @@ function functions(pmState, setpmState) {
         isObj(obj) {
             return typeof obj === 'object';
         },
-        tidyFig(x) {
+        tidyFig(s) {
             //short for tidy figures
-            return x.toLocaleString();
+            s = this.twodp(s);
+            
+           ;
+            return s.toLocaleString();
+        },
+
+        twodp(n) {
+            n = Number(n);
+            if (isNaN(n)) {
+                return n;
+            } else {
+                return Number(Number.parseFloat(n).toFixed(2));
+            }
         },
         pmFunc: {
             updateRate(newState) {
