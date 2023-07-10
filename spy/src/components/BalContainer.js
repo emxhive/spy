@@ -1,10 +1,11 @@
 import PropTypes from "prop-types";
 
-function BalContainer({ amount, currency }) {
+function BalContainer({ amount, frozen, currency }) {
   return (
     <div className="balance">
       {currency}
       {amount}
+      <div className="frozen-in-balance">{frozen}</div>
     </div>
   );
 }
