@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import mthdss from "../consts/functions";
+import { FiEdit } from 'react-icons/fi'
 
 function Entries({ state, objs }) {
   const mthds = mthdss();
@@ -43,9 +44,11 @@ function Entries({ state, objs }) {
 function NameYIcon(text, image) {
   return (
     <div className="entries-name-Y-icon">
-      {" "}
+
       <img src={image} alt="icon" />
       {text}
+      <div style={{flexGrow: 0.9}}></div>
+      <FiEdit style={{fontSize: 10 }} />
     </div>
   );
 }

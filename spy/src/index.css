@@ -52,7 +52,10 @@ img {
 
 .main-content {
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
   max-height: 100vh;
+  height: 100vh;
   padding-top: 20px;
   min-width: 65.5%;
   border-right: 2px solid lightgray;
@@ -71,9 +74,9 @@ h1 {
 .balance {
   text-align: center;
   width: 22%;
-  padding: 5%;
+  padding: 3%;
   margin: 12px 0;
-  border-radius: 40px;
+  border-radius: 30px;
   background-color: aliceblue;
 }
 .frozen-in-balance {
@@ -121,31 +124,51 @@ hr {
 }
 /* -------------------------------------pm section---------------------- */
 .pm-box {
-  min-width: 100%;
-  min-height: 100%;
-  margin-top: 30px;
+  overflow: hidden;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  margin-top: 15px;
   padding-top: 30px;
 
   background-color: aliceblue;
   border-top-left-radius: 6%;
   border-top-right-radius: 6%;
 }
+.pm-box > hr {
+  margin: 5px 0;
+  border: 1px solid lightgray;
+}
 .pm-box > .entry-title {
   padding-left: 30px;
+  margin-bottom: 15px;
 }
 .entry-head {
   display: grid;
   grid-template-columns: 2fr repeat(3, 1fr);
   gap: 3px;
 }
+
 .entry-head > div {
   padding-left: 15px;
+}
+.entries-main-body {
+  flex-grow: 1;
+  overflow: auto;
+  
+}
+
+.entries-main-body::-webkit-scrollbar{
+  display: none;
 }
 .entry-row {
   display: grid;
 
   grid-template-columns: 2fr repeat(3, 1fr);
   gap: 3px;
+}
+.entry-row:first-child {
+  padding-top: 8px;
 }
 .entry-row > div {
   background-color: white;
