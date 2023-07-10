@@ -4,6 +4,8 @@ import logo from "./img/icons.jpg";
 import React, { useState } from "react";
 import mthdss from "./consts/functions";
 import objss from "./consts/objects";
+import Entries from "./components/Entries";
+import EntryHead from "./components/EntryHead";
 
 function App() {
   const [pmState, setpmState] = useState(objss().before());
@@ -29,10 +31,12 @@ function App() {
           <BalContainer
             amount={mthds.tidyFig(objs.pmAmount.netUsd)}
             currency="$"
+            frozen={mthds.tidyFig(objs.pmAmount.netUsdF)}
           />
           <BalContainer
             amount={mthds.tidyFig(objs.pmAmount.netNgn)}
             currency="₦"
+            frozen={mthds.tidyFig(objs.pmAmount.netNgnF)}
           />
         </div>
         <hr />
@@ -63,31 +67,24 @@ function App() {
             <div className="mid-labels"> frozen</div>
             <div className="mid-labels">total</div>
             <div className="mid-main-value">
-              {objs.symbols.usd}
+              {`(${objs.symbols.usd}) `}
               {mthds.tidyFig(objs.pmAmount.netInUsd - objs.pmAmount.netInUsdF)}
             </div>
             <div className="mid-minor-value">
-              {" "}
-              {objs.symbols.usd}
               {mthds.tidyFig(objs.pmAmount.netInUsdF)}
             </div>
             <div className="mid-minor-value">
-              {" "}
-              {objs.symbols.usd}
               {mthds.tidyFig(objs.pmAmount.netInUsd)}
             </div>
             <div className="mid-main-value">
-              {objs.symbols.ngn}
+              {`(${objs.symbols.ngn}) `}
+
               {mthds.tidyFig(objs.pmAmount.netInNgn - objs.pmAmount.netInNgnF)}
             </div>
             <div className="mid-minor-value">
-              {" "}
-              {objs.symbols.ngn}
               {mthds.tidyFig(objs.pmAmount.netInNgnF)}
             </div>
             <div className="mid-minor-value">
-              {" "}
-              {objs.symbols.ngn}
               {mthds.tidyFig(objs.pmAmount.netInNgn)}
             </div>
           </div>
@@ -96,8 +93,11 @@ function App() {
         </div>
         {/* --------------------------------pm section ------------------------------------ */}
         <div className="pm-box">
-          <div className="text">Payment methods & Balances</div>
-         < hr/>
+          <div className="entry-title">Payment methods & Balances</div>
+          <hr />
+          <EntryHead />
+          <hr />
+          <Entries state={pmState} objs={objs} />
         </div>
       </div>
     </div>
