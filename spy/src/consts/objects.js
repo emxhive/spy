@@ -15,6 +15,7 @@ function objects() {
       const stateObj = {
         binance: {
           rate: 770,
+          ispm: true,
           isUsd: true,
           balance: 1000
         },
@@ -22,6 +23,7 @@ function objects() {
           get rate() {
             return this.parent.binance.rate - 4;
           },
+          ispm: true,
           isUsd: true,
           balance: 1000
         },
@@ -29,6 +31,7 @@ function objects() {
           get rate() {
             return this.parent.binance.rate - 20;
           },
+          ispm: true,
           isUsd: true,
           balance: 1000
         },
@@ -37,6 +40,7 @@ function objects() {
           get rate() {
             return this.parent.airtm.rate;
           },
+          ispm: true,
           balance: 500000,
           isUsd: false
         },
@@ -44,16 +48,21 @@ function objects() {
           get rate() {
             return this.parent.airtm.rate;
           },
+          ispm: true,
           balance: 500000,
           isUsd: false
         },
 
         init() {
-          this.opay.parent = this;
-          this.palmpay.parent = this;
-          this.wise.parent = this;
-          this.airtm.parent = this;
-          this.binance.parent = this;
+          for (const key in this) {
+            if (this.hasOwnProperty(key)) {
+              const pm = this[key];
+              if (pm?.ispm) {
+                pm.parent = this;
+                pm.frozen = 100;
+              }
+            }
+          }
 
           delete this.init;
           return this;
@@ -78,10 +87,12 @@ function objects() {
         pmAmount: {
           init() {
             // for ngn
+            const all = {};
             for (const key in this.ngn) {
               if (this.ngn.hasOwnProperty(key)) {
                 const pm = this.ngn[key];
-                pm.frozen = 0;
+                all[key] = pm;
+                pm.frozen = pmState[key].frozen;
                 pm.frozenEq = pm.frozen / pm.rate;
               }
             }
@@ -89,37 +100,38 @@ function objects() {
             for (const key in this.usd) {
               if (this.usd.hasOwnProperty(key)) {
                 const pm = this.usd[key];
-                pm.frozen = 0;
+                all[key] = pm;
+                pm.frozen = pmState[key].frozen;
                 pm.frozenEq = pm.frozen * pm.rate;
               }
             }
+            this.all = all;
+
             return this;
-          },
-          get rate() {
-            return pmState.rate;
           },
           get netUsd() {
             let net = 0;
             let netF = 0;
-            for (const key in pmState) {
-              if (pmState.hasOwnProperty(key)) {
-                const pm = pmState[key];
-                if (pm.isUsd) {
+            for (const key in this.usd) {
+              if (this.usd.hasOwnProperty(key)) {
+                const pm = this.usd[key];
+                if (mthds.isObj(pm)) {
                   net += pm.balance;
                   netF += pm.frozen;
                 }
               }
             }
             this.netUsdF = netF;
+
             return net;
           },
           get netNgn() {
             let net = 0;
             let netF = 0;
-            for (const key in pmState) {
-              if (pmState.hasOwnProperty(key)) {
-                const pm = pmState[key];
-                if (!pm.isUsd) {
+            for (const key in this.ngn) {
+              if (this.ngn.hasOwnProperty(key)) {
+                const pm = this.ngn[key];
+                if (mthds.isObj(pm)) {
                   net += pm.balance;
                   netF += pm.frozen;
                 }
@@ -132,13 +144,15 @@ function objects() {
 
           get netInUsd() {
             let net = this.netUsd;
-            let netF = 0;
+            let netF = this.netUsdF;
 
             for (const key in this.ngn) {
               if (this.ngn.hasOwnProperty(key)) {
                 const pm = this.ngn[key];
-                net += pm.equivalent;
-                netF += pm.frozenEq;
+                if (mthds.isObj(pm)) {
+                  net += pm.equivalent;
+                  netF += pm.frozenEq;
+                }
               }
             }
 
@@ -147,14 +161,15 @@ function objects() {
           },
           get netInNgn() {
             let net = this.netNgn;
-            let netF = 0;
+            let netF = this.netNgnF;
+
             for (const key in this.usd) {
               if (this.usd.hasOwnProperty(key)) {
-      
                 const pm = this.usd[key];
-          
-                net += pm.equivalent;
-                netF += pm.frozenEq;
+                if (mthds.isObj(pm)) {
+                  net += pm.equivalent;
+                  netF += pm.frozenEq;
+                }
               }
             }
             this.netInNgnF = netF;
@@ -172,6 +187,7 @@ function objects() {
               get equivalent() {
                 return this.balance / this.rate;
               },
+              ispm: true,
               limit: 5000000,
               spend: 1000000,
               get leftover() {
@@ -196,6 +212,7 @@ function objects() {
                 return this.balance / this.rate;
               },
               limit: 5000000,
+              ispm: true,
               spend: 2000000,
               get leftover() {
                 return this.limit - this.spend;
@@ -216,6 +233,8 @@ function objects() {
               get rate() {
                 return pmState.airtm.rate;
               },
+              ispm: true,
+
               get equivalent() {
                 return this.balance * this.rate;
               }
@@ -224,6 +243,8 @@ function objects() {
               get balance() {
                 return pmState.binance.balance;
               },
+              ispm: true,
+
               get rate() {
                 return pmState.binance.rate;
               },
@@ -238,6 +259,8 @@ function objects() {
               get rate() {
                 return pmState.wise.rate;
               },
+              ispm: true,
+
               get equivalent() {
                 return this.balance * this.rate;
               }
