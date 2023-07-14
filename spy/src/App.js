@@ -39,7 +39,6 @@ function App() {
             frozen={mthds.tidyFig(objs.pmAmount.netNgnF)}
           />
         </div>
-    
         {/* progress Bar section*/}
         {/* ------------------------------------------------------- */}
         <div className="mid-section">
@@ -99,6 +98,7 @@ function App() {
           <hr />
           <Entries state={pmState} objs={objs} />
         </div>
+        <div className="middle-toolbar">Footer</div>
       </div>
     </div>
   );

@@ -9,7 +9,6 @@
 
 body {
   font-family: "Poppins", sans-serif;
-  max-height: 100vh;
 }
 img {
   aspect-ratio: 1;
@@ -18,13 +17,14 @@ img {
 .main-container {
   max-width: 90%;
   display: flex;
+  height: 100vh;
 }
 
 /* navigation to the left  START*/
 
 .left-nav {
   width: 25%;
-  height: 100vh;
+
   max-width: 210px;
   background-color: rgb(141, 201, 201);
   overflow: hidden;
@@ -54,8 +54,7 @@ img {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  max-height: 100vh;
-  height: 100vh;
+
   padding-top: 20px;
   min-width: 65.5%;
   border-right: 2px solid lightgray;
@@ -125,11 +124,13 @@ hr {
 /* -------------------------------------pm section---------------------- */
 .pm-box {
   overflow: hidden;
-  flex-grow: 1;
   display: flex;
   flex-direction: column;
+  /* flex-grow: 1; */
+
   margin-top: 15px;
   padding-top: 30px;
+  padding-bottom: 15px;
 
   background-color: aliceblue;
   border-top-left-radius: 6%;
@@ -153,12 +154,11 @@ hr {
   padding-left: 15px;
 }
 .entries-main-body {
-  flex-grow: 1;
+  /* flex-grow: 1; */
   overflow: auto;
-  
 }
 
-.entries-main-body::-webkit-scrollbar{
+.entries-main-body::-webkit-scrollbar {
   display: none;
 }
 .entry-row {
@@ -193,4 +193,14 @@ hr {
 }
 .entries-name-Y-icon > img {
   width: 28px;
+}
+.middle-toolbar {
+  min-height: 6%;
+  margin-top: 15px;
+  border-top-left-radius: 5%;
+  border-top-right-radius: 5%;
+
+  position: relative;
+  bottom: 0;
+  background-color: aliceblue;
 }
