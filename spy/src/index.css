@@ -73,14 +73,22 @@ h1 {
 .balance {
   text-align: center;
   width: 22%;
-  padding: 3%;
+  padding: 2%;
   margin: 12px 0;
   border-radius: 30px;
   background-color: aliceblue;
 }
 .frozen-in-balance {
+  color: grey;
   font-size: 0.7em;
+  display: grid;
   text-align: right;
+  grid-template-columns: 1fr 3fr;
+  gap: 0 5px;
+  max-width: 50%;
+  margin-left: auto;
+
+
 }
 
 hr {
@@ -126,7 +134,7 @@ hr {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  /* flex-grow: 1; */
+  flex-grow: 1;
 
   margin-top: 15px;
   padding-top: 30px;
@@ -144,6 +152,24 @@ hr {
   padding-left: 30px;
   margin-bottom: 15px;
 }
+
+.pm-box>.toolbar{
+  display: flex;
+  padding: 0 10px 0 10px;
+}
+.toolbar>div{
+  min-width: 40%;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.toolbar>.toolbar-right{
+  margin-left: auto;
+}
+.toolbar>.toolbar-left{
+  margin-right: auto;
+}
+
 .entry-head {
   display: grid;
   grid-template-columns: 2fr repeat(3, 1fr);
@@ -154,7 +180,7 @@ hr {
   padding-left: 15px;
 }
 .entries-main-body {
-  /* flex-grow: 1; */
+  flex-grow: 1;
   overflow: auto;
 }
 
@@ -163,7 +189,6 @@ hr {
 }
 .entry-row {
   display: grid;
-
   grid-template-columns: 2fr repeat(3, 1fr);
   gap: 3px;
 }
@@ -193,14 +218,4 @@ hr {
 }
 .entries-name-Y-icon > img {
   width: 28px;
-}
-.middle-toolbar {
-  min-height: 6%;
-  margin-top: 15px;
-  border-top-left-radius: 5%;
-  border-top-right-radius: 5%;
-
-  position: relative;
-  bottom: 0;
-  background-color: aliceblue;
 }

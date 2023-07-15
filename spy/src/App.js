@@ -6,6 +6,7 @@ import mthdss from "./consts/functions";
 import objss from "./consts/objects";
 import Entries from "./components/Entries";
 import EntryHead from "./components/EntryHead";
+import ToolBar from "./components/ToolBar";
 
 function App() {
   const [pmState, setpmState] = useState(objss().before());
@@ -32,11 +33,14 @@ function App() {
             amount={mthds.tidyFig(objs.pmAmount.netUsd)}
             currency="$"
             frozen={mthds.tidyFig(objs.pmAmount.netUsdF)}
+            available={mthds.tidyFig(objs.pmAmount.netUsd-objs.pmAmount.netUsdF)}
           />
           <BalContainer
             amount={mthds.tidyFig(objs.pmAmount.netNgn)}
             currency="₦"
             frozen={mthds.tidyFig(objs.pmAmount.netNgnF)}
+            available={mthds.tidyFig(objs.pmAmount.netNgn-objs.pmAmount.netNgnF)}
+
           />
         </div>
         {/* progress Bar section*/}
@@ -93,12 +97,12 @@ function App() {
         {/* --------------------------------pm section ------------------------------------ */}
         <div className="pm-box">
           <div className="entry-title">Payment methods & Balances</div>
+          <ToolBar/>
           <hr />
           <EntryHead />
           <hr />
           <Entries state={pmState} objs={objs} />
         </div>
-        <div className="middle-toolbar">Footer</div>
       </div>
     </div>
   );
