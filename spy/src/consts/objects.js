@@ -73,10 +73,13 @@ function objects() {
     },
     after(pmState) {
       const objs = {
+        midEntryPm: {},
+
         symbols: {
           usd: "$",
           ngn: "₦"
         },
+
         pmIcons: {
           palmpay: palm,
           opay: opayImg,
@@ -301,6 +304,25 @@ function objects() {
             if (this.hasOwnProperty(key, mthds.isObj(this[key]))) {
               const obj = this[key];
               obj.parent = this;
+            }
+          }
+          const properties = [
+            "balance",
+            "frozen",
+            "ispm",
+            "isUsd",
+            "spend",
+            "equivalent"
+          ];
+          for (const key in pmState) {
+            if (pmState[key]?.ispm) {
+              const parent = pmState[key];
+              const pm = (this.midEntryPm[key] = {});
+              pm.id = key;
+              pm.icon = this.pmIcons[key];
+              properties.forEach((property) => {
+                pm[property] = parent[property];
+              });
             }
           }
 
