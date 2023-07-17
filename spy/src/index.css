@@ -87,8 +87,6 @@ h1 {
   gap: 0 5px;
   max-width: 50%;
   margin-left: auto;
-
-
 }
 
 hr {
@@ -153,20 +151,23 @@ hr {
   margin-bottom: 15px;
 }
 
-.pm-box>.toolbar{
+.pm-box > .toolbar {
   display: flex;
   padding: 0 10px 0 10px;
 }
-.toolbar>div{
-  min-width: 40%;
+.toolbar > div {
   display: flex;
-  justify-content: space-evenly;
+}
+.toolbar-left,
+.toolbar-right {
+  min-width: 40%;
+  justify-content: space-between;
 }
 
-.toolbar>.toolbar-right{
+.toolbar > .toolbar-right {
   margin-left: auto;
 }
-.toolbar>.toolbar-left{
+.toolbar > .toolbar-left {
   margin-right: auto;
 }
 
@@ -187,7 +188,7 @@ hr {
 .entries-main-body::-webkit-scrollbar {
   display: none;
 }
-.entry-row {
+#mid-entrybox .entry-row {
   display: grid;
   grid-template-columns: 2fr repeat(3, 1fr);
   gap: 3px;

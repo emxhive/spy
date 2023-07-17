@@ -33,14 +33,17 @@ function App() {
             amount={mthds.tidyFig(objs.pmAmount.netUsd)}
             currency="$"
             frozen={mthds.tidyFig(objs.pmAmount.netUsdF)}
-            available={mthds.tidyFig(objs.pmAmount.netUsd-objs.pmAmount.netUsdF)}
+            available={mthds.tidyFig(
+              objs.pmAmount.netUsd - objs.pmAmount.netUsdF
+            )}
           />
           <BalContainer
             amount={mthds.tidyFig(objs.pmAmount.netNgn)}
             currency="₦"
             frozen={mthds.tidyFig(objs.pmAmount.netNgnF)}
-            available={mthds.tidyFig(objs.pmAmount.netNgn-objs.pmAmount.netNgnF)}
-
+            available={mthds.tidyFig(
+              objs.pmAmount.netNgn - objs.pmAmount.netNgnF
+            )}
           />
         </div>
         {/* progress Bar section*/}
@@ -97,11 +100,15 @@ function App() {
         {/* --------------------------------pm section ------------------------------------ */}
         <div className="pm-box">
           <div className="entry-title">Payment methods & Balances</div>
-          <ToolBar/>
+          <ToolBar />
           <hr />
           <EntryHead />
           <hr />
-          <Entries state={pmState} objs={objs} />
+          <Entries
+            state={pmState}
+            objs={objs.midEntryPm}
+            styleId="mid-entrybox"
+          />
         </div>
       </div>
     </div>
