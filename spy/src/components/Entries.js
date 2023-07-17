@@ -1,42 +1,58 @@
 import PropTypes from "prop-types";
 import mthdss from "../consts/functions";
 import { FiEdit } from "react-icons/fi";
+import { useState } from "react";
 
-function Entries({ state, objs }) {
+function Entries({ state, objs, styleId }) {
+  const objsArr = [];
+  for (const key in objs) {
+    const pm = objs[key];
+    if (pm?.ispm) {
+      objsArr.push(pm);
+    }
+  }
+  objsArr.sort((b, a) => {
+    if (a.isUsd) {
+      return a.equivalent - b.balance;
+    }
+    return a.balance - b.balance;
+  });
+
   const mthds = mthdss();
-  const keys = Object.keys(objs.pmIcons);
 
   return (
-    <div className="entries-main-body">
-      {keys.map((key) => {
-        if (state[key]?.ispm) {
-          const icon = objs.pmIcons[key];
-          const balance = state[key]?.balance;
-          const frozen = state[key]?.frozen;
+    <div className="entries-main-body" id={styleId}>
+      {(function () {
+        const divs = [];
+        console.log(objs);
+        objsArr.forEach((pm) => {
+          if (pm.ispm) {
+            const rowEntry = [];
+            for (let i = 0; i < 4; i++) {
+              switch (i) {
+                case 0:
+                  rowEntry[i] = NameYIcon(pm.id, pm.icon);
+                  break;
+                case 1:
+                  rowEntry[i] = Figures(pm.balance);
+                  break;
+                case 2:
+                  rowEntry[i] = Figures(pm.frozen);
+                  break;
+                case 3:
+                  rowEntry[i] = Figures(pm.frozen);
+                  break;
 
-          const rowEntry = [];
-          for (let i = 0; i < 4; i++) {
-            switch (i) {
-              case 0:
-                rowEntry[i] = NameYIcon(key, icon);
-                break;
-              case 1:
-                rowEntry[i] = Figures(balance);
-                break;
-              case 2:
-                rowEntry[i] = Figures(frozen);
-                break;
-              case 3:
-                rowEntry[i] = Figures(frozen);
-                break;
-
-              default:
-                rowEntry[i] = Figures(key);
+                default:
+                  rowEntry[i] = Figures(pm.id);
+              }
             }
+            divs.push(<div className="entry-row">{rowEntry}</div>);
           }
-          return <div className="entry-row">{rowEntry}</div>;
-        }
-      })}
+        });
+
+        return divs;
+      })()}
     </div>
   );
 }
@@ -46,7 +62,7 @@ function NameYIcon(text, image) {
     <div className="entries-name-Y-icon">
       <img src={image} alt="icon" />
       {text}
-      <div style={{ flexGrow: 0.9 }}></div>
+      <div style={{ flexGrow: 0.7 }}></div>
       <FiEdit style={{ fontSize: 10 }} />
     </div>
   );

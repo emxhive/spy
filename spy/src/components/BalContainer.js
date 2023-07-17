@@ -1,13 +1,19 @@
 import PropTypes from "prop-types";
-import { ImEyeBlocked, ImEye } from "react-icons/im";
+import { BsLock, BsUnlock } from "react-icons/bs";
 
 function BalContainer({ amount, frozen, available, currency }) {
   return (
     <div className="balance">
       {currency}
       {amount}
-      <div className="frozen-in-balance"><ImEyeBlocked style={{color: 'grey'}}/>{frozen}</div> 
-      <div className="frozen-in-balance"><ImEye/>{available}</div>
+      <div className="frozen-in-balance">
+        <BsLock />
+        {frozen}
+      </div>
+      <div className="frozen-in-balance">
+        <BsUnlock />
+        {available}
+      </div>
     </div>
   );
 }
