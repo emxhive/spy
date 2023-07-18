@@ -2,8 +2,20 @@ import PropTypes from "prop-types";
 import mthdss from "../consts/functions";
 import { FiEdit } from "react-icons/fi";
 import { useState } from "react";
+import ContentEditable from "react-contenteditable";
 
-function Entries({ state, objs, styleId }) {
+const mthds = mthdss();
+let pmState;
+let setpmS;
+let editState;
+let localState;
+
+function Entries({ state, setpmState, objs, styleId }) {
+  pmState = state;
+  setpmS = setpmState;
+  const [edit, setEdit] = useState(true);
+  editState = setEdit;
+  localState = edit;
   const objsArr = [];
   for (const key in objs) {
     const pm = objs[key];
@@ -17,8 +29,6 @@ function Entries({ state, objs, styleId }) {
     }
     return a.balance - b.balance;
   });
-
-  const mthds = mthdss();
 
   return (
     <div className="entries-main-body" id={styleId}>
@@ -34,13 +44,13 @@ function Entries({ state, objs, styleId }) {
                   rowEntry[i] = NameYIcon(pm.id, pm.icon);
                   break;
                 case 1:
-                  rowEntry[i] = Figures(pm.balance);
+                  rowEntry[i] = Figures(pm.balance, "balance", pm.id);
                   break;
                 case 2:
-                  rowEntry[i] = Figures(pm.frozen);
+                  rowEntry[i] = Figures(pm.frozen, "frozen", pm.id);
                   break;
                 case 3:
-                  rowEntry[i] = Figures(pm.frozen);
+                  rowEntry[i] = Figures(pm.frozen, "frozen", pm.id);
                   break;
 
                 default:
@@ -63,13 +73,30 @@ function NameYIcon(text, image) {
       <img src={image} alt="icon" />
       {text}
       <div style={{ flexGrow: 0.7 }}></div>
-      <FiEdit style={{ fontSize: 10 }} />
+      <FiEdit
+        onClick={function () {
+          editState(false);
+        }}
+        style={{ fontSize: 10 }}
+      />
     </div>
   );
 }
 
-function Figures(text) {
-  return <div className="entries-figures"> {text}</div>;
+function Figures(text, key, id) {
+  return (
+    <ContentEditable
+      className="entries-figures content-edit"
+      disabled={localState}
+      html={mthds.tidyFig(text)}
+      onChange={function (e) {
+        const obj = {
+          ...pmState[id],
+          key: e.target.value,
+        };
+        setpmS(obj);
+      }}
+    />
+  );
 }
-
 export default Entries;

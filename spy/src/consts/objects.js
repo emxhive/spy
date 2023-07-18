@@ -60,11 +60,12 @@ function objects() {
               if (pm?.ispm) {
                 pm.parent = this;
                 pm.frozen = 100;
+  
               }
             }
           }
 
-          delete this.init;
+          // delete this.init;
           return this;
         }
       }.init();
@@ -92,7 +93,7 @@ function objects() {
             // for ngn
             const all = {};
             for (const key in this.ngn) {
-              if (this.ngn.hasOwnProperty(key)) {
+              if (this.ngn.hasOwnProperty(key) &&  this.ngn[key].ispm) {
                 const pm = this.ngn[key];
                 all[key] = pm;
                 pm.frozen = pmState[key].frozen;
@@ -101,7 +102,7 @@ function objects() {
             }
             // for usd
             for (const key in this.usd) {
-              if (this.usd.hasOwnProperty(key)) {
+              if (this.usd.hasOwnProperty(key) &&  this.usd[key].ispm) {
                 const pm = this.usd[key];
                 all[key] = pm;
                 pm.frozen = pmState[key].frozen;

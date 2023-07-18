@@ -106,6 +106,7 @@ function App() {
           <hr />
           <Entries
             state={pmState}
+            setpmState={setpmState}
             objs={objs.midEntryPm}
             styleId="mid-entrybox"
           />
