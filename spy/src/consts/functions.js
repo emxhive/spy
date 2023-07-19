@@ -7,6 +7,9 @@ function functions(pmState, setpmState) {
     p(str) {
       console.log(str);
     },
+    toDigits(s) {
+      return Number(s.replaceAll(/,/g, ""));
+    },
     tidyFig(s) {
       //short for tidy figures
       s = this.twodp(s);
@@ -17,7 +20,7 @@ function functions(pmState, setpmState) {
     twodp(n) {
       n = Number(n);
       if (isNaN(n)) {
-        return n;
+        return 0;
       } else {
         return Number(Number.parseFloat(n).toFixed(2));
       }

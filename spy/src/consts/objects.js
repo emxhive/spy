@@ -44,7 +44,15 @@ function objects() {
           balance: 500000,
           isUsd: false
         },
-        palmpay: {
+        palmpay1: {
+          get rate() {
+            return this.parent.airtm.rate;
+          },
+          ispm: true,
+          balance: 500000,
+          isUsd: false
+        },
+        palmpay2: {
           get rate() {
             return this.parent.airtm.rate;
           },
@@ -60,7 +68,6 @@ function objects() {
               if (pm?.ispm) {
                 pm.parent = this;
                 pm.frozen = 100;
-  
               }
             }
           }
@@ -82,7 +89,8 @@ function objects() {
         },
 
         pmIcons: {
-          palmpay: palm,
+          palmpay1: palm,
+          palmpay2: palm,
           opay: opayImg,
           wise: wiseImg,
           binance: bin,
@@ -90,21 +98,24 @@ function objects() {
         },
         pmAmount: {
           init() {
-            // for ngn
+            //containing all pms in ngn and usd
             const all = {};
+            // for ngn
             for (const key in this.ngn) {
-              if (this.ngn.hasOwnProperty(key) &&  this.ngn[key].ispm) {
+              if (this.ngn.hasOwnProperty(key) && this.ngn[key].ispm) {
                 const pm = this.ngn[key];
                 all[key] = pm;
+
                 pm.frozen = pmState[key].frozen;
                 pm.frozenEq = pm.frozen / pm.rate;
               }
             }
             // for usd
             for (const key in this.usd) {
-              if (this.usd.hasOwnProperty(key) &&  this.usd[key].ispm) {
+              if (this.usd.hasOwnProperty(key) && this.usd[key].ispm) {
                 const pm = this.usd[key];
                 all[key] = pm;
+
                 pm.frozen = pmState[key].frozen;
                 pm.frozenEq = pm.frozen * pm.rate;
               }
@@ -181,12 +192,12 @@ function objects() {
             return net;
           },
           ngn: {
-            palmpay: {
+            palmpay1: {
               get balance() {
-                return pmState.palmpay.balance;
+                return pmState.palmpay1.balance;
               },
               get rate() {
-                return pmState.palmpay.rate;
+                return pmState.palmpay1.rate;
               },
               get equivalent() {
                 return this.balance / this.rate;
@@ -196,6 +207,31 @@ function objects() {
               spend: 1000000,
               get leftover() {
                 return this.limit - this.spend;
+              },
+              get leftoverStr() {
+                return this.leftover.toLocaleString();
+              },
+
+              get percentSpend() {
+                return (this.spend / this.limit) * 100;
+              }
+            },
+
+            palmpay2: {
+              get balance() {
+                return pmState.palmpay2.balance;
+              },
+              get rate() {
+                return pmState.palmpay2.rate;
+              },
+              get equivalent() {
+                return this.balance / this.rate;
+              },
+              ispm: true,
+              limit: 5000000,
+              spend: 1000000,
+              get leftover() {
+                return this.parent.palmpay1.leftover - this.spend;
               },
               get leftoverStr() {
                 return this.leftover.toLocaleString();
@@ -276,7 +312,10 @@ function objects() {
           palmpay: {
             pmcolor: "rgb(144, 0, 255)",
             get percent() {
-              return this.parent.parent.pmAmount.ngn.palmpay.percentSpend;
+              return (
+                this.parent.parent.pmAmount.ngn.palmpay1.percentSpend +
+                this.parent.parent.pmAmount.ngn.palmpay2.percentSpend
+              );
             },
             pmicon: palm
           },
@@ -307,14 +346,7 @@ function objects() {
               obj.parent = this;
             }
           }
-          const properties = [
-            "balance",
-            "frozen",
-            "ispm",
-            "isUsd",
-            "spend",
-            "equivalent"
-          ];
+          const properties = ["balance", "frozen", "ispm", "isUsd", "spend"];
           for (const key in pmState) {
             if (pmState[key]?.ispm) {
               const parent = pmState[key];
@@ -323,6 +355,7 @@ function objects() {
               pm.icon = this.pmIcons[key];
               properties.forEach((property) => {
                 pm[property] = parent[property];
+                pm.equivalent = this.pmAmount.all[key].equivalent;
               });
             }
           }
