@@ -3,7 +3,7 @@ export default function EntryHead() {
   return (
     <div className="entry-head">
       {values.map((value) => (
-        <div>{value}</div>
+        <div key={value}>{value}</div>
       ))}
     </div>
   );
