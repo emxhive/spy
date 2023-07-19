@@ -58,7 +58,7 @@ function App() {
             <div className="remainder-box">
               <div>
                 {" "}
-                {objs.symbols.ngn + objs.pmAmount.ngn.palmpay.leftoverStr}
+                {objs.symbols.ngn + objs.pmAmount.ngn.palmpay1.leftoverStr}
               </div>
               <div>
                 {" "}

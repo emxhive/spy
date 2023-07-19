@@ -10,7 +10,7 @@
 body {
   font-family: "Poppins", sans-serif;
 }
-.content-edit:focus{
+.content-edit:focus {
   outline: none;
   color: grey;
 }
