@@ -1,18 +1,14 @@
 import React, { useState } from "react";
 
-import ContentPaste from "@mui/icons-material/ContentPaste";
-import { Input, InputAdornment } from "@mui/material/";
-
-import "../css/history.css";
-import {
-  FaArrowTrendUp,
-  FaArrowTrendDown,
-  FaLock,
-  FaQuestion
-} from "react-icons/fa";
+import "../../css/history.css";
+import { FaLock, FaQuestion } from "react-icons/fa";
+import { PiTrendUp, PiTrendDown } from "react-icons/pi";
 import { IoIosAddCircleOutline } from "react-icons/io";
 
-import mthdss from "../consts/functions";
+import   TextField   from '@mui/material/TextField';
+
+
+import mthdss from "../../consts/functions";
 
 let historyState;
 let pmObj;
@@ -27,7 +23,7 @@ export default function History({ pmObjs }) {
     daysArr: [],
     dayArr: [],
     toolbarArr: [<IoIosAddCircleOutline onClick={openDialogue} />],
-    floatSize: { width: "80%", height: "30%" }
+    floatSize: { width: "80%", height: "30%" },
   };
   function openDialogue() {
     if (!isDialog) {
@@ -66,11 +62,11 @@ function entry({ typeInt, amount, category, pm, date }) {
       {(function () {
         switch (typeInt) {
           case -1:
-            return <FaArrowTrendDown />;
+            return <PiTrendDown />;
           case 0:
             return <FaLock />;
           case 1:
-            return <FaArrowTrendUp />;
+            return <PiTrendUp />;
           default:
             return <FaQuestion color="red" />;
         }
@@ -86,6 +82,7 @@ function entry({ typeInt, amount, category, pm, date }) {
   );
 }
 
+
 function day(date) {
   const id = mth.getDayId(date);
   return (
@@ -97,20 +94,14 @@ function day(date) {
 }
 
 function floatingForm() {
-  mth.p(1);
+
   return (
     <div className="floating-form">
       <div className="fill"></div>
       <form>
-        {/* <input type="number" name="amount" placeholder=" ...Amount" id="" /> */}
+       
 
-        <Input
-          endAdornment={
-            <InputAdornment>
-              <ContentPaste />{" "}
-            </InputAdornment>
-          }
-        />
+        <TextField  placeholder="jjbj" variant="outlined" />
 
         <select name="type" id="">
           <option value={null}>...Entry Type</option>

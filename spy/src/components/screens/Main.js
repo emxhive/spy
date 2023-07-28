@@ -1,8 +1,8 @@
-import Entries from "../components/Entries";
-import EntryHead from "../components/EntryHead";
-import ToolBar from "../components/ToolBar";
-import BalContainer from "../components/BalContainer";
-import Progress from "../components/Progress";
+import Entries from "../Entries";
+import EntryHead from "../EntryHead";
+import ToolBar from "../ToolBar";
+import BalContainer from "../BalContainer";
+import Progress from "../Progress";
 
 export default function Main({ mthds, objs, pmState, setpmState }) {
   return (

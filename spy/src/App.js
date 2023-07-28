@@ -1,14 +1,11 @@
-import BalContainer from "./components/BalContainer";
 
-import logo from "./img/icons.jpg";
 import React, { useState } from "react";
 import mthdss from "./consts/functions";
 import objss from "./consts/objects";
-import Main from "./components/Main";
 
-import History from "./components/History";
-
-import NavBar from "./components/NavBar";
+import Main from "./components/screens/Main";
+import History from "./components/screens/History";
+import NavBar from "./components/screens/NavBar";
 
 function App() {
   const [isPc, setPc] = useState(true);
@@ -26,7 +23,8 @@ function App() {
         setpmState={setpmStates}
       /> */}
       <History pmObjs={objjs} />
-    </div>
+      </div>
+   
   );
 }
 
