@@ -1,5 +1,8 @@
 function functions(pmState, setpmState) {
   const objs = {
+    getDayId(date) {
+      return `d${date.getYear()}${date.getMonth()}${date.getDay()}`;
+    },
     isObj(obj) {
       return typeof obj === "object";
     },

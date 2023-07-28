@@ -1,0 +1,86 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap");
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  color: black;
+  font-family: "Poppins", sans-serif;
+}
+.fill {
+  flex-grow: 1;
+}
+.history-container {
+  background-color: aliceblue;
+  position: relative;
+  min-height: 100vh;
+  flex-grow: 1;
+}
+.form-bg {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(200, 200, 200, 0.5);
+  z-index: 3;
+}
+.history {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.history > h3 {
+  margin-top: 5%;
+  margin-left: 10%;
+}
+.history-entrybox {
+  flex-grow: 1;
+  width: inherit;
+  border: 1px solid lightgray;
+  background-color: inherit;
+}
+
+.history-toolbar {
+  margin: 0 20px 0 auto;
+}
+.history-toolbar > * {
+  font-size: 170%;
+}
+
+/* __________________________________________ */
+
+.floating-form {
+  padding: 30px;
+
+  /* background-color: royalblue; */
+  background: #0056a1;
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  border-radius: 30px;
+  width: 70%;
+  height: 50%;
+  /* margin: auto; */
+  position: absolute;
+  top: 25%;
+  left: 15%;
+}
+form {
+  background-color: aliceblue;
+  display: flex;
+  flex-direction: column;
+}
+
+.floating-form > form > button {
+  margin-left: 70%;
+}
+
+input,
+select {
+  position: relative;
+}
+
+.paste-icon {
+  position: absolute;
+  right: 0;
+}

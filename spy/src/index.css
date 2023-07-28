@@ -19,36 +19,12 @@ img {
 }
 
 .main-container {
-  max-width: 90%;
+  width: 100vw;
   display: flex;
   height: 100vh;
 }
 
 /* navigation to the left  START*/
-
-.left-nav {
-  width: 25%;
-
-  max-width: 210px;
-  background-color: rgb(141, 201, 201);
-  overflow: hidden;
-}
-
-.left-nav > a {
-  display: block;
-  padding: 15px;
-}
-
-.left-nav > a > img {
-  height: 170px;
-  border-radius: 50%;
-}
-
-.left-nav > a > h2 {
-  text-align: center;
-  color: snow;
-  margin-bottom: 50px;
-}
 
 /* navigation ends here */
 
@@ -60,7 +36,7 @@ img {
   flex-direction: column;
 
   padding-top: 20px;
-  min-width: 65.5%;
+  min-width: 59%;
   border-right: 2px solid lightgray;
 }
 

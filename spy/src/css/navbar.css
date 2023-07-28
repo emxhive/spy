@@ -1,0 +1,34 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap");
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  color: black;
+}
+
+.left-nav {
+  width: 25%;
+
+  max-width: 210px;
+  /* background-color: rgb(141, 201, 201); */
+  background-color: #0056a1;
+  overflow: hidden;
+}
+
+.left-nav > a {
+  color: white;
+  display: block;
+  padding: 15px;
+}
+
+.left-nav > a > img {
+  height: 170px;
+  border-radius: 50%;
+}
+
+.left-nav > a > h2 {
+  text-align: center;
+  color: snow;
+  margin-bottom: 50px;
+}

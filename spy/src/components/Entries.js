@@ -24,7 +24,6 @@ function Entries({ state, setpmState, objs, styleId }) {
     }
   }
   objsArr.sort((b, a) => {
-    mthds.p(a.equivalent);
     if (a.isUsd && b.isUsd) {
       return a.equivalent - b.equivalent;
     }
@@ -32,7 +31,6 @@ function Entries({ state, setpmState, objs, styleId }) {
       return a.equivalent - b.balance;
     }
     if (b.isUsd) {
-      console.log("I ran atleaseeeet");
       return a.balance - b.equivalent;
     }
     return a.balance - b.balance;
@@ -108,18 +106,11 @@ function Figures(text, key, id) {
       disabled={localState}
       html={mthds.tidyFig(text)}
       onChange={function (e) {
-        let count = 0;
-        console.log(+count);
-        mthds.p(pmState[id]);
-        console.log(++count + " now check");
-
         const obj = {
           ...pmState[id],
           [key]: mthds.toDigits(e.target.value)
         };
-        mthds.p("After the event");
-        console.log(obj);
-        console.log("before this event");
+
         setpmS({ ...pmState, [id]: { ...obj } });
       }}
     />
