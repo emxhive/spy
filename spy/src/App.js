@@ -1,7 +1,7 @@
-
 import React, { useState } from "react";
 import mthdss from "./consts/functions";
 import objss from "./consts/objects";
+import logo from "./img/icons.jpg";
 
 import Main from "./components/screens/Main";
 import History from "./components/screens/History";
@@ -15,16 +15,15 @@ function App() {
 
   return (
     <div className="main-container">
-      {/* <NavBar applogo={logo} />
+      <NavBar applogo={logo} />
       <Main
         mthds={mthdds}
         objs={objjs}
         pmState={pmStates}
         setpmState={setpmStates}
-      /> */}
-      <History pmObjs={objjs} />
-      </div>
-   
+      />
+      <History pmObjs={objjs} pmState={pmStates} setpmState={setpmStates} />
+    </div>
   );
 }
 
