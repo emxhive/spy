@@ -1,5 +1,8 @@
 function functions(pmState, setpmState) {
   const objs = {
+    getTimeId(date) {
+      return `t${new Date(date).valueOf()}`;
+    },
     getDayId(date) {
       return `d${date.getYear()}${date.getMonth()}${date.getDay()}`;
     },
