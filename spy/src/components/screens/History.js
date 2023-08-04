@@ -1,17 +1,19 @@
 import React, { useState } from "react";
+import { addDoc, collection } from "@firebase/firestore";
 
 import "../../css/history.css";
-import { FaLock, FaQuestion, FaBeer } from "react-icons/fa";
+import { FaLock, FaUnlock, FaQuestion } from "react-icons/fa";
 import { PiTrendUp, PiTrendDown } from "react-icons/pi";
 import { IoIosAddCircleOutline } from "react-icons/io";
 
 import mthdss from "../../consts/functions";
+import { firestore } from "../../utils/db";
 
 const errorIcon = <span>⚠️</span>;
 
 const mth = mthdss();
 
-export default function History({ pmObjs }) {
+export default function History({ pmObjs, pmState, setpmState }) {
   const [isDialog, setDialog] = useState(false);
   const [date, setDate] = useState(new Date().toISOString().split(".")[0]);
 
@@ -24,8 +26,9 @@ export default function History({ pmObjs }) {
   const [firstState, setFirstState] = useState({
     toolbarArr: [<IoIosAddCircleOutline key="add" onClick={openDialogue} />]
   });
-  const daysArr = {};
-  const [dayArr, setdayArr] = useState([]);
+
+  const [dayArr, setdayArr] = useState({});
+  const [isnewdayState, setnewday] = useState(true);
   const [amountState, setAmS] = useState(false);
   const [typeState, setTyS] = useState(false);
   const [categoryState, setCaS] = useState(false);
@@ -55,30 +58,76 @@ export default function History({ pmObjs }) {
 
             if (isPerfect) {
               const formObj = Object.fromEntries(formArr);
+              formObj.amount = Number(formObj.amount);
+              formObj.type = Number(formObj.type);
               const objId = mth.getDayId(new Date(date));
               const newEntry = entry({
                 id: objId,
                 typeInt: formObj.type,
-                amount: formObj.amount,
+                amount: pmState[formObj.pm].symbol + formObj.amount,
                 category: formObj.category,
                 pm: formObj.pm,
                 date: formObj.time,
                 pmObj: pmObjs
               });
 
-              setdayArr([newEntry, ...dayArr]);
+              //firebase database test
+              try {
+                addDoc(collection(firestore, "pm-state"), { pmState: "new" });
+                console.log("I ran.. check the database");
+              } catch (err) {
+                console.log(err);
+              }
+
+              //updating balance in pmState /App-main screen
+              const preBal = pmState[formObj.pm].balance;
+              const preFreeze = pmState[formObj.pm].frozen;
+              const pm = pmState[formObj.pm];
+
+              switch (formObj.type) {
+                case -2:
+                  setpmState({
+                    ...pmState,
+                    [formObj.pm]: { ...pm, frozen: preFreeze - formObj.amount }
+                  });
+
+                  break;
+                case -1:
+                  setpmState({
+                    ...pmState,
+                    [formObj.pm]: { ...pm, balance: preBal - formObj.amount }
+                  });
+
+                  break;
+                case 1:
+                  setpmState({
+                    ...pmState,
+                    [formObj.pm]: { ...pm, balance: preBal + formObj.amount }
+                  });
+
+                  break;
+                default:
+                  setpmState({
+                    ...pmState,
+                    [formObj.pm]: { ...pm, frozen: preFreeze + formObj.amount }
+                  });
+              }
+
+              if (Object.keys(dayArr).includes(objId)) {
+                setnewday(false);
+
+                const old = dayArr[objId];
+
+                const newArr = [newEntry, ...old];
+                setdayArr({ ...dayArr, [objId]: newArr });
+              } else {
+                setnewday(true);
+
+                setdayArr({ ...dayArr, [objId]: [newEntry] });
+              }
 
               // For every new entry to dayArr state
               // a corresponding entry to daysArr (grouped from start)
-          
-              if (Object.keys(daysArr).includes(objId)) {
-                mth.p("it exists");
-                daysArr[objId].unshift(dayArr[0]);
-              } else {
-                const newday= daysArr[objId] = []
-                newday.unshift(dayArr[0]);
-              }
-              mth.p(Object.keys(daysArr));
             } else {
               switch (errKey) {
                 case "pm":
@@ -159,7 +208,8 @@ export default function History({ pmObjs }) {
               >
                 <option value={""}>...Entry Type</option>
                 <option value={-1}>Cash Out</option>
-                <option value={0}>Freeze</option>
+                <option value={2}>Freeze</option>
+                <option value={-2}>UnFreeze</option>
                 <option value={1}>Cash In</option>
               </select>
 
@@ -205,7 +255,18 @@ export default function History({ pmObjs }) {
         <h3>Payment History</h3>
 
         <div className="history-toolbar">{firstState.toolbarArr}</div>
-        <div className="history-entrybox">{dayArr}</div>
+        <div className="history-entrybox">
+          {Object.keys(dayArr)
+            .map((keyz) => {
+              // printing the payment history here
+
+              return day(dayArr[keyz], isnewdayState);
+            })
+            .sort(
+              (b, a) =>
+                a.props.dayid.replace("d", "") - b.props.dayid.replace("d", "")
+            )}
+        </div>
       </div>
     </div>
   );
@@ -224,12 +285,14 @@ function entry({ id, typeInt, amount, category, pm, date, pmObj }) {
           switch (typeInt) {
             case -1:
               return <PiTrendDown />;
-            case 0:
+            case 2:
               return <FaLock />;
+            case -2:
+              return <FaUnlock />;
             case 1:
               return <PiTrendUp />;
             default:
-              return <FaQuestion color="red" />;
+              return <FaQuestion />;
           }
         })()}
       </div>
@@ -249,12 +312,28 @@ function entry({ id, typeInt, amount, category, pm, date, pmObj }) {
   return retObj;
 }
 
-function day(dayEntries, date) {
-  const id = mth.getDayId(date);
+function day(divArr, isnewday) {
+  const objid = divArr[0].props.dayid;
+  let time;
+  let currentDate;
+  if (isnewday) {
+    time = divArr[0].key?.replace("t", "");
+  } else {
+    time = divArr[0].key?.replace("t", "");
+  }
+  currentDate = new Date(new Date().setTime(time));
+  const options = {
+    weekday: "short",
+    year: "numeric",
+    day: "numeric",
+    month: "long"
+  };
   return (
-    <div className="history-day">
-      <div className="day-header">{date.toLocalDate()}</div>
-      <div className="day-scrollable">{dayEntries.daysArr[id]}</div>
+    <div key={objid} dayid={objid} className="history-day">
+      <div className="day-header">
+        {currentDate.toLocaleDateString([], options)}
+      </div>
+      <div className="day-scrollable">{divArr}</div>
     </div>
   );
 }

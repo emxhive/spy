@@ -7,7 +7,7 @@
   color: black;
   font-family: "Poppins", sans-serif;
 }
-img {
+.history-container img {
   aspect-ratio: 1;
   max-width: 40px;
   border-radius: 50%;

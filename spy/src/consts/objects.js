@@ -68,6 +68,11 @@ function objects() {
               if (pm?.ispm) {
                 pm.parent = this;
                 pm.frozen = 100;
+                if (pm.isUsd) {
+                  pm.symbol = "$";
+                } else {
+                  pm.symbol = "₦";
+                }
               }
             }
           }
