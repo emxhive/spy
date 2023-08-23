@@ -1,19 +1,18 @@
 import React, { useState } from "react";
-import { addDoc, collection } from "@firebase/firestore";
 
 import "../../css/history.css";
 import { FaLock, FaUnlock, FaQuestion } from "react-icons/fa";
 import { PiTrendUp, PiTrendDown } from "react-icons/pi";
 import { IoIosAddCircleOutline } from "react-icons/io";
-
 import mthdss from "../../consts/functions";
-import { firestore } from "../../utils/db";
+import { db } from "../../utils/db";
+import { addDoc, collection } from "firebase/firestore";
+
 
 const errorIcon = <span>⚠️</span>;
-
 const mth = mthdss();
 
-export default function History({ pmObjs, pmState, setpmState }) {
+export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
   const [isDialog, setDialog] = useState(false);
   const [date, setDate] = useState(new Date().toISOString().split(".")[0]);
 
@@ -24,7 +23,7 @@ export default function History({ pmObjs, pmState, setpmState }) {
   }
 
   const [firstState, setFirstState] = useState({
-    toolbarArr: [<IoIosAddCircleOutline key="add" onClick={openDialogue} />]
+    toolbarArr: [<IoIosAddCircleOutline key="add" onClick={openDialogue} />],
   });
 
   const [dayArr, setdayArr] = useState({});
@@ -68,17 +67,10 @@ export default function History({ pmObjs, pmState, setpmState }) {
                 category: formObj.category,
                 pm: formObj.pm,
                 date: formObj.time,
-                pmObj: pmObjs
+                pmIcons: pmIcons,
               });
 
-              //firebase database test
-              try {
-                addDoc(collection(firestore, "pm-state"), { pmState: "new" });
-                console.log("I ran.. check the database");
-              } catch (err) {
-                console.log(err);
-              }
-
+              
               //updating balance in pmState /App-main screen
               const preBal = pmState[formObj.pm].balance;
               const preFreeze = pmState[formObj.pm].frozen;
@@ -88,28 +80,28 @@ export default function History({ pmObjs, pmState, setpmState }) {
                 case -2:
                   setpmState({
                     ...pmState,
-                    [formObj.pm]: { ...pm, frozen: preFreeze - formObj.amount }
+                    [formObj.pm]: { ...pm, frozen: preFreeze - formObj.amount },
                   });
 
                   break;
                 case -1:
                   setpmState({
                     ...pmState,
-                    [formObj.pm]: { ...pm, balance: preBal - formObj.amount }
+                    [formObj.pm]: { ...pm, balance: preBal - formObj.amount },
                   });
 
                   break;
                 case 1:
                   setpmState({
                     ...pmState,
-                    [formObj.pm]: { ...pm, balance: preBal + formObj.amount }
+                    [formObj.pm]: { ...pm, balance: preBal + formObj.amount },
                   });
 
                   break;
                 default:
                   setpmState({
                     ...pmState,
-                    [formObj.pm]: { ...pm, frozen: preFreeze + formObj.amount }
+                    [formObj.pm]: { ...pm, frozen: preFreeze + formObj.amount },
                   });
               }
 
@@ -184,8 +176,8 @@ export default function History({ pmObjs, pmState, setpmState }) {
                 }}
               >
                 <option value="">...Payment Method</option>
-                {Object.keys(pmObjs.midEntryPm).map((keys) => {
-                  if (pmObjs.midEntryPm[keys]?.ispm)
+                {Object.keys(pmObjs.pmAmount.all).map((keys) => {
+                  if (pmObjs.pmAmount.all [keys]?.ispm)
                     return (
                       <option key={keys} value={keys}>
                         {keys}
@@ -272,7 +264,7 @@ export default function History({ pmObjs, pmState, setpmState }) {
   );
 }
 
-function entry({ id, typeInt, amount, category, pm, date, pmObj }) {
+function entry({ id, typeInt, amount, category, pm, date, pmIcons }) {
   const retObj = (
     <div
       dayid={id}
@@ -299,11 +291,11 @@ function entry({ id, typeInt, amount, category, pm, date, pmObj }) {
 
       <div>{category}</div>
       <div>{amount}</div>
-      <img src={pmObj.pmIcons[pm]} alt={pm} />
+      <img src={pmIcons[pm]} alt={pm} />
       <div className="history-entry-time">
         {new Date(date).toLocaleTimeString([], {
           hour: "2-digit",
-          minute: "2-digit"
+          minute: "2-digit",
         })}
       </div>
     </div>
@@ -326,7 +318,7 @@ function day(divArr, isnewday) {
     weekday: "short",
     year: "numeric",
     day: "numeric",
-    month: "long"
+    month: "long",
   };
   return (
     <div key={objid} dayid={objid} className="history-day">

@@ -1,21 +1,40 @@
 import PropTypes from "prop-types";
 import mthdss from "../consts/functions";
 import { FiEdit } from "react-icons/fi";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ContentEditable from "react-contenteditable";
 
 const mthds = mthdss();
-let pmState;
-let setpmS;
-let editState;
-let localState;
 
-function Entries({ state, setpmState, objs, styleId }) {
-  pmState = state;
-  setpmS = setpmState;
-  const [edit, setEdit] = useState(true);
-  editState = setEdit;
-  localState = edit;
+function Entries({
+  setEdit,
+  edit,
+  state,
+  balance,
+  frozen,
+  spend,
+
+  showsavebuttons,
+  setshowbuttons,
+  setCurrentEntry,
+  objs,
+  styleId,
+}) {
+  //setting the edit state
+
+  useEffect(() => {
+    const localstateobj = {};
+
+    ///CONSOLE
+    Object.keys(state).forEach((key) => {
+      if (key !== "generalProps") {
+        localstateobj[key] = true;
+      }
+    });
+
+    setEdit(localstateobj);
+  }, [state]);
+
   const objsArr = [];
   for (const key in objs) {
     const pm = objs[key];
@@ -23,24 +42,111 @@ function Entries({ state, setpmState, objs, styleId }) {
       objsArr.push(pm);
     }
   }
+
   objsArr.sort((b, a) => {
     if (a.isUsd && b.isUsd) {
-      return a.equivalent - b.equivalent;
+      return a.equivalent - a.frozenEq - (b.equivalent - b.frozenEq);
     }
     if (a.isUsd) {
-      return a.equivalent - b.balance;
+      return a.equivalent - a.frozenEq - (b.balance - b.frozen);
     }
     if (b.isUsd) {
-      return a.balance - b.equivalent;
+      return a.balance - a.frozen - (b.equivalent - b.frozenEq);
     }
-    return a.balance - b.balance;
+    return a.balance - a.frozen - (b.balance - b.frozen);
   });
+
+  //functions that were once without
+
+  function NameYIcon(text, image) {
+    const regex = /\d/g;
+    const newtext =
+      text.search(regex) > -1
+        ? `${text.slice(0, text.search(regex))}(${text.slice(
+            text.search(regex)
+          )})`
+        : text;
+    return (
+      <div key={newtext} className="entries-name-Y-icon">
+        <img src={image} alt="icon" />
+        <span> {newtext}</span>
+        <div style={{ flexGrow: 1 }}></div>
+        <FiEdit
+          key={"editButton"}
+          className="edit-button"
+          ///--------ON CLICK --------??/////
+          onClick={function () {
+            if (!showsavebuttons) {
+              if (edit[text]) {
+                setEdit({ ...edit, [text]: false });
+              }
+
+              setshowbuttons(true);
+              setCurrentEntry(text);
+            }
+          }}
+          style={!edit[text] && { stroke: "#0056a1", fontSize: "18px" }}
+        />
+      </div>
+    );
+  }
+
+  /////////////////////////////////////FIGURES/////////////
+  function Figures(text, key, id, symbol) {
+    let isChanging = false;
+    let textz;
+    switch (key) {
+      case "balance":
+        textz = balance;
+        break;
+      case "frozen":
+        textz = frozen;
+        break;
+      case "spend":
+        textz = spend;
+        break;
+
+      default:
+        throw new Error("It is not balance not frozen nor spend .. wtf is it");
+    }
+    text = mthds.tidyFig(text);
+    const handleChange = (e) => {
+      if (!isChanging) {
+        isChanging = true;
+      }
+      textz.current = mthds.tidyFig(mthds.toDigits(e.target.value));
+    };
+
+    return (
+      <div key={`figuresdiv-${id}-${key}`} className="div-with-contenteditable">
+        <span key={"currency"}>{symbol}</span>
+        <ContentEditable
+          key={key}
+          className="entries-figures content-edit"
+          disabled={edit[id]}
+          html={text}
+          onPaste={(e) => {
+            textz.current = mthds.tidyFig(
+              mthds.toDigits(e.clipboardData.getData("number"))
+            );
+
+            isChanging = true;
+          }}
+          onBlur={(e) => {
+            if (isChanging) e.target.innerText = textz.current;
+          }}
+          onChange={handleChange}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="entries-main-body" id={styleId}>
       {(function () {
         const divs = [];
         objsArr.forEach((pm) => {
+      
           if (pm.ispm) {
             const rowEntry = [];
             for (let i = 0; i < 4; i++) {
@@ -49,21 +155,27 @@ function Entries({ state, setpmState, objs, styleId }) {
                   rowEntry[i] = NameYIcon(pm.id, pm.icon);
                   break;
                 case 1:
-                  rowEntry[i] = Figures(pm.balance, "balance", pm.id);
+                  rowEntry[i] = Figures(
+                    (pm.balance-pm.frozen- pm.payFee),
+                    "balance",
+                    pm.id,
+                    pm.symbol
+                  );
                   break;
                 case 2:
-                  rowEntry[i] = Figures(pm.frozen, "frozen", pm.id);
+                  rowEntry[i] = Figures(pm.frozen, "frozen", pm.id, pm.symbol);
                   break;
                 case 3:
-                  rowEntry[i] = Figures(pm.frozen, "frozen", pm.id);
+                  rowEntry[i] = Figures(pm.spend, "spend", pm.id, pm.symbol);
                   break;
 
                 default:
                   rowEntry[i] = Figures(pm.id);
               }
             }
+
             divs.push(
-              <div key={pm.id} className="entry-row">
+              <div key={pm.id + new Date().getTime()} className="entry-row">
                 {rowEntry}
               </div>
             );
@@ -76,44 +188,4 @@ function Entries({ state, setpmState, objs, styleId }) {
   );
 }
 
-function NameYIcon(text, image) {
-  const regex = /\d/g;
-  text =
-    text.search(regex) > -1
-      ? `${text.slice(0, text.search(regex))}(${text.slice(
-          text.search(regex)
-        )})`
-      : text;
-  return (
-    <div className="entries-name-Y-icon">
-      <img src={image} alt="icon" />
-      {text}
-      <div style={{ flexGrow: 0.7 }}></div>
-      <FiEdit
-        onClick={function () {
-          editState(false);
-        }}
-        style={{ fontSize: 10 }}
-      />
-    </div>
-  );
-}
-
-function Figures(text, key, id) {
-  return (
-    <ContentEditable
-      className="entries-figures content-edit"
-      disabled={localState}
-      html={mthds.tidyFig(text)}
-      onChange={function (e) {
-        const obj = {
-          ...pmState[id],
-          [key]: mthds.toDigits(e.target.value)
-        };
-
-        setpmS({ ...pmState, [id]: { ...obj } });
-      }}
-    />
-  );
-}
 export default Entries;

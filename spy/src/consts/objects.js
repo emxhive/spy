@@ -13,52 +13,46 @@ function objects() {
   return {
     before() {
       const stateObj = {
+        generalProps: {
+          rate: 920,
+          ispm: false,
+        },
         binance: {
-          rate: 770,
+          rateDiff: 0,
           ispm: true,
           isUsd: true,
-          balance: 1000
+          balance: 1000,
         },
         wise: {
-          get rate() {
-            return this.parent.binance.rate - 4;
-          },
+          rateDiff: -4,
           ispm: true,
           isUsd: true,
-          balance: 1000
+          balance: 1000,
         },
         airtm: {
-          get rate() {
-            return this.parent.binance.rate - 20;
-          },
+          rateDiff: -20,
           ispm: true,
           isUsd: true,
-          balance: 1000
+          balance: 1000,
         },
 
         opay: {
-          get rate() {
-            return this.parent.airtm.rate;
-          },
+          rateDiff: 0,
           ispm: true,
           balance: 500000,
-          isUsd: false
+          isUsd: false,
         },
         palmpay1: {
-          get rate() {
-            return this.parent.airtm.rate;
-          },
+          rateDiff: 0,
           ispm: true,
           balance: 500000,
-          isUsd: false
+          isUsd: false,
         },
         palmpay2: {
-          get rate() {
-            return this.parent.airtm.rate;
-          },
+          rateDiff: 0,
           ispm: true,
           balance: 500000,
-          isUsd: false
+          isUsd: false,
         },
 
         init() {
@@ -66,8 +60,9 @@ function objects() {
             if (this.hasOwnProperty(key)) {
               const pm = this[key];
               if (pm?.ispm) {
-                pm.parent = this;
-                pm.frozen = 100;
+                pm.frozen = 0;
+                pm.spend = 0;
+                pm.percentFee = 0;
                 if (pm.isUsd) {
                   pm.symbol = "$";
                 } else {
@@ -77,52 +72,63 @@ function objects() {
             }
           }
 
-          // delete this.init;
+          delete this.init;
           return this;
-        }
+        },
       }.init();
 
       return stateObj;
     },
-    after(pmState) {
+    after(pmState, pmIcons) {
       const objs = {
-        midEntryPm: {},
+
 
         symbols: {
           usd: "$",
-          ngn: "₦"
+          ngn: "₦",
         },
 
-        pmIcons: {
-          palmpay1: palm,
-          palmpay2: palm,
-          opay: opayImg,
-          wise: wiseImg,
-          binance: bin,
-          airtm: air
-        },
+
         pmAmount: {
           init() {
             //containing all pms in ngn and usd
             const all = {};
             // for ngn
-            for (const key in this.ngn) {
-              if (this.ngn.hasOwnProperty(key) && this.ngn[key].ispm) {
-                const pm = this.ngn[key];
+            for (const key in pmState) {
+              if (pmState[key].ispm && !pmState[key].isUsd) {
+                const source = pmState[key];
+                this.ngn[key] = {};
+                Object.assign(this.ngn[key], source)
+                const pm = this.ngn[key]
                 all[key] = pm;
-
-                pm.frozen = pmState[key].frozen;
+                pm.id = key;
+                pm.icon = pmIcons[key];
+                pm.limit = 5000000;
+                pm.rate = pmState.generalProps.rate + source.rateDiff;
+                pm.payFee = pm.percentFee * pm.balance / 100;
+                pm.equivalent = pm.balance / pm.rate;
                 pm.frozenEq = pm.frozen / pm.rate;
+                pm.leftover = pm.limit - pm.spend;
+                pm.percentSpend = (pm.spend / pm.limit) * 100;
               }
             }
             // for usd
-            for (const key in this.usd) {
-              if (this.usd.hasOwnProperty(key) && this.usd[key].ispm) {
+            for (const key in pmState) {
+              if (pmState[key].ispm && pmState[key].isUsd) {
+                const source = pmState[key];
+                this.usd[key] = {};
+                Object.assign(this.usd[key], source)
                 const pm = this.usd[key];
-                all[key] = pm;
 
-                pm.frozen = pmState[key].frozen;
-                pm.frozenEq = pm.frozen * pm.rate;
+                all[key] = pm;
+                pm.id = key;
+                pm.icon = pmIcons[key];
+                pm.rate = pmState.generalProps.rate + source.rateDiff;
+                pm.limit = 10000;
+                pm.payFee = pm.percentFee * pm.balance / 100;
+                pm.equivalent = pm.balance * pm.rate;
+                pm.frozenEq = pm.frozen / pm.rate;
+                pm.percentSpend = (pm.spend / pm.limit) * 100;
               }
             }
             this.all = all;
@@ -142,6 +148,23 @@ function objects() {
               }
             }
             this.netUsdF = netF;
+
+            return net;
+          },
+
+          get netUsdFee() {
+            let net = 0;
+
+            for (const key in this.usd) {
+              if (this.usd.hasOwnProperty(key)) {
+                const pm = this.usd[key];
+                if (mthds.isObj(pm)) {
+                  net += pm.payFee;
+
+                }
+              }
+            }
+
 
             return net;
           },
@@ -196,121 +219,8 @@ function objects() {
 
             return net;
           },
-          ngn: {
-            palmpay1: {
-              get balance() {
-                return pmState.palmpay1.balance;
-              },
-              get rate() {
-                return pmState.palmpay1.rate;
-              },
-              get equivalent() {
-                return this.balance / this.rate;
-              },
-              ispm: true,
-              limit: 5000000,
-              spend: 1000000,
-              get leftover() {
-                return this.limit - this.spend;
-              },
-              get leftoverStr() {
-                return this.leftover.toLocaleString();
-              },
-
-              get percentSpend() {
-                return (this.spend / this.limit) * 100;
-              }
-            },
-
-            palmpay2: {
-              get balance() {
-                return pmState.palmpay2.balance;
-              },
-              get rate() {
-                return pmState.palmpay2.rate;
-              },
-              get equivalent() {
-                return this.balance / this.rate;
-              },
-              ispm: true,
-              limit: 5000000,
-              spend: 1000000,
-              get leftover() {
-                return this.parent.palmpay1.leftover - this.spend;
-              },
-              get leftoverStr() {
-                return this.leftover.toLocaleString();
-              },
-
-              get percentSpend() {
-                return (this.spend / this.limit) * 100;
-              }
-            },
-            opay: {
-              get balance() {
-                return pmState.opay.balance;
-              },
-              get rate() {
-                return pmState.opay.rate;
-              },
-              get equivalent() {
-                return this.balance / this.rate;
-              },
-              limit: 5000000,
-              ispm: true,
-              spend: 2000000,
-              get leftover() {
-                return this.limit - this.spend;
-              },
-              get leftoverStr() {
-                return this.leftover.toLocaleString();
-              },
-              get percentSpend() {
-                return (this.spend / this.limit) * 100;
-              }
-            }
-          },
-          usd: {
-            airtm: {
-              get balance() {
-                return pmState.airtm.balance;
-              },
-              get rate() {
-                return pmState.airtm.rate;
-              },
-              ispm: true,
-
-              get equivalent() {
-                return this.balance * this.rate;
-              }
-            },
-            binance: {
-              get balance() {
-                return pmState.binance.balance;
-              },
-              ispm: true,
-
-              get rate() {
-                return pmState.binance.rate;
-              },
-              get equivalent() {
-                return this.balance * this.rate;
-              }
-            },
-            wise: {
-              get balance() {
-                return pmState.wise.balance;
-              },
-              get rate() {
-                return pmState.wise.rate;
-              },
-              ispm: true,
-
-              get equivalent() {
-                return this.balance * this.rate;
-              }
-            }
-          }
+          ngn: {},
+          usd: {},
         }.init(),
 
         pmProgress: {
@@ -322,7 +232,7 @@ function objects() {
                 this.parent.parent.pmAmount.ngn.palmpay2.percentSpend
               );
             },
-            pmicon: palm
+            pmicon: palm,
           },
 
           opay: {
@@ -330,7 +240,7 @@ function objects() {
             get percent() {
               return this.parent.parent.pmAmount.ngn.opay.percentSpend;
             },
-            pmicon: opayImg
+            pmicon: opayImg,
           },
           init() {
             for (const key in this) {
@@ -340,9 +250,9 @@ function objects() {
               }
             }
 
-            delete this.init;
+
             return this;
-          }
+          },
         }.init(),
         init() {
           for (const key in this) {
@@ -351,26 +261,24 @@ function objects() {
               obj.parent = this;
             }
           }
-          const properties = ["balance", "frozen", "ispm", "isUsd", "spend"];
-          for (const key in pmState) {
-            if (pmState[key]?.ispm) {
-              const parent = pmState[key];
-              const pm = (this.midEntryPm[key] = {});
-              pm.id = key;
-              pm.icon = this.pmIcons[key];
-              properties.forEach((property) => {
-                pm[property] = parent[property];
-                pm.equivalent = this.pmAmount.all[key].equivalent;
-              });
-            }
-          }
 
-          delete this.init;
+
           return this;
-        }
+        },
       };
       return objs.init();
-    }
+    },
+
+    //This is the object thingy used in ENTRY component in the MAIN screen in the middle
+
+    pmIcons: {
+      palmpay1: palm,
+      palmpay2: palm,
+      opay: opayImg,
+      wise: wiseImg,
+      binance: bin,
+      airtm: air,
+    },
   };
 }
 

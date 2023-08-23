@@ -8,9 +8,7 @@
 }
 
 .left-nav {
-  width: 25%;
-
-  max-width: 210px;
+  width: 20%;
   /* background-color: rgb(141, 201, 201); */
   background-color: #0056a1;
   overflow: hidden;

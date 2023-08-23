@@ -1,12 +1,65 @@
+import { useState, useRef } from "react";
+import { Tooltip } from 'react-tooltip'
+import BalContainer from "../BalContainer";
 import Entries from "../Entries";
 import EntryHead from "../EntryHead";
-import ToolBar from "../ToolBar";
-import BalContainer from "../BalContainer";
+import MidToolBar from "../MidToolBar";
 import Progress from "../Progress";
+import ReModal from "../ReModal";
+import PMForm from "../PMForm";
+import ContentEditable from "react-contenteditable";
 
-export default function Main({ mthds, objs, pmState, setpmState }) {
-  return (
-    <div className="main-content">
+
+
+export default function Main({
+  mthds,
+  objs,
+  pmIcons,
+  setpmIcons,
+  pmState,
+  setpmState,
+}) {
+
+
+  const balance = useRef(false);
+  const frozen = useRef(false);
+  const spend = useRef(false);
+
+  const [addpmState, setaddpmState] = useState(false);
+
+  const [edit, setEdit] = useState({});
+  /**This will contain the pm names */
+  const [currentEntry, setCurrentEntry] = useState("");
+  /**This will contain the values from the editable 'frozen, balance, spend etc.. */
+
+
+
+  const [showsavebuttons, setshowbuttons] = useState(false);
+  const pmcount = Object.keys(pmState).length - 1;
+
+
+  function exportentryData() {
+    const data = {}
+    if (balance.current) {
+      data.balance = mthds.toDigits(balance.current);
+      balance.current = false;
+    }
+    if (frozen.current) {
+      data.frozen = mthds.toDigits(frozen.current);
+      frozen.current = false;
+    }
+    if (spend.current) {
+      data.spend = mthds.toDigits(spend.current);
+      spend.current = false;
+
+    }
+    return data;
+
+  }
+
+
+  const mainContent = (
+    <div className="main-view-skin">
       <h1> ...S⭐ P⭐ Y </h1>{" "}
       <div className="balance-container">
         <BalContainer
@@ -26,68 +79,94 @@ export default function Main({ mthds, objs, pmState, setpmState }) {
           )}
         />
       </div>
-      {/* progress Bar section*/}
+      {/*  progress Bar section*/}
       {/* ------------------------------------------------------- */}
-      <div className="mid-section">
+      <div className="progress-total-all-container">
         <div className="progress-group">
           <div className="progress-box">
             <Progress {...objs.pmProgress.palmpay} />
             <Progress {...objs.pmProgress.opay} />
           </div>
 
-          <div className="remainder-box">
-            <div>
-              {" "}
-              {objs.symbols.ngn + objs.pmAmount.ngn.palmpay1.leftoverStr}
-            </div>
-            <div> {objs.symbols.ngn + objs.pmAmount.ngn.opay.leftoverStr}</div>
-          </div>
+
         </div>
 
-        {/* --------------------------------mess of amounts- both currencies____________ */}
+        {/* ---------mess of amounts- both currencies____________ */}
         <div className="total-bothcurrencies">
-          <div className="mid-labels">active</div>
-          <div className="mid-labels"> frozen</div>
-          <div className="mid-labels">total</div>
-          <div className="mid-main-value">
-            {`(${objs.symbols.usd}) `}
-            {mthds.tidyFig(objs.pmAmount.netInUsd - objs.pmAmount.netInUsdF)}
-          </div>
-          <div className="mid-minor-value">
-            {mthds.tidyFig(objs.pmAmount.netInUsdF)}
-          </div>
-          <div className="mid-minor-value">
-            {mthds.tidyFig(objs.pmAmount.netInUsd)}
-          </div>
-          <div className="mid-main-value">
-            {`(${objs.symbols.ngn}) `}
 
-            {mthds.tidyFig(objs.pmAmount.netInNgn - objs.pmAmount.netInNgnF)}
-          </div>
-          <div className="mid-minor-value">
-            {mthds.tidyFig(objs.pmAmount.netInNgnF)}
-          </div>
-          <div className="mid-minor-value">
-            {mthds.tidyFig(objs.pmAmount.netInNgn)}
-          </div>
+          <div className="mid-labels">Fx:</div>
+          <div className="mid-values">{pmState.generalProps.rate}/$</div>
+          <div className="mid-labels">USD: </div>
+          <div className="mid-values">{mthds.tidyFig(objs.pmAmount.netUsd - objs.pmAmount.netUsdFee - objs.pmAmount.netUsdF)}</div>
+          <div className="mid-labels"> NGN: </div>
+          <div className="mid-values">{mthds.tidyFig(objs.pmAmount.netNgn - objs.pmAmount.netNgnF)}</div>
+
+
+
+
+
         </div>
 
         {/* -------------------------------------------------------------------end------------------------------------------------- */}
       </div>
-      {/* --------------------------------pm section ------------------------------------ */}
+      {/* --------------------------------pm section ------------------------------ */}
       <div className="pm-box">
         <div className="entry-title">Payment methods & Balances</div>
-        <ToolBar />
+        <MidToolBar
+          setState={setpmState}
+          setEdit={setEdit}
+          edit={edit}
+          setaddpmS={setaddpmState}
+          exportentryData={exportentryData}
+          setshowbuttons={setshowbuttons}
+          showsavebuttons={showsavebuttons}
+          setCurrentEntry={setCurrentEntry}
+          currentEntry={currentEntry}
+          state={pmState}
+
+        />
         <hr />
-        <EntryHead />
+        <EntryHead count={pmcount} />
         <hr />
         <Entries
+          setEdit={setEdit}
+          edit={edit}
+          balance={balance}
+          frozen={frozen}
+          spend={spend}
+
+
           state={pmState}
-          setpmState={setpmState}
-          objs={objs.midEntryPm}
+          activeEntry={currentEntry}
+
+          showsavebuttons={showsavebuttons}
+          setshowbuttons={setshowbuttons}
+          setCurrentEntry={setCurrentEntry}
+
+          icons={pmIcons}
+          objs={objs.pmAmount.all}
           styleId="mid-entrybox"
         />
       </div>
+    </div>
+  );
+
+  return (
+    <div className="main-view">
+      {" "}
+      <ReModal
+        setState={setaddpmState}
+        state={addpmState}
+        content={mainContent}
+        stageContent={
+          <PMForm
+            pmState={pmState}
+            pmIcons={pmIcons}
+            setpmIcons={setpmIcons}
+            setpmState={setpmState}
+          />
+        }
+      />{" "}
     </div>
   );
 }

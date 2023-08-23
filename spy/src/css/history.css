@@ -63,29 +63,28 @@
   display: flex;
   flex-direction: column;
   border-radius: 30px;
-  width: 70%;
+  width: 80%;
   height: 50%;
   position: absolute;
-  top: 25%;
-  left: 15%;
+ transform: translate(12%, 50%);
 }
-form > div {
+.floating-form-box form > div {
   background-color: aliceblue;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
-form button {
+.floating-form-box form button {
   margin-left: 70%;
 }
 
-form input,
+.floating-form-box form input,
 select {
   padding-left: 3%;
 }
 
-form > div > *:first-child {
+.floating-form-box form > div > *:first-child {
   margin-left: auto;
 }
 .history-row-entry {

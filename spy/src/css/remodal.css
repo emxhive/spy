@@ -1,0 +1,51 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap");
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  color: black;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+}
+.mx-remodal {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.mx-remodal .blur {
+  position: absolute;
+  height: 100vh;
+  min-width: 100%;
+  background-color: rgba(200, 200, 200, 0.5);
+  z-index: 5;
+}
+
+.mx-remodal .stage {
+  border-radius: 30px;
+  width: 70%;
+  height: 60%;
+  background-color: #0056a1;
+  position: absolute;
+  z-index: 6;
+  transform: translate(22.5%, 50%);
+  overflow: hidden;
+}
+
+.mx-remodal .stage-container {
+  height: 100%;
+  position: relative;
+  padding: 5%;
+}
+
+/* ..........................................MEDIA QUERIES */
+
+@media screen and (max-width: 900px) {
+  .mx-remodal .blur {
+    min-width: 100vw;
+  }
+}

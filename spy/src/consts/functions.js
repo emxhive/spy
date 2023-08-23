@@ -13,8 +13,13 @@ function functions(pmState, setpmState) {
     p(str) {
       console.log(str);
     },
+
     toDigits(s) {
-      return Number(s.replaceAll(/,/g, ""));
+      const result = s.match(/[\d.]+/g);
+      if (result) {
+     
+        return Number(result.join(""));
+      } else return 0;
     },
     tidyFig(s) {
       //short for tidy figures
@@ -34,8 +39,8 @@ function functions(pmState, setpmState) {
     pmFunc: {
       updateRate(newState) {
         setpmState(...pmState, ...newState);
-      }
-    }
+      },
+    },
   };
 
   return objs;
