@@ -7,6 +7,10 @@
   color: black;
 }
 
+:root {
+  --blue: #0056a1;
+}
+
 body {
   font-family: "Poppins", sans-serif;
 }
@@ -16,12 +20,16 @@ body {
 }
 img {
   aspect-ratio: 1;
+  border-radius: 50%;
 }
 
-.main-container {
+.main-parent {
   width: 100vw;
   display: flex;
   height: 100vh;
+  max-height: 100vh;
+  position: relative;
+  overflow: hidden;
 }
 
 /* navigation to the left  START*/
@@ -30,13 +38,18 @@ img {
 
 /* content to the right/main content  START*/
 
-.main-content {
-  overflow: hidden;
+.main-view,
+.main-view-skin {
+  min-width: 54%;
   display: flex;
+  overflow: hidden;
+  position: relative;
   flex-direction: column;
-
-  padding-top: 20px;
-  min-width: 59%;
+  height: 100%;
+}
+.main-view-skin {
+  padding-top: 5px;
+  min-width: 54%;
   border-right: 2px solid lightgray;
 }
 
@@ -51,19 +64,20 @@ h1 {
 }
 
 .balance {
-  text-align: center;
+  text-align: right;
   width: 22%;
   padding: 2%;
-  margin: 12px 0;
-  border-radius: 30px;
-  background-color: aliceblue;
+  margin: 5px 0;
+  /* border-radius: 30px;
+  background-color: aliceblue; */
 }
 .frozen-in-balance {
   color: grey;
   font-size: 0.7em;
   display: grid;
-  text-align: right;
+
   grid-template-columns: 1fr 3fr;
+  
   gap: 0 5px;
   max-width: 50%;
   margin-left: auto;
@@ -76,7 +90,7 @@ hr {
 
 /* mid section */
 
-.mid-section {
+.progress-total-all-container {
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -93,30 +107,28 @@ hr {
   max-height: 50px;
 }
 
-.remainder-box {
-  font-size: 0.9em;
-}
-
 .total-bothcurrencies {
-  margin-right: 10px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 2fr;
+  font-size: 0.7em;
+  gap: 0 2px;
 }
 
-.total-bothcurrencies > div {
-  text-align: center;
-  font-size: 0.8em;
+.mid-labels,
+.mid-values {
+  color: grey;
 }
+
 /* -------------------------------------pm section---------------------- */
 .pm-box {
   overflow: hidden;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  position: relative;
 
-  margin-top: 15px;
-  padding-top: 30px;
-  padding-bottom: 15px;
+  padding-top: 10px;
+  padding-bottom: 20px;
 
   background-color: aliceblue;
   border-top-left-radius: 6%;
@@ -153,12 +165,29 @@ hr {
 
 .entry-head {
   display: grid;
-  grid-template-columns: 2fr repeat(3, 1fr);
+  grid-template-columns: 38% repeat(3, 1fr);
   gap: 3px;
 }
 
 .entry-head > div {
   padding-left: 15px;
+}
+
+.div-with-name-and-count {
+  display: inline-flex;
+  gap: 6%;
+}
+
+.div-with-name-and-count .pmcount {
+  font-size: 0.67em;
+  transform: translateY(22%);
+  aspect-ratio: 1;
+  color: aliceblue;
+  width: fit-content;
+  height: fit-content;
+  padding: 2% 7%;
+  background-color: var(--blue);
+  border-radius: 50%;
 }
 .entries-main-body {
   flex-grow: 1;
@@ -168,9 +197,10 @@ hr {
 .entries-main-body::-webkit-scrollbar {
   display: none;
 }
+
 #mid-entrybox .entry-row {
   display: grid;
-  grid-template-columns: 2fr repeat(3, 1fr);
+  grid-template-columns: 38% repeat(3, 1fr);
   gap: 3px;
 }
 .entry-row:first-child {
@@ -184,6 +214,15 @@ hr {
   padding-top: 10px;
   margin-bottom: 2px;
 }
+.entry-row .edit-button {
+  margin-right: 10px;
+  transition: font-size 0.1s, stroke 0.5s;
+}
+
+.entry-row .edit-button:hover {
+  stroke: darkgrey;
+  font-size: 18px;
+}
 .entry-row > div:nth-child(1) {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
@@ -194,9 +233,61 @@ hr {
   border-bottom-right-radius: 0;
 }
 .entries-name-Y-icon {
-  display: inline-flex;
+  display: flex;
   gap: 10px;
 }
 .entries-name-Y-icon > img {
-  width: 28px;
+  width: 25px;
+}
+.entries-name-Y-icon span {
+  white-space: nowrap;
+  flex-shrink: 2;
+}
+
+.div-with-contenteditable {
+  display: flex;
+  font-size: 0.95em;
+}
+
+.div-with-contenteditable span {
+  font-size: 0.85em;
+  padding-top: 2.5%;
+}
+
+/* ..........................................MEDIA QUERIES */
+
+@media screen and (max-width: 900px) {
+  .main-view-skin {
+    border: none;
+  }
+  .main-view,
+  .main-view-skin {
+    min-width: none;
+    width: 96vw;
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+    margin: 0 auto;
+  }
+  .entry-head {
+    font-size: 0.9em;
+    grid-template-columns: 45% repeat(3, 1fr);
+  }
+  #mid-entrybox .entry-row {
+    gap: 0;
+    grid-template-columns: 45% repeat(3, 1fr);
+  }
+  .entry-row > div {
+    border-radius: 0;
+    padding-left: 20px;
+    padding-top: 10px;
+    margin-bottom: 2px;
+  }
+  .entries-name-Y-icon span {
+    font-size: 0.86em;
+  }
+
+  .div-with-contenteditable {
+    font-size: 0.82em;
+  }
 }
