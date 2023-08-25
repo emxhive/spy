@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Tooltip } from 'react-tooltip'
+import { Tooltip } from "react-tooltip";
 import BalContainer from "../BalContainer";
 import Entries from "../Entries";
 import EntryHead from "../EntryHead";
@@ -7,9 +7,7 @@ import MidToolBar from "../MidToolBar";
 import Progress from "../Progress";
 import ReModal from "../ReModal";
 import PMForm from "../PMForm";
-import ContentEditable from "react-contenteditable";
-
-
+import { spyAuth } from "../../utils/db";
 
 export default function Main({
   mthds,
@@ -18,9 +16,11 @@ export default function Main({
   setpmIcons,
   pmState,
   setpmState,
+  isPc,
+  loggedIn,
+  setlogStatus,
+  signOut,
 }) {
-
-
   const balance = useRef(false);
   const frozen = useRef(false);
   const spend = useRef(false);
@@ -32,14 +32,11 @@ export default function Main({
   const [currentEntry, setCurrentEntry] = useState("");
   /**This will contain the values from the editable 'frozen, balance, spend etc.. */
 
-
-
   const [showsavebuttons, setshowbuttons] = useState(false);
   const pmcount = Object.keys(pmState).length - 1;
 
-
   function exportentryData() {
-    const data = {}
+    const data = {};
     if (balance.current) {
       data.balance = mthds.toDigits(balance.current);
       balance.current = false;
@@ -51,12 +48,9 @@ export default function Main({
     if (spend.current) {
       data.spend = mthds.toDigits(spend.current);
       spend.current = false;
-
     }
     return data;
-
   }
-
 
   const mainContent = (
     <div className="main-view-skin">
@@ -87,24 +81,24 @@ export default function Main({
             <Progress {...objs.pmProgress.palmpay} />
             <Progress {...objs.pmProgress.opay} />
           </div>
-
-
         </div>
 
         {/* ---------mess of amounts- both currencies____________ */}
         <div className="total-bothcurrencies">
-
           <div className="mid-labels">Fx:</div>
           <div className="mid-values">{pmState.generalProps.rate}/$</div>
           <div className="mid-labels">USD: </div>
-          <div className="mid-values">{mthds.tidyFig(objs.pmAmount.netUsd - objs.pmAmount.netUsdFee - objs.pmAmount.netUsdF)}</div>
+          <div className="mid-values">
+            {mthds.tidyFig(
+              objs.pmAmount.netUsd -
+                objs.pmAmount.netUsdFee -
+                objs.pmAmount.netUsdF
+            )}
+          </div>
           <div className="mid-labels"> NGN: </div>
-          <div className="mid-values">{mthds.tidyFig(objs.pmAmount.netNgn - objs.pmAmount.netNgnF)}</div>
-
-
-
-
-
+          <div className="mid-values">
+            {mthds.tidyFig(objs.pmAmount.netNgn - objs.pmAmount.netNgnF)}
+          </div>
         </div>
 
         {/* -------------------------------------------------------------------end------------------------------------------------- */}
@@ -123,7 +117,6 @@ export default function Main({
           setCurrentEntry={setCurrentEntry}
           currentEntry={currentEntry}
           state={pmState}
-
         />
         <hr />
         <EntryHead count={pmcount} />
@@ -134,20 +127,33 @@ export default function Main({
           balance={balance}
           frozen={frozen}
           spend={spend}
-
-
           state={pmState}
           activeEntry={currentEntry}
-
           showsavebuttons={showsavebuttons}
           setshowbuttons={setshowbuttons}
           setCurrentEntry={setCurrentEntry}
-
           icons={pmIcons}
           objs={objs.pmAmount.all}
           styleId="mid-entrybox"
         />
       </div>
+      {/* ................foooter...................BOTTOM PART ONLY FOR MOBILE */}
+      {!isPc && (
+        <div className="footer-formobile">
+          <div className="moreoptions-box">
+            <div className="fill" />
+            <div onClick={signOut} className="moreoptions-text">
+            <div className= "more-text">Sign Out</div>
+            </div>
+            <img
+              src={loggedIn.photoURL}
+              alt="icon"
+              className="moreoptions-img"
+            />
+          </div>
+        </div>
+      )}
+      {/* .............................................ends */}
     </div>
   );
 

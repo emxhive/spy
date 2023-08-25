@@ -9,6 +9,7 @@ export default function NavBar({ applogo }) {
       </a>{" "}
       <a href="."> Dashbord </a> <a href="."> Income History </a>{" "}
       <a href="."> Expenses </a> <a href="."> Settings </a>{" "}
+      
     </div>
   );
 }

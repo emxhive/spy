@@ -177,7 +177,7 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
               >
                 <option value="">...Payment Method</option>
                 {Object.keys(pmObjs.pmAmount.all).map((keys) => {
-                  if (pmObjs.pmAmount.all [keys]?.ispm)
+                  if (pmObjs.pmAmount.all[keys]?.ispm)
                     return (
                       <option key={keys} value={keys}>
                         {keys}

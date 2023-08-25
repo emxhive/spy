@@ -1,0 +1,42 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap");
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  color: black;
+  text-align: center;
+  font-family: Poppins, Verdana, Geneva, Tahoma, sans-serif;
+}
+
+img {
+  width: 40px;
+  aspect-ratio: 1;
+}
+
+:root {
+  --blue: #0056a1;
+}
+
+.container {
+  max-height: 100vh;
+  position: relative;
+}
+
+.box {
+  margin: 0 auto;
+  padding-top: 10%;
+  transform: translateY(25%);
+  width: 400px;
+  height: 70vh;
+  border: 0.125em solid var(--blue);
+  border-radius: 7%;
+}
+.box> * {
+  margin: 30px;
+}
+
+.emoji{
+  font-size: 5em;
+  margin-left: 35px;
+}
