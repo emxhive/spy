@@ -43,7 +43,7 @@ function App() {
         }
       }
     }
-    console.log(loggedIn);
+  
 
     if (loggedIn?.email === admin) fetchData();
   }, [loggedIn]);

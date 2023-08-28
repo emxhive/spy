@@ -13,7 +13,7 @@ function Entries({
   balance,
   frozen,
   spend,
-
+  isPc,
   showsavebuttons,
   setshowbuttons,
   setCurrentEntry,
@@ -66,6 +66,7 @@ function Entries({
             text.search(regex)
           )})`
         : text;
+
     return (
       <div key={newtext} className="entries-name-Y-icon">
         <img src={image} alt="icon" />
@@ -141,12 +142,88 @@ function Entries({
     );
   }
 
-  return (
+  function editButtonOthers(text) {
+    return (
+      <FiEdit
+        key={"editButton"}
+        className="edit-button"
+        ///--------ON CLICK --------??/////
+        onClick={function () {
+          if (!showsavebuttons) {
+            if (edit[text]) {
+              setEdit({ ...edit, [text]: false });
+            }
+
+            setshowbuttons(true);
+            setCurrentEntry(text);
+          }
+        }}
+        style={!edit[text] && { stroke: "#0056a1", fontSize: "18px" }}
+      />
+    );
+  }
+
+  function mobileRow(pm) {
+    const regexW = /.+\d+$/g;
+    const regexE = /\d+$/g;
+    let number = null;
+    const name =
+      pm.id.search(regexW) > -1
+        ? (() => {
+            const x = pm.id.search(regexE);
+            number = pm.id.slice(x);
+            return pm.id.slice(0, x);
+          })()
+        : pm.id;
+
+    return (
+      <div className="mob-entryrow-box-x-flex">
+        <img src={pm.icon} alt="ico" />
+        <div className="mob-figures-box-y-flex">
+          <div className="mob-entry-available-balance">
+            <div className="mob-entry-label">
+              <div className="mob-entry-floating-number">{number}</div>
+              {name}
+            </div>
+            {Figures(
+              pm.balance - pm.frozen - pm.payFee,
+              "balance",
+              pm.id,
+              pm.balance - pm.frozen - pm.payFee > 0 ? pm.symbol : ""
+            )}
+          </div>
+          {(!edit[pm.id] || pm.frozen > 0) && (
+            <div className="mob-entry-blur mob-entry-frozen">
+              <div className="mob-entry-label">Frozen</div>
+              {Figures(pm.frozen, "frozen", pm.id, "")}
+            </div>
+          )}
+          {pm.percentFee > 0 && (
+            <div className="mob-entry-blur mob-entry-fee">
+              <div className="mob-entry-label">Potential Fee</div>
+              <div className="payfee-value">{mthds.tidyFig(pm.payFee)}</div>
+            </div>
+          )}
+          {(pm.frozen > 1 || pm.payFee > 1) && (
+            <div className="mob-entry-blur mob-entry-total">
+              <div className="mob-entry-label">Total</div>
+              <div className="total-div">{mthds.tidyFig(pm.balance)}</div>
+            </div>
+          )}
+        </div>
+        {editButtonOthers(pm.id)}
+      </div>
+    );
+  }
+
+  ////entry bodies to be returned.. pc & mobile
+
+  //PC
+  const entriesPc = (
     <div className="entries-main-body" id={styleId}>
       {(function () {
         const divs = [];
         objsArr.forEach((pm) => {
-      
           if (pm.ispm) {
             const rowEntry = [];
             for (let i = 0; i < 4; i++) {
@@ -156,7 +233,7 @@ function Entries({
                   break;
                 case 1:
                   rowEntry[i] = Figures(
-                    (pm.balance-pm.frozen- pm.payFee),
+                    pm.balance - pm.frozen - pm.payFee,
                     "balance",
                     pm.id,
                     pm.symbol
@@ -186,6 +263,28 @@ function Entries({
       })()}
     </div>
   );
+
+  //MOBILE
+  const entriesMobile = (
+    <div className="entries-main-body" id={styleId}>
+      {(function () {
+        const divs = [];
+        objsArr.forEach((pm) => {
+          if (pm.ispm) {
+            divs.push(
+              <div key={pm.id + new Date().getTime()} className="entry-row">
+                {mobileRow(pm)}
+              </div>
+            );
+          }
+        });
+
+        return divs;
+      })()}
+    </div>
+  );
+
+  return isPc ? entriesPc : entriesMobile;
 }
 
 export default Entries;

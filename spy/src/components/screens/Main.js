@@ -105,7 +105,11 @@ export default function Main({
       </div>
       {/* --------------------------------pm section ------------------------------ */}
       <div className="pm-box">
-        <div className="entry-title">Payment methods & Balances</div>
+        {isPc ? <div className="entry-title">Payment methods & Balances</div>: 
+        <div className="div-with-name-and-count">
+          {"Available Balances"}
+          <div className="pmcount">{pmcount}</div>
+          </div>}
         <MidToolBar
           setState={setpmState}
           setEdit={setEdit}
@@ -119,9 +123,13 @@ export default function Main({
           state={pmState}
         />
         <hr />
-        <EntryHead count={pmcount} />
-        <hr />
+        {(()=>{
+          const arr= [<EntryHead key='entryhead' count={pmcount} />,
+          <hr key='hr' />];
+          return isPc && arr
+        })()}
         <Entries
+          isPc={isPc}
           setEdit={setEdit}
           edit={edit}
           balance={balance}
@@ -143,7 +151,7 @@ export default function Main({
           <div className="moreoptions-box">
             <div className="fill" />
             <div onClick={signOut} className="moreoptions-text">
-            <div className= "more-text">Sign Out</div>
+              <div className="more-text">Sign Out</div>
             </div>
             <img
               src={loggedIn.photoURL}

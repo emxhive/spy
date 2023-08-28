@@ -6,6 +6,9 @@
   text-decoration: none;
   color: black;
 }
+html{
+  overscroll-behavior-y: none;
+}
 
 :root {
   --blue: #0056a1;
@@ -16,11 +19,13 @@ body {
 }
 .content-edit:focus {
   outline: none;
-  color: grey;
+  color: var(--blue);
 }
-img {
+ img {
   aspect-ratio: 1;
   border-radius: 50%;
+
+
 }
 
 .main-parent {
@@ -46,6 +51,10 @@ img {
   position: relative;
   flex-direction: column;
   height: 100%;
+}
+
+.main-view img{
+ max-width: 70px;
 }
 .main-view-skin {
   padding-top: 5px;
@@ -179,17 +188,18 @@ hr {
 
 .div-with-name-and-count {
   display: inline-flex;
-  gap: 6%;
+  gap: 5px;
 }
 
 .div-with-name-and-count .pmcount {
-  font-size: 0.67em;
-  transform: translateY(22%);
+  font-size: 0.62em;
+  display: inline-grid;
+  place-content: center;
+  height: 15px;
   aspect-ratio: 1;
   color: aliceblue;
-  width: fit-content;
-  height: fit-content;
-  padding: 2% 7%;
+  transform: translateY(30%);
+
   background-color: var(--blue);
   border-radius: 50%;
 }
@@ -202,22 +212,10 @@ hr {
   display: none;
 }
 
-#mid-entrybox .entry-row {
-  display: grid;
-  grid-template-columns: 38% repeat(3, 1fr);
-  gap: 3px;
-}
 .entry-row:first-child {
   padding-top: 8px;
 }
-.entry-row > div {
-  background-color: white;
-  border: 1px solid aliceblue;
-  border-radius: 30px;
-  padding-left: 20px;
-  padding-top: 10px;
-  margin-bottom: 2px;
-}
+
 .entry-row .edit-button {
   margin-right: 10px;
   transition: font-size 0.1s, stroke 0.5s;
@@ -259,8 +257,7 @@ hr {
 }
 
 .footer-formobile {
-  padding: 10px 20px 0 0;
- 
+  padding: 10px 20px 10px 0;
 }
 
 .moreoptions-box {
@@ -270,6 +267,92 @@ hr {
 
 .moreoptions-img {
   width: 30px;
+}
+
+/* ..............PC...............MEDIA QUERIES */
+@media screen and (min-width: 901px) {
+  #mid-entrybox .entry-row {
+    display: grid;
+    grid-template-columns: 38% repeat(3, 1fr);
+    gap: 3px;
+  }
+
+  .entry-row > div {
+    background-color: white;
+    border: 1px solid aliceblue;
+    border-radius: 30px;
+    padding-left: 20px;
+    padding-top: 10px;
+    margin-bottom: 2px;
+  }
+}
+
+/*..................................media query end for pc */
+
+/* ...............MOB-PHONES...............MEDIA QUERIES */
+@media screen and (max-width: 600px) {
+  .mob-entryrow-box-x-flex {
+    display: flex;
+    gap: 15px;
+  
+    width: 100%;
+    background-color: white;
+  }
+
+
+  #mid-entrybox .entry-row {
+    display: flex;
+  }
+  .mob-figures-box-y-flex {
+    background-color: white;
+    flex-grow: 1;
+  }
+
+
+  .mob-figures-box-y-flex > div {
+    display: flex;
+    justify-content: space-between;
+ 
+  }
+  .mob-entry-blur{
+    padding-left: 10px;
+  }
+  .mob-entry-blur *{
+    color: gray;
+    font-size: 0.7em;
+   
+  }
+
+  .content-edit{
+    font-size: 1em;
+  }
+
+  .content-edit:focus {
+    font-size: 1.1em;
+  }
+  .mob-entry-blur .content-edit{
+    font-size: 1em;
+  }
+  .mob-entry-blur .content-edit:focus {
+   font-size: 1.2em;
+  }
+
+
+  .mob-entryrow-box-x-flex > img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .mob-entry-available-balance .mob-entry-label{
+    display: flex;
+  }
+  .mob-entry-floating-number {
+    font-size: 0.6em;
+  }
+
+  .div-with-name-and-count {
+    margin-left: 50px;
+  }
 }
 
 /* ..........................................MEDIA QUERIES */
@@ -297,15 +380,8 @@ hr {
   }
   .entry-row > div {
     border-radius: 0;
-    padding-left: 20px;
-    padding-top: 10px;
-    margin-bottom: 2px;
-  }
-  .entries-name-Y-icon span {
-    font-size: 0.86em;
+   padding: 10px 10px 3px 15px;
+    margin-bottom: 1.5px;
   }
 
-  .div-with-contenteditable {
-    font-size: 0.82em;
-  }
 }

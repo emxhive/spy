@@ -9,7 +9,7 @@
   font-family: Poppins, Verdana, Geneva, Tahoma, sans-serif;
 }
 
-img {
+.auth-container .box img {
   width: 40px;
   aspect-ratio: 1;
 }
@@ -18,12 +18,14 @@ img {
   --blue: #0056a1;
 }
 
-.container {
+.auth-container {
+
+  height: 100vh ;
   max-height: 100vh;
-  position: relative;
+ 
 }
 
-.box {
+.auth-container .box {
   margin: 0 auto;
   padding-top: 10%;
   transform: translateY(25%);
@@ -32,11 +34,11 @@ img {
   border: 0.125em solid var(--blue);
   border-radius: 7%;
 }
-.box> * {
+.auth-container .box > * {
   margin: 30px;
 }
 
-.emoji{
+.auth-container .emoji {
   font-size: 5em;
   margin-left: 35px;
 }

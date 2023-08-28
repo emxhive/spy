@@ -2,9 +2,14 @@ import { Tooltip } from "react-tooltip";
 
 export default function EntryHead({ count }) {
   const values = [
-    <div className="div-with-name-and-count">
+    <div
+      key={"div-with-name-and-count" + new Date().getTime()}
+      className="div-with-name-and-count"
+    >
       {"Name"}
-      <div className="pmcount">{count}</div>
+      <div key="count" className="pmcount">
+        {count}
+      </div>
     </div>,
     "Balance",
     "Frozen",
@@ -13,14 +18,14 @@ export default function EntryHead({ count }) {
   return (
     <div className="entry-head">
       <Tooltip
-      
-        variant="info" content="Usable balance; excluding potential fees and frozen assets"
-        id='balance-info'
+        variant="info"
+        content="Usable balance; excluding potential fees and frozen assets"
+        id="balance-info"
       />
       {values.map((value) => (
         <div
-          data-tooltip-id={value === 'Balance' && 'balance-info'}
-          key={value}
+          data-tooltip-id={value === "Balance" && "balance-info"}
+          key={value + new Date().getTime()}
         >
           {value}
         </div>
