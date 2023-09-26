@@ -54,8 +54,8 @@ export default function Main({
 
   const mainMobContent = (
     <div className="main-view-skin">
-      {/*  progress Bar section*/}
-      {/* ------------------------------------------------------- */}
+      {/* progress Bar section
+       -------------------------------------------------------
       <div className="progress-total-all-container">
         <div className="progress-group">
           <div className="progress-box">
@@ -64,7 +64,7 @@ export default function Main({
           </div>
         </div>
 
-        {/* ---------mess of amounts- both currencies____________ */}
+        ---------mess of amounts- both currencies____________
         <div className="total-bothcurrencies">
           <div className="mid-labels">Fx:</div>
           <div className="mid-values">{pmState.generalProps.rate}/$</div>
@@ -80,10 +80,10 @@ export default function Main({
           <div className="mid-values">
             {mthds.tidyFig(objs.pmAmount.netNgn - objs.pmAmount.netNgnF)}
           </div>
-        </div>
+        </div> 
+      </div> */}
+      {/* ---------------------------------------END------------------------------------------------- */}
 
-        {/* -------------------------------------------------------------------end------------------------------------------------- */}
-      </div>
       {/* --------------------------------pm section ------------------------------ */}
       <div className="pm-box">
         <div className="div-with-name-and-count">
@@ -121,32 +121,6 @@ export default function Main({
           styleId="mid-entrybox"
         />
       </div>
-      {/* ................foooter...................BOTTOM PART ONLY FOR MOBILE */}
-
-      <div className="footer-formobile">
-      
-        <div className="moreoptions-box">
-          <div className="bottom-balance-view">
-            <div className="">
-              {objs.symbols.usd}
-              {mthds.tidyFig(objs.pmAmount.netInUsd-objs.pmAmount.netInUsdF)}
-            </div>
-            <div className="">
-              {objs.symbols.ngn}
-              {mthds.tidyFig(objs.pmAmount.netInNgn-objs.pmAmount.netInNgnF)}
-            </div>
-          </div>
-          <div className="bottom-view-rate">{pmState.generalProps.rate}</div>
-          {/* {console.log(objs)} */}
-          <div className="fill" />
-          <div onClick={signOut} className="moreoptions-text">
-            <div className="more-text">Options</div>
-          </div>
-          <img src={loggedIn.photoURL} alt="icon" className="moreoptions-img" />
-        </div>
-      </div>
-
-      {/* .............................................ends */}
     </div>
   );
 
