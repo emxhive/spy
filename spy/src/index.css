@@ -6,12 +6,13 @@
   text-decoration: none;
   color: black;
 }
-html{
+html {
   overscroll-behavior-y: none;
 }
 
 :root {
   --blue: #0056a1;
+  --back: #f6fbff;
 }
 
 body {
@@ -22,11 +23,9 @@ body {
   outline: none;
   color: var(--blue);
 }
- img {
+img {
   aspect-ratio: 1;
   border-radius: 50%;
-
-
 }
 
 .main-parent {
@@ -54,8 +53,8 @@ body {
   height: 100%;
 }
 
-.main-view img{
- max-width: 70px;
+.main-view img {
+  max-width: 70px;
 }
 .main-view-skin {
   padding-top: 5px;
@@ -96,6 +95,19 @@ h1 {
   max-width: 50%;
   margin-left: auto;
 }
+
+/* --------------------MOBILE TOP_------------------------ */
+
+.mob-top-balance-box {
+  display: flex;
+}
+
+.mob-top-navbar {
+  display: flex;
+  justify-content: space-around;
+  padding: 0 50px 0 50px;
+}
+/* -------------------MOBILE TOP ENDS--------------------- */
 
 hr {
   border: 1px solid lightgray;
@@ -142,9 +154,10 @@ hr {
   position: relative;
 
   padding-top: 10px;
-  padding-bottom: 20px;
+  /* padding-bottom: 20px; */
 
-  background-color: aliceblue;
+  /* background-color: aliceblue; */
+  background-color: #f6fbff;
   border-top-left-radius: 6%;
   border-top-right-radius: 6%;
 }
@@ -159,7 +172,7 @@ hr {
 
 .pm-box > .toolbar {
   display: flex;
-  padding: 0 10px 0 10px;
+  padding: 0 10px 10px 10px;
 }
 .toolbar > div {
   display: flex;
@@ -213,9 +226,9 @@ hr {
   display: none;
 }
 
-.entry-row:first-child {
-  padding-top: 8px;
-}
+/* .entry-row:first-child {
+  padding-top: 0px;
+} */
 
 .entry-row .edit-button {
   margin-right: 10px;
@@ -258,16 +271,44 @@ hr {
 }
 
 .footer-formobile {
-  padding: 10px 20px 10px 0;
+  background-color: white;
+  padding: 5px 20px 2px 20px;
+}
+.bottom-balance-view {
+  padding-right: 5px;
+  margin-top: 5px;
+  border-right: 1.4px dashed lightgray;
+}
+.bottom-balance-view > div {
+  text-align: right;
+  font-size: 0.56em;
+  color: gray;
+  margin-left: 10px;
+}
+.bottom-view-rate {
+  margin-left: 5px;
+  font-style: italic;
+  font-size: 0.83em;
+  color: gray;
+  margin-top: 8px;
+}
+
+.bottom-view-rate::before {
+  content: "fx:";
+  margin-right: 5px;
+  font-size: 0.8em;
 }
 
 .moreoptions-box {
   display: flex;
-  gap: 15px;
+}
+.moreoptions-box .more-text {
+  margin-top: 4.5px;
 }
 
 .moreoptions-img {
-  width: 30px;
+  height: 30px;
+  margin-left: 13px;
 }
 
 /* ..............PC...............MEDIA QUERIES */
@@ -295,11 +336,9 @@ hr {
   .mob-entryrow-box-x-flex {
     display: flex;
     gap: 15px;
-  
     width: 100%;
     background-color: white;
   }
-
 
   #mid-entrybox .entry-row {
     display: flex;
@@ -309,42 +348,38 @@ hr {
     flex-grow: 1;
   }
 
-
   .mob-figures-box-y-flex > div {
     display: flex;
     justify-content: space-between;
- 
   }
-  .mob-entry-blur{
-    padding-left: 10px;
+  .mob-entry-blur {
+    padding-left: 0;
   }
-  .mob-entry-blur *{
+  .mob-entry-blur * {
     color: gray;
     font-size: 0.7em;
-   
   }
 
-  .content-edit{
+  .content-edit {
     font-size: 1em;
   }
 
   .content-edit:focus {
     font-size: 1.1em;
   }
-  .mob-entry-blur .content-edit{
+  .mob-entry-blur .content-edit {
     font-size: 1em;
   }
   .mob-entry-blur .content-edit:focus {
-   font-size: 1.2em;
+    font-size: 1.2em;
   }
-
 
   .mob-entryrow-box-x-flex > img {
     width: 30px;
     height: 30px;
   }
 
-  .mob-entry-available-balance .mob-entry-label{
+  .mob-entry-available-balance .mob-entry-label {
     display: flex;
   }
   .mob-entry-floating-number {
@@ -359,13 +394,22 @@ hr {
 /* ..........................................MEDIA QUERIES */
 
 @media screen and (max-width: 900px) {
+  .main-parent {
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
   .main-view-skin {
     border: none;
   }
   .main-view,
   .main-view-skin {
     min-width: none;
-    width: 96vw;
+    width: 100vw;
     overflow: hidden;
     position: relative;
     height: 100%;
@@ -381,8 +425,7 @@ hr {
   }
   .entry-row > div {
     border-radius: 0;
-   padding: 10px 10px 3px 15px;
+    padding: 10px 10px 3px 15px;
     margin-bottom: 1.5px;
   }
-
 }

@@ -25,15 +25,15 @@ function App() {
   const [pmStates, setpmStates] = useState(objss().before());
   const [pmIcons, setpmIcons] = useState(objss().pmIcons);
   const objjs = objss().after(pmStates, pmIcons);
-
+  const lastObjs = objss().theEnd(objjs);
   const mthdds = mthdss(pmStates, setpmStates);
   const isPc = useMediaQuery({ query: "(min-width: 900px)" });
   const [loggedIn, setLogStatus] = useState(
     JSON.parse(localStorage.getItem("logged"))
   );
-  // const [usdDIsplay, setusdDisplay] = useState(true);
-  // const [balanceState, setBalanceState] = useState(lastObjs.balanceState);
-  // const [balanceToggle, setBalanceToggle] = useState(lastObjs.toogleState);
+  const [usdDIsplay, setusdDisplay] = useState(true);
+  const [balanceState, setBalanceState] = useState(lastObjs.balanceState);
+  const [balanceToggle, setBalanceToggle] = useState(lastObjs.toogleState);
 
   //To fetch data as soon as data loads.. data from object.js is loaded first but shortly replaced by data from firebase if any.
   useEffect(() => {
