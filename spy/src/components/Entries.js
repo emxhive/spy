@@ -18,7 +18,7 @@ function Entries({
   setshowbuttons,
   setCurrentEntry,
   objs,
-  styleId,
+  styleId
 }) {
   //setting the edit state
 
@@ -94,10 +94,12 @@ function Entries({
 
   /////////////////////////////////////FIGURES/////////////
   function Figures(text, key, id, symbol) {
+    let spanSym = "";
     let isChanging = false;
     let textz;
     switch (key) {
       case "balance":
+        spanSym = <span key={"currency"}>{symbol}</span>;
         textz = balance;
         break;
       case "frozen":
@@ -108,7 +110,7 @@ function Entries({
         break;
 
       default:
-        throw new Error("It is not balance not frozen nor spend .. wtf is it");
+      // throw new Error("It is not balance not frozen nor spend .. wtf is it");
     }
     text = mthds.tidyFig(text);
     const handleChange = (e) => {
@@ -120,7 +122,7 @@ function Entries({
 
     return (
       <div key={`figuresdiv-${id}-${key}`} className="div-with-contenteditable">
-        <span key={"currency"}>{symbol}</span>
+        {spanSym}
         <ContentEditable
           key={key}
           className="entries-figures content-edit"
