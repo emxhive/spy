@@ -19,7 +19,7 @@ export default function Main({
   isPc,
   loggedIn,
   setlogStatus,
-  signOut,
+  signOut
 }) {
   const balance = useRef(false);
   const frozen = useRef(false);
@@ -51,6 +51,104 @@ export default function Main({
     }
     return data;
   }
+
+  const mainMobContent = (
+    <div className="main-view-skin">
+      {/*  progress Bar section*/}
+      {/* ------------------------------------------------------- */}
+      <div className="progress-total-all-container">
+        <div className="progress-group">
+          <div className="progress-box">
+            <Progress {...objs.pmProgress.palmpay} />
+            <Progress {...objs.pmProgress.opay} />
+          </div>
+        </div>
+
+        {/* ---------mess of amounts- both currencies____________ */}
+        <div className="total-bothcurrencies">
+          <div className="mid-labels">Fx:</div>
+          <div className="mid-values">{pmState.generalProps.rate}/$</div>
+          <div className="mid-labels">USD: </div>
+          <div className="mid-values">
+            {mthds.tidyFig(
+              objs.pmAmount.netUsd -
+                objs.pmAmount.netUsdFee -
+                objs.pmAmount.netUsdF
+            )}
+          </div>
+          <div className="mid-labels"> NGN: </div>
+          <div className="mid-values">
+            {mthds.tidyFig(objs.pmAmount.netNgn - objs.pmAmount.netNgnF)}
+          </div>
+        </div>
+
+        {/* -------------------------------------------------------------------end------------------------------------------------- */}
+      </div>
+      {/* --------------------------------pm section ------------------------------ */}
+      <div className="pm-box">
+        <div className="div-with-name-and-count">
+          {"Available Balances"}
+          <div className="pmcount">{pmcount}</div>
+        </div>
+
+        <MidToolBar
+          setState={setpmState}
+          setEdit={setEdit}
+          edit={edit}
+          setaddpmS={setaddpmState}
+          exportentryData={exportentryData}
+          setshowbuttons={setshowbuttons}
+          showsavebuttons={showsavebuttons}
+          setCurrentEntry={setCurrentEntry}
+          currentEntry={currentEntry}
+          state={pmState}
+        />
+
+        <Entries
+          isPc={isPc}
+          setEdit={setEdit}
+          edit={edit}
+          balance={balance}
+          frozen={frozen}
+          spend={spend}
+          state={pmState}
+          activeEntry={currentEntry}
+          showsavebuttons={showsavebuttons}
+          setshowbuttons={setshowbuttons}
+          setCurrentEntry={setCurrentEntry}
+          icons={pmIcons}
+          objs={objs.pmAmount.all}
+          styleId="mid-entrybox"
+        />
+      </div>
+      {/* ................foooter...................BOTTOM PART ONLY FOR MOBILE */}
+
+      <div className="footer-formobile">
+      
+        <div className="moreoptions-box">
+          <div className="bottom-balance-view">
+            <div className="">
+              {objs.symbols.usd}
+              {mthds.tidyFig(objs.pmAmount.netInUsd-objs.pmAmount.netInUsdF)}
+            </div>
+            <div className="">
+              {objs.symbols.ngn}
+              {mthds.tidyFig(objs.pmAmount.netInNgn-objs.pmAmount.netInNgnF)}
+            </div>
+          </div>
+          <div className="bottom-view-rate">{pmState.generalProps.rate}</div>
+          {/* {console.log(objs)} */}
+          <div className="fill" />
+          <div onClick={signOut} className="moreoptions-text">
+            <div className="more-text">Options</div>
+          </div>
+          <img src={loggedIn.photoURL} alt="icon" className="moreoptions-img" />
+        </div>
+      </div>
+
+      {/* .............................................ends */}
+    </div>
+  );
 
   const mainContent = (
     <div className="main-view-skin">
@@ -105,11 +203,14 @@ export default function Main({
       </div>
       {/* --------------------------------pm section ------------------------------ */}
       <div className="pm-box">
-        {isPc ? <div className="entry-title">Payment methods & Balances</div>: 
-        <div className="div-with-name-and-count">
-          {"Available Balances"}
-          <div className="pmcount">{pmcount}</div>
-          </div>}
+        {isPc ? (
+          <div className="entry-title">Payment methods & Balances</div>
+        ) : (
+          <div className="div-with-name-and-count">
+            {"Available Balances"}
+            <div className="pmcount">{pmcount}</div>
+          </div>
+        )}
         <MidToolBar
           setState={setpmState}
           setEdit={setEdit}
@@ -123,10 +224,12 @@ export default function Main({
           state={pmState}
         />
         <hr />
-        {(()=>{
-          const arr= [<EntryHead key='entryhead' count={pmcount} />,
-          <hr key='hr' />];
-          return isPc && arr
+        {(() => {
+          const arr = [
+            <EntryHead key="entryhead" count={pmcount} />,
+            <hr key="hr" />
+          ];
+          return arr;
         })()}
         <Entries
           isPc={isPc}
@@ -145,23 +248,6 @@ export default function Main({
           styleId="mid-entrybox"
         />
       </div>
-      {/* ................foooter...................BOTTOM PART ONLY FOR MOBILE */}
-      {!isPc && (
-        <div className="footer-formobile">
-          <div className="moreoptions-box">
-            <div className="fill" />
-            <div onClick={signOut} className="moreoptions-text">
-              <div className="more-text">Sign Out</div>
-            </div>
-            <img
-              src={loggedIn.photoURL}
-              alt="icon"
-              className="moreoptions-img"
-            />
-          </div>
-        </div>
-      )}
-      {/* .............................................ends */}
     </div>
   );
 
@@ -171,7 +257,7 @@ export default function Main({
       <ReModal
         setState={setaddpmState}
         state={addpmState}
-        content={mainContent}
+        content={isPc ? mainContent : mainMobContent}
         stageContent={
           <PMForm
             pmState={pmState}
