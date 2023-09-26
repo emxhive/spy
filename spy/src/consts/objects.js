@@ -15,44 +15,44 @@ function objects() {
       const stateObj = {
         generalProps: {
           rate: 920,
-          ispm: false,
+          ispm: false
         },
         binance: {
           rateDiff: 0,
           ispm: true,
           isUsd: true,
-          balance: 1000,
+          balance: 1000
         },
         wise: {
           rateDiff: -4,
           ispm: true,
           isUsd: true,
-          balance: 1000,
+          balance: 1000
         },
         airtm: {
           rateDiff: -20,
           ispm: true,
           isUsd: true,
-          balance: 1000,
+          balance: 1000
         },
 
         opay: {
           rateDiff: 0,
           ispm: true,
           balance: 500000,
-          isUsd: false,
+          isUsd: false
         },
         palmpay1: {
           rateDiff: 0,
           ispm: true,
           balance: 500000,
-          isUsd: false,
+          isUsd: false
         },
         palmpay2: {
           rateDiff: 0,
           ispm: true,
           balance: 500000,
-          isUsd: false,
+          isUsd: false
         },
 
         init() {
@@ -74,20 +74,17 @@ function objects() {
 
           delete this.init;
           return this;
-        },
+        }
       }.init();
 
       return stateObj;
     },
     after(pmState, pmIcons) {
       const objs = {
-
-
         symbols: {
           usd: "$",
-          ngn: "₦",
+          ngn: "₦"
         },
-
 
         pmAmount: {
           init() {
@@ -98,14 +95,14 @@ function objects() {
               if (pmState[key].ispm && !pmState[key].isUsd) {
                 const source = pmState[key];
                 this.ngn[key] = {};
-                Object.assign(this.ngn[key], source)
-                const pm = this.ngn[key]
+                Object.assign(this.ngn[key], source);
+                const pm = this.ngn[key];
                 all[key] = pm;
                 pm.id = key;
                 pm.icon = pmIcons[key];
                 pm.limit = 5000000;
                 pm.rate = pmState.generalProps.rate + source.rateDiff;
-                pm.payFee = pm.percentFee * pm.balance / 100;
+                pm.payFee = (pm.percentFee * pm.balance) / 100;
                 pm.equivalent = pm.balance / pm.rate;
                 pm.frozenEq = pm.frozen / pm.rate;
                 pm.leftover = pm.limit - pm.spend;
@@ -117,7 +114,7 @@ function objects() {
               if (pmState[key].ispm && pmState[key].isUsd) {
                 const source = pmState[key];
                 this.usd[key] = {};
-                Object.assign(this.usd[key], source)
+                Object.assign(this.usd[key], source);
                 const pm = this.usd[key];
 
                 all[key] = pm;
@@ -125,7 +122,7 @@ function objects() {
                 pm.icon = pmIcons[key];
                 pm.rate = pmState.generalProps.rate + source.rateDiff;
                 pm.limit = 10000;
-                pm.payFee = pm.percentFee * pm.balance / 100;
+                pm.payFee = (pm.percentFee * pm.balance) / 100;
                 pm.equivalent = pm.balance * pm.rate;
                 pm.frozenEq = pm.frozen / pm.rate;
                 pm.percentSpend = (pm.spend / pm.limit) * 100;
@@ -160,11 +157,9 @@ function objects() {
                 const pm = this.usd[key];
                 if (mthds.isObj(pm)) {
                   net += pm.payFee;
-
                 }
               }
             }
-
 
             return net;
           },
@@ -220,7 +215,7 @@ function objects() {
             return net;
           },
           ngn: {},
-          usd: {},
+          usd: {}
         }.init(),
 
         pmProgress: {
@@ -232,7 +227,7 @@ function objects() {
                 this.parent.parent.pmAmount.ngn.palmpay2.percentSpend
               );
             },
-            pmicon: palm,
+            pmicon: palm
           },
 
           opay: {
@@ -240,7 +235,7 @@ function objects() {
             get percent() {
               return this.parent.parent.pmAmount.ngn.opay.percentSpend;
             },
-            pmicon: opayImg,
+            pmicon: opayImg
           },
           init() {
             for (const key in this) {
@@ -250,9 +245,8 @@ function objects() {
               }
             }
 
-
             return this;
-          },
+          }
         }.init(),
         init() {
           for (const key in this) {
@@ -262,23 +256,38 @@ function objects() {
             }
           }
 
-
           return this;
-        },
+        }
       };
       return objs.init();
     },
 
     //This is the object thingy used in ENTRY component in the MAIN screen in the middle
-
+    theEnd(objjs, isUsd) {
+      return {
+        balanceState: {
+          getinfo: {}
+        },
+        toogleState: {
+          label: "NET",
+          get info() {
+            if (isUsd) {
+              return {a: null};
+            } else{
+              return {a: null};
+            }
+          }
+        }
+      };
+    },
     pmIcons: {
       palmpay1: palm,
       palmpay2: palm,
       opay: opayImg,
       wise: wiseImg,
       binance: bin,
-      airtm: air,
-    },
+      airtm: air
+    }
   };
 }
 
