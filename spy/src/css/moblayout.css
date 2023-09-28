@@ -1,0 +1,75 @@
+.mtbal-title {
+  color: var(--blue);
+  text-align: left;
+  padding-left: 10%;
+  /* border-bottom: 1px dashed var(--blue); */
+}
+
+.mob-top-balance-box-skin {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.mob-top-balance-box {
+  display: flex;
+  flex-direction: column;
+}
+.mob-top-balance-box > div {
+  text-align: right;
+}
+
+.tb-blur-bal {
+  font-size: 0.7em;
+  color: gray;
+}
+.mob-top-balance-options-box {
+  padding-top: 10px;
+  font-size: 0.78em;
+}
+
+.mob-top-navbar {
+  display: flex;
+  justify-content: space-around;
+  padding: 0 50px 0 50px;
+}
+
+.footer-formobile {
+  background-color: white;
+  padding: 5px 20px 2px 20px;
+}
+.bottom-balance-view {
+  padding-right: 5px;
+  margin-top: 5px;
+  border-right: 1.4px dashed lightgray;
+}
+.bottom-balance-view > div {
+  text-align: right;
+  font-size: 0.56em;
+  color: gray;
+  margin-left: 10px;
+}
+.bottom-view-rate {
+  margin-left: 5px;
+  font-style: italic;
+  font-size: 0.83em;
+  color: gray;
+  margin-top: 8px;
+}
+
+.bottom-view-rate::before {
+  content: "fx:";
+  margin-right: 5px;
+  font-size: 0.8em;
+}
+
+.moreoptions-box {
+  display: flex;
+}
+.moreoptions-box .more-text {
+  margin-top: 4.5px;
+}
+
+.moreoptions-img {
+  height: 30px;
+  margin-left: 13px;
+}
