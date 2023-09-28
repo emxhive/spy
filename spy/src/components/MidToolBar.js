@@ -10,6 +10,7 @@ import {
   BsChevronDown,
   BsChevronDoubleDown,
   BsFilter,
+  BsCheck
 } from "react-icons/bs";
 import { pmUpdatespyStore } from "../utils/updatespyStore";
 
@@ -22,10 +23,11 @@ function MidToolBar({
   setState,
   setaddpmS,
   setshowbuttons,
-
+  trackState,
+  settrackState,
   showsavebuttons,
   setCurrentEntry,
-  currentEntry,
+  currentEntry
 }) {
   const mthds = mthdss();
 
@@ -48,8 +50,8 @@ function MidToolBar({
             ...state,
             [pm]: {
               ...state[pm],
-              ...entrydata,
-            },
+              ...entrydata
+            }
           });
 
           let json = "{";
@@ -60,7 +62,7 @@ function MidToolBar({
 
           pmUpdatespyStore({
             dataUpdate: JSON.parse(json),
-            spyCollection: "pmstate",
+            spyCollection: "pmstate"
           });
 
           setCurrentEntry(null);
@@ -82,6 +84,7 @@ function MidToolBar({
   const toolbar = (
     <div className="toolbar-right">
       <BsPlusCircle onClick={() => setaddpmS(true)} />
+      <BsCheck onClick={() => populatetracker()} />
       <BsChevronDoubleUp />
       <BsChevronUp />
       <CgScrollV />
@@ -92,6 +95,21 @@ function MidToolBar({
     </div>
   );
   const [toolRight, setToolRight] = useState(showtoolbar);
+  function populatetracker() {
+    settrackState({
+      [mthds.getTimeId(new Date())]: {
+        r: state.generalProps.rate,
+        uf: objs.pmAmount.netUsdF,
+        nf: objs.pmAmount.netNgnF,
+        u: objs.pmAmount.netUsd - objs.pmAmount.netUsdF,
+        n: objs.pmAmount.netNgn - objs.pmAmount.netNgnF,
+        iu: objs.pmAmount.netInUsd - objs.pmAmount.netInUsdF,
+        in: objs.pmAmount.netInNgn - objs.pmAmount.netInNgnF
+      },
+      ...trackState
+    });
+    localStorage.setItem(JSON.stringify(trackState));
+  }
   function open() {
     setToolRight(toolbar);
   }
