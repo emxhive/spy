@@ -17,6 +17,8 @@ export default function Main({
   pmState,
   setpmState,
   isPc,
+  trackState,
+  settrackState,
   loggedIn,
   setlogStatus,
   signOut
@@ -54,36 +56,6 @@ export default function Main({
 
   const mainMobContent = (
     <div className="main-view-skin">
-      {/* progress Bar section
-       -------------------------------------------------------
-      <div className="progress-total-all-container">
-        <div className="progress-group">
-          <div className="progress-box">
-            <Progress {...objs.pmProgress.palmpay} />
-            <Progress {...objs.pmProgress.opay} />
-          </div>
-        </div>
-
-        ---------mess of amounts- both currencies____________
-        <div className="total-bothcurrencies">
-          <div className="mid-labels">Fx:</div>
-          <div className="mid-values">{pmState.generalProps.rate}/$</div>
-          <div className="mid-labels">USD: </div>
-          <div className="mid-values">
-            {mthds.tidyFig(
-              objs.pmAmount.netUsd -
-                objs.pmAmount.netUsdFee -
-                objs.pmAmount.netUsdF
-            )}
-          </div>
-          <div className="mid-labels"> NGN: </div>
-          <div className="mid-values">
-            {mthds.tidyFig(objs.pmAmount.netNgn - objs.pmAmount.netNgnF)}
-          </div>
-        </div> 
-      </div> */}
-      {/* ---------------------------------------END------------------------------------------------- */}
-
       {/* --------------------------------pm section ------------------------------ */}
       <div className="pm-box">
         <div className="div-with-name-and-count">
@@ -92,6 +64,7 @@ export default function Main({
         </div>
 
         <MidToolBar
+          objs={objs}
           setState={setpmState}
           setEdit={setEdit}
           edit={edit}
@@ -102,6 +75,8 @@ export default function Main({
           setCurrentEntry={setCurrentEntry}
           currentEntry={currentEntry}
           state={pmState}
+          trackState={trackState}
+          settrackState={settrackState}
         />
 
         <Entries

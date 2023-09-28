@@ -6,8 +6,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Outlet,
-  Link
+  Outlet
 } from "react-router-dom";
 
 import Main from "./components/screens/Main";
@@ -19,21 +18,29 @@ import updatespyStore from "./utils/updatespyStore";
 import { useMediaQuery } from "react-responsive";
 import { spyAuth } from "./utils/db";
 import Tracker from "./components/screens/Tracker";
+import MobLayout from "./components/MobLayout";
 
 function App() {
   const admin = "okpakomaraez@gmail.com";
   const [pmStates, setpmStates] = useState(objss().before());
   const [pmIcons, setpmIcons] = useState(objss().pmIcons);
   const objjs = objss().after(pmStates, pmIcons);
-  const lastObjs = objss().theEnd(objjs);
+
   const mthdds = mthdss(pmStates, setpmStates);
   const isPc = useMediaQuery({ query: "(min-width: 900px)" });
   const [loggedIn, setLogStatus] = useState(
     JSON.parse(localStorage.getItem("logged"))
   );
-  const [usdDIsplay, setusdDisplay] = useState(true);
-  const [balanceState, setBalanceState] = useState(lastObjs.balanceState);
-  const [balanceToggle, setBalanceToggle] = useState(lastObjs.toogleState);
+  const [trackState, settrackState] = useState(
+    JSON.parse(localStorage.getItem("trackState"))
+  );
+
+  const mobLayout = MobLayout({
+    pmState: pmStates,
+    objs: objjs,
+    signOut: signOut,
+    loggedIn: loggedIn
+  });
 
   //To fetch data as soon as data loads.. data from object.js is loaded first but shortly replaced by data from firebase if any.
   useEffect(() => {
@@ -70,52 +77,6 @@ function App() {
     });
   }
 
-  const mobTop = (
-    <div className="mob-layout-top">
-      <div className="mob-top-balance-box-skin">
-        <div className="mob-tob-balance-box"></div>
-        <div className="mob-tob-balance-options-box">
-          <div className="">USD</div>
-          <div className="">NGN</div>
-          <div className=""></div>
-        </div>
-      </div>
-      <div className="mob-top-navbar">
-        <div>
-          <Link to="/">Overview</Link>
-        </div>
-        <div>
-          <Link to="/track">Records</Link>
-        </div>
-        <div>
-          <Link to="/history">History</Link>
-        </div>
-      </div>
-    </div>
-  );
-  const mobFooter = (
-    <div className="footer-formobile">
-      <div className="moreoptions-box">
-        <div className="bottom-balance-view">
-          <div className="">
-            {objjs.symbols.usd}
-            {mthdds.tidyFig(objjs.pmAmount.netInUsd - objjs.pmAmount.netInUsdF)}
-          </div>
-          <div className="">
-            {objjs.symbols.ngn}
-            {mthdds.tidyFig(objjs.pmAmount.netInNgn - objjs.pmAmount.netInNgnF)}
-          </div>
-        </div>
-        <div className="bottom-view-rate">{pmStates.generalProps.rate}</div>
-        {/* {console.log(objs)} */}
-        <div className="fill" />
-        <div onClick={signOut} className="moreoptions-text">
-          <div className="more-text">Options</div>
-        </div>
-        <img src={loggedIn.photoURL} alt="icon" className="moreoptions-img" />
-      </div>
-    </div>
-  );
   const pcVersion = (
     <div className="main-parent">
       <NavBar applogo={logo} />
@@ -147,9 +108,9 @@ function App() {
           path="/"
           element={
             <div className="main-parent">
-              {mobTop}
+              {mobLayout.mobTop}
               <Outlet />
-              {mobFooter}
+              {mobLayout.mobFooter}
             </div>
           }
         >
@@ -167,10 +128,21 @@ function App() {
                 setpmIcons={setpmIcons}
                 pmState={pmStates}
                 setpmState={setpmStates}
+                trackState={trackState}
+                settrackState={settrackState}
               />
             }
           />
-          <Route path="track" element={<Tracker />} />
+          <Route
+            path="track"
+            element={
+              <Tracker
+                trackState={trackState}
+                settrackState={settrackState}
+                pmobjs={objjs}
+              />
+            }
+          />
           <Route
             path="history"
             element={
