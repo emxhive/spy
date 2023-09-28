@@ -70,7 +70,7 @@ export default function MobLayout({ pmState, objs, signOut, loggedIn }) {
           <div onClick={signOut} className="moreoptions-text">
             <div className="more-text">Options</div>
           </div>
-          <img src={loggedIn.photoURL} alt="icon" className="moreoptions-img" />
+          <img src={loggedIn?.photoURL} alt="icon" className="moreoptions-img" />
         </div>
       </div>
     )

@@ -108,7 +108,7 @@ function MidToolBar({
       },
       ...trackState
     });
-    localStorage.setItem(JSON.stringify(trackState));
+    localStorage.setItem("trackState", JSON.stringify(trackState));
   }
   function open() {
     setToolRight(toolbar);

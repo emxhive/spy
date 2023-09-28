@@ -10,7 +10,7 @@ export default function Tracker({ trackState, settrackState }) {
     const data = trackState[key];
     const date = new Date(Number(key.replace("t", "")));
     currentData.push(
-      <div className="mob-track-entry-box">
+      <div key= {key} className="mob-track-entry-box">
         {date.toLocaleDateString()}
         <div>{date.toLocaleTimeString()}</div>
         <div>{data.r}</div>

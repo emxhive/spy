@@ -14,45 +14,45 @@ function objects() {
     before() {
       const stateObj = {
         generalProps: {
-          rate: 920,
-          ispm: false
+          rate: 1000,
+          ispm: false,
         },
         binance: {
           rateDiff: 0,
           ispm: true,
           isUsd: true,
-          balance: 1000
+          balance: 1000,
         },
         wise: {
           rateDiff: -4,
           ispm: true,
           isUsd: true,
-          balance: 1000
+          balance: 1000,
         },
         airtm: {
           rateDiff: -20,
           ispm: true,
           isUsd: true,
-          balance: 1000
+          balance: 1000,
         },
 
         opay: {
           rateDiff: 0,
           ispm: true,
           balance: 500000,
-          isUsd: false
+          isUsd: false,
         },
         palmpay1: {
           rateDiff: 0,
           ispm: true,
           balance: 500000,
-          isUsd: false
+          isUsd: false,
         },
         palmpay2: {
           rateDiff: 0,
           ispm: true,
           balance: 500000,
-          isUsd: false
+          isUsd: false,
         },
 
         init() {
@@ -74,7 +74,7 @@ function objects() {
 
           delete this.init;
           return this;
-        }
+        },
       }.init();
 
       return stateObj;
@@ -83,7 +83,7 @@ function objects() {
       const objs = {
         symbols: {
           usd: "$",
-          ngn: "₦"
+          ngn: "₦",
         },
 
         pmAmount: {
@@ -215,7 +215,7 @@ function objects() {
             return net;
           },
           ngn: {},
-          usd: {}
+          usd: {},
         }.init(),
 
         pmProgress: {
@@ -227,7 +227,7 @@ function objects() {
                 this.parent.parent.pmAmount.ngn.palmpay2.percentSpend
               );
             },
-            pmicon: palm
+            pmicon: palm,
           },
 
           opay: {
@@ -235,7 +235,7 @@ function objects() {
             get percent() {
               return this.parent.parent.pmAmount.ngn.opay.percentSpend;
             },
-            pmicon: opayImg
+            pmicon: opayImg,
           },
           init() {
             for (const key in this) {
@@ -246,7 +246,7 @@ function objects() {
             }
 
             return this;
-          }
+          },
         }.init(),
         init() {
           for (const key in this) {
@@ -257,7 +257,7 @@ function objects() {
           }
 
           return this;
-        }
+        },
       };
       return objs.init();
     },
@@ -266,18 +266,18 @@ function objects() {
     theEnd(objjs, isUsd) {
       return {
         balanceState: {
-          getinfo: {}
+          getinfo: {},
         },
         toogleState: {
           label: "NET",
           get info() {
             if (isUsd) {
-              return {a: null};
-            } else{
-              return {a: null};
+              return { a: null };
+            } else {
+              return { a: null };
             }
-          }
-        }
+          },
+        },
       };
     },
     pmIcons: {
@@ -286,8 +286,8 @@ function objects() {
       opay: opayImg,
       wise: wiseImg,
       binance: bin,
-      airtm: air
-    }
+      airtm: air,
+    },
   };
 }
 
