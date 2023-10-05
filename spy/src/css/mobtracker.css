@@ -1,18 +1,140 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@600&display=swap');
+
+
+
+
+div,
+span {
+  text-align: left;
+}
 
 .mob-trackercontent {
   flex-grow: 1;
   display: flex;
+  overflow: hidden;
 }
+
+
 .mob-trackrecords-past,
 .mob-trackrecords-current {
   height: 100%;
   width: 100%;
   text-align: left;
   padding-left: 10px;
-}
-.mob-trackrecords-past {
+  font-size: 0.8em;
+  overflow-y: auto;
+  position: relative;
 }
 
-.mob-trackrecords-current {
+.mob-trackrecords-past::-webkit-scrollbar {
+  display: none;
+}
+
+.mob-trackrecords-current::-webkit-scrollbar {
+  display: none;
+}
+
+.Collapsible__contentInner::-webkit-scrollbar {
+  display: none;
+}
+
+.Collapsible__trigger {
+  display: block;
+  padding: 10px 10px;
+  margin-top: 10px;
+  border-radius: 10px;
+  background-color: var(--back);
+}
+
+
+
+/* .Collapsible__trigger */
+.is-closed::after {
+  transition: padding 1s, border-width 1s;
+  content: "";
+  background-color: white;
+  border: 8px solid var(--blue);
+  border-radius: 50%;
+  padding: 0.1px;
+  position: absolute;
+  right: 15px;
+}
+
+/* 
+.Collapsible__trigger */
+.is-open::after {
+  transition: padding 0.5s, border-width 0.5s;
+  content: "";
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  right: 15px;
+  border: 3px solid var(--blue);
+  padding: 5px;
+}
+
+.Collapsible__contentOuter {
+  background-color: var(--back);
+
+  margin: 5px 10px;
+  border-radius: 5px;
+}
+
+.Collapsible__contentInner {
+  padding: 5px 0 0 10px;
+
+  overflow-y: scroll;
+  max-height: 57vh;
+
+}
+
+.Collapsible__contentInner>div {
+  font-family: 'Crimson Text';
+}
+
+
+
+.mob-track-pnl-mini-gain,
+.mob-track-pnl-mini-loss {
+  font-family: 'Libre Baskerville';
+  font-size: 0.75em;
+  border-left: 2px solid lightgray;
+  padding-left: 5px;
+  margin-left: 5px;
+
+}
+
+.mob-track-pnl-mini-gain {
+  color: var(--blue);
+}
+
+.mob-track-pnl-mini-loss {
+  color: red;
+}
+
+.mob-track-entry-box {
+  margin: 5px 10px;
+  background-color: white;
+  border-radius: 20px;
+  padding: 15px 10px;
+  display: grid;
+  gap: 5px 10px;
+  grid-template-columns: 1fr 3fr;
+}
+
+.mob-track-entry-box * {
+  font-family: 'Libre Baskerville';
+  font-size: 0.85em;
+}
+
+.mob-track-entry-box>div:nth-child(odd) {
+  font-size: 0.77em;
+  font-style: italic;
+  text-align: center;
+  border-radius: 50%;
+  padding: 2px;
+  background-color: var(--back);
+  color: var(--blue);
 }

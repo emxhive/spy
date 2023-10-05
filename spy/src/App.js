@@ -8,6 +8,9 @@ import {
   Route,
   Outlet
 } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 import Main from "./components/screens/Main";
 import AuthScreen from "./components/screens/AuthScreen";
@@ -111,6 +114,7 @@ function App() {
               {mobLayout.mobTop}
               <Outlet />
               {mobLayout.mobFooter}
+              <ToastContainer position="bottom-right" />
             </div>
           }
         >

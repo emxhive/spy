@@ -13,10 +13,12 @@ import {
   BsCheck
 } from "react-icons/bs";
 import { pmUpdatespyStore } from "../utils/updatespyStore";
+import { toast } from 'react-toastify';
+
 
 function MidToolBar({
   setEdit,
-  edit,
+  edit, 
   state,
   objs,
   exportentryData,
@@ -30,6 +32,8 @@ function MidToolBar({
   currentEntry
 }) {
   const mthds = mthdss();
+
+  const previousData= JSON.parse(localStorage.getItem("previousTrack"));
 
   const showtoolbar = (
     <div>
@@ -96,20 +100,34 @@ function MidToolBar({
   );
   const [toolRight, setToolRight] = useState(showtoolbar);
   function populatetracker() {
-    settrackState({
-      [mthds.getTimeId(new Date())]: {
+    const currentId = mthds.getTimeId(new Date());
+    toast("New Track Record");
+    let localTrack = {};
+    localTrack = {
+      [currentId]: {
         r: state.generalProps.rate,
         uf: objs.pmAmount.netUsdF,
         nf: objs.pmAmount.netNgnF,
         u: objs.pmAmount.netUsd - objs.pmAmount.netUsdF,
         n: objs.pmAmount.netNgn - objs.pmAmount.netNgnF,
         iu: objs.pmAmount.netInUsd - objs.pmAmount.netInUsdF,
-        in: objs.pmAmount.netInNgn - objs.pmAmount.netInNgnF
+        in: objs.pmAmount.netInNgn - objs.pmAmount.netInNgnF,
+        tiu: objs.pmAmount.netInUsd,
+        tin: objs.pmAmount.netInNgn , 
+        prev: previousData
+
       },
       ...trackState
-    });
-    localStorage.setItem("trackState", JSON.stringify(trackState));
+    };
+
+    const prevD = {r: localTrack[currentId].r, tiu: localTrack[currentId].tiu, tin: localTrack[currentId].tin };
+    localStorage.setItem("previousTrack", JSON.stringify(prevD ))
+    settrackState(localTrack);
+    localStorage.setItem("trackState", JSON.stringify(localTrack));
+   
+
   }
+
   function open() {
     setToolRight(toolbar);
   }

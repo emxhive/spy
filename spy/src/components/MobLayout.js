@@ -13,7 +13,7 @@ export default function MobLayout({ pmState, objs, signOut, loggedIn }) {
   const lastObj = objss().theEnd(objs, usdDisplay);
 
   const mthds = mthdss();
-  // console.log(lastObj.balanceState);
+
   return {
     mobTop: (
       <div className="mob-layout-top">
@@ -33,9 +33,15 @@ export default function MobLayout({ pmState, objs, signOut, loggedIn }) {
           )}
 
           <div className="mob-top-balance-options-box">
-            <div className="">USD</div>
-            <div className="">NGN</div>
-            <div className="">NET</div>
+            <div className={usdDisplay && "mtbo-active"} onClick={() => {
+              !usdDisplay && setusdDisplay(true);
+            }}>USD</div>
+            <div className={!usdDisplay && "mtbo-active"} onClick={() => {
+              usdDisplay && setusdDisplay(false);
+            }}>NGN</div>
+            <div className={toogleState && "mtbo-active"} onClick={() => {
+              setToogleState(!toogleState);
+            }}>NET</div>
           </div>
         </div>
         <div className="mob-top-navbar">
@@ -43,7 +49,7 @@ export default function MobLayout({ pmState, objs, signOut, loggedIn }) {
             <Link to="/">Overview</Link>
           </div>
           <div>
-            <Link to="/track">Records</Link>
+            <Link to="/track">Track</Link>
           </div>
           <div>
             <Link to="/history">History</Link>
