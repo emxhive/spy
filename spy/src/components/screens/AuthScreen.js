@@ -19,7 +19,7 @@ const AuthScreen = ({ setlogStatus }) => {
       setlogStatus(data.user);
     });
 
-    localStorage.setItem("logged", JSON.stringify(onetimepass));
+    // localStorage.setItem("logged", JSON.stringify(onetimepass));
   }
   return (
     <div className="auth-container">
