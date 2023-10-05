@@ -87,7 +87,7 @@ export default function Tracker({ trackState, settrackState }) {
         }
       }
 
-      let pnlClass;
+      let pnlClass= "mob-track-pnl-mini-gain";
       let x;
       if (data.prev?.r > 0) {
         x = Number(data.tiu - data.prev.tiu);
