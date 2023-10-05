@@ -18,7 +18,7 @@ import { toast } from 'react-toastify';
 
 function MidToolBar({
   setEdit,
-  edit, 
+  edit,
   state,
   objs,
   exportentryData,
@@ -33,10 +33,10 @@ function MidToolBar({
 }) {
   const mthds = mthdss();
 
-  const previousData= JSON.parse(localStorage.getItem("previousTrack"));
+  const previousData = JSON.parse(localStorage.getItem("previousTrack"));
 
   const showtoolbar = (
-    <div>
+    <div className="toolbar-right-before">
       <BsChevronLeft onClick={open} />
     </div>
   );
@@ -88,7 +88,7 @@ function MidToolBar({
   const toolbar = (
     <div className="toolbar-right">
       <BsPlusCircle onClick={() => setaddpmS(true)} />
-      <BsCheck onClick={() => populatetracker()} />
+      <BsCheck className="mob-toolbar-tic" onClick={() => populatetracker()} />
       <BsChevronDoubleUp />
       <BsChevronUp />
       <CgScrollV />
@@ -113,18 +113,18 @@ function MidToolBar({
         iu: objs.pmAmount.netInUsd - objs.pmAmount.netInUsdF,
         in: objs.pmAmount.netInNgn - objs.pmAmount.netInNgnF,
         tiu: objs.pmAmount.netInUsd,
-        tin: objs.pmAmount.netInNgn , 
+        tin: objs.pmAmount.netInNgn,
         prev: previousData
 
       },
       ...trackState
     };
 
-    const prevD = {r: localTrack[currentId].r, tiu: localTrack[currentId].tiu, tin: localTrack[currentId].tin };
-    localStorage.setItem("previousTrack", JSON.stringify(prevD ))
+    const prevD = { r: localTrack[currentId].r, tiu: localTrack[currentId].tiu, tin: localTrack[currentId].tin };
+    localStorage.setItem("previousTrack", JSON.stringify(prevD))
     settrackState(localTrack);
     localStorage.setItem("trackState", JSON.stringify(localTrack));
-   
+
 
   }
 

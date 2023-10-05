@@ -283,6 +283,8 @@ hr {
 
 /* ...............MOB-PHONES...............MEDIA QUERIES */
 @media screen and (max-width: 600px) {
+
+
   .mob-entryrow-box-x-flex {
     display: flex;
     gap: 15px;
@@ -369,6 +371,22 @@ hr {
     font-size: 0.9em;
     grid-template-columns: 45% repeat(3, 1fr);
   }
+  .toolbar > .toolbar-right {
+    gap: 0 9px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+   .toolbar-right-before{
+    margin-top: 10px;
+    margin-bottom: 5px;
+
+  }
+  .mob-toolbar-tic{
+    width: 2em;
+  }
+
+ 
+
   #mid-entrybox .entry-row {
     gap: 0;
     grid-template-columns: 45% repeat(3, 1fr);
