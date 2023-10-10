@@ -100,32 +100,33 @@ function MidToolBar({
   );
   const [toolRight, setToolRight] = useState(showtoolbar);
   function populatetracker() {
-    const currentId = mthds.getTimeId(new Date());
-    toast("New Track Record");
-    let localTrack = {};
-    localTrack = {
-      [currentId]: {
-        r: state.generalProps.rate,
-        uf: objs.pmAmount.netUsdF,
-        nf: objs.pmAmount.netNgnF,
-        u: objs.pmAmount.netUsd - objs.pmAmount.netUsdF,
-        n: objs.pmAmount.netNgn - objs.pmAmount.netNgnF,
-        iu: objs.pmAmount.netInUsd - objs.pmAmount.netInUsdF,
-        in: objs.pmAmount.netInNgn - objs.pmAmount.netInNgnF,
-        tiu: objs.pmAmount.netInUsd,
-        tin: objs.pmAmount.netInNgn,
-        prev: previousData
+    if (!state.generalProps.isDefaultState) {
+      const currentId = mthds.getTimeId(new Date());
+      let localTrack = {};
+      toast("New Track Record");
+      localTrack = {
+        [currentId]: {
+          r: state.generalProps.rate,
+          uf: objs.pmAmount.netUsdF,
+          nf: objs.pmAmount.netNgnF,
+          u: objs.pmAmount.netUsd - objs.pmAmount.netUsdF,
+          n: objs.pmAmount.netNgn - objs.pmAmount.netNgnF,
+          iu: objs.pmAmount.netInUsd - objs.pmAmount.netInUsdF,
+          in: objs.pmAmount.netInNgn - objs.pmAmount.netInNgnF,
+          tiu: objs.pmAmount.netInUsd,
+          tin: objs.pmAmount.netInNgn,
+          prev: previousData
 
-      },
-      ...trackState
-    };
+        },
+        ...trackState
+      };
 
-    const prevD = { r: localTrack[currentId].r, tiu: localTrack[currentId].tiu, tin: localTrack[currentId].tin };
-    localStorage.setItem("previousTrack", JSON.stringify(prevD))
-    settrackState(localTrack);
-    localStorage.setItem("trackState", JSON.stringify(localTrack));
+      const prevD = { r: localTrack[currentId].r, tiu: localTrack[currentId].tiu, tin: localTrack[currentId].tin };
+      localStorage.setItem("previousTrack", JSON.stringify(prevD))
+      settrackState(localTrack);
+      localStorage.setItem("trackState", JSON.stringify(localTrack));
 
-
+    }
   }
 
   function open() {

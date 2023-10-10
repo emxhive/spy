@@ -17,7 +17,6 @@ function functions(pmState, setpmState) {
     toDigits(s) {
       const result = s.match(/[\d.]+/g);
       if (result) {
-     
         return Number(result.join(""));
       } else return 0;
     },
@@ -35,6 +34,10 @@ function functions(pmState, setpmState) {
       } else {
         return Number(Number.parseFloat(n).toFixed(2));
       }
+    },
+
+    getMonthName(date) {
+      return new Intl.DateTimeFormat(undefined, { month: "long" }).format(date);
     },
     pmFunc: {
       updateRate(newState) {

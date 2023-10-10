@@ -33,13 +33,13 @@ export default function MobLayout({ pmState, objs, signOut, loggedIn }) {
           )}
 
           <div className="mob-top-balance-options-box">
-            <div className={usdDisplay && "mtbo-active"} onClick={() => {
+            <div className={usdDisplay ? "mtbo-active": ""} onClick={() => {
               !usdDisplay && setusdDisplay(true);
             }}>USD</div>
-            <div className={!usdDisplay && "mtbo-active"} onClick={() => {
+            <div className={!usdDisplay ? "mtbo-active" : ""} onClick={() => {
               usdDisplay && setusdDisplay(false);
             }}>NGN</div>
-            <div className={toogleState && "mtbo-active"} onClick={() => {
+            <div className={toogleState ? "mtbo-active": ""} onClick={() => {
               setToogleState(!toogleState);
             }}>NET</div>
           </div>
@@ -65,13 +65,13 @@ export default function MobLayout({ pmState, objs, signOut, loggedIn }) {
               {objs.symbols.usd}
               {mthds.tidyFig(objs.pmAmount.netInUsd - objs.pmAmount.netInUsdF)}
             </div>
-            <div className="">
+            <div className=""> 
               {objs.symbols.ngn}
               {mthds.tidyFig(objs.pmAmount.netInNgn - objs.pmAmount.netInNgnF)}
             </div>
           </div>
           <div className="bottom-view-rate">{pmState.generalProps.rate}</div>
-          {/* {console.log(objs)} */}
+   
           <div className="fill" />
           <div onClick={signOut} className="moreoptions-text">
             <div className="more-text">Options</div>

@@ -14,6 +14,7 @@ function objects() {
     before() {
       const stateObj = {
         generalProps: {
+          isDefaultState: true,
           rate: 920,
           ispm: false
         },
