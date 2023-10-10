@@ -119,13 +119,13 @@ span {
   border-radius: 20px;
   padding: 15px 10px;
   display: grid;
-  gap: 7px 30px;
+  gap: 7px 10%;
   grid-template-columns: 10% 3fr;
 }
 
 .mob-track-entry-box * {
   font-family: 'Libre Baskerville';
-  font-size: 0.95em;
+  font-size: 0.9em;
 }
 
 .mob-track-entry-box>div:nth-child(odd) {

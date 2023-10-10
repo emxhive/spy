@@ -27,16 +27,19 @@ export default function Tracker({ trackState, settrackState }) {
 
     let pnlClass = "mob-track-pnl-mini-gain";
     let x;
-    if (data.prev?.r > 0) {
-      x = Number(data.tiu - data.prev.tiu);
-      if (x < 0) {
-        pnlClass = "mob-track-pnl-mini-loss";
+
+    (function () {
+      if (data.prev?.r > 0) {
+        x = Number(data.tiu - data.prev.tiu);
+        if (x < 0) {
+          pnlClass = "mob-track-pnl-mini-loss";
+        } else {
+          pnlClass = "mob-track-pnl-mini-gain";
+        }
       } else {
-        pnlClass = "mob-track-pnl-mini-gain";
+        x = 0;
       }
-    } else {
-      x = 0;
-    }
+    })();
 
     function createEntry() {
       return (
@@ -75,7 +78,7 @@ export default function Tracker({ trackState, settrackState }) {
     altTrigNo = result.a;
 
     if (new Date().getMonth() === date.getMonth()) {
-      months[0].data[triggerNo]?.push(createEntry());
+      months[0].data[triggerNo].push(createEntry());
       months[0].collaspKey[triggerNo] = collaspKey;
 
       prevTrigNo = triggerNo;
@@ -99,9 +102,20 @@ export default function Tracker({ trackState, settrackState }) {
     });
   }
 
+  const pastContent= [];
+  monthsCollapse.forEach((obj, n) => {
+    if (n > 0) {
+      pastContent.push(obj);
+    }
+  })
+
   const trackerContent = (
     <div className="mob-trackercontent">
-      {pasCount > 0 && <div className="mob-trackrecords-past">{[]}</div>}
+      {pasCount > 0 && (
+        <div className="mob-trackrecords-past">
+          {pastContent}
+        </div>
+      )}
       <div className="mob-trackrecords-current">{monthsCollapse[0]}</div>
     </div>
   );
@@ -114,7 +128,7 @@ function determineTrigger(date) {
   if (dateDay === today) {
     return { a: 0, b: 0 };
   } else {
-    const key = Math.floor(date.getDate() / 9);
+    const key = Math.floor(date.getDate() / 8);
     switch (key) {
       case 0:
         return { a: 1, b: 4 };
@@ -158,7 +172,7 @@ function setMonthCollapses({ date, months, monthsCollapse, altTrigNo }) {
             default:
               monthsCollapse[i][j] = months[i].data[j]?.length > 0 && (
                 <Collapsible
-                  trigger={`WK-${altTrigNo}`}
+                  trigger={`WK-${5 - j}`}
                   key={months[i].collaspKey[j]}
                 >
                   {months[i].data[j]}
@@ -175,7 +189,7 @@ function setMonthCollapses({ date, months, monthsCollapse, altTrigNo }) {
             trigger={mth.getMonthName(date)}
             key={months[i].collaspKey}
           >
-            {months[i]}
+            {months[i].data}
           </Collapsible>
         );
         break;
