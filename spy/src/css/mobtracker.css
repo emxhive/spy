@@ -22,7 +22,7 @@ span {
   height: 100%;
   width: 100%;
   text-align: left;
-  padding-left: 10px;
+  padding-left: 3px;
   font-size: 0.8em;
   overflow-y: auto;
   position: relative;
@@ -42,9 +42,9 @@ span {
 
 .Collapsible__trigger {
   display: block;
-  padding: 10px 10px;
+  padding: 7px 10px;
   margin-top: 10px;
-  border-radius: 10px;
+  border-radius: 25px;
   background-color: var(--back);
 }
 
@@ -77,7 +77,7 @@ span {
 
 .Collapsible__contentOuter {
   background-color: var(--back);
-  margin: 5px 10px;
+  margin: 4px 5px;
   border-radius: 5px;
 }
 
@@ -120,7 +120,7 @@ span {
   padding: 15px 10px;
   display: grid;
   gap: 7px 10%;
-  grid-template-columns: 10% 3fr;
+  grid-template-columns: 13% 3fr;
 }
 
 .mob-track-entry-box * {

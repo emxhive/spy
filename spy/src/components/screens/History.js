@@ -8,7 +8,6 @@ import mthdss from "../../consts/functions";
 import { db } from "../../utils/db";
 import { addDoc, collection } from "firebase/firestore";
 
-
 const errorIcon = <span>⚠️</span>;
 const mth = mthdss();
 
@@ -58,6 +57,7 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
             if (isPerfect) {
               const formObj = Object.fromEntries(formArr);
               formObj.amount = Number(formObj.amount);
+              formObj.rate =  formObj.rate=== undefined? pmState.generalProps.rate : Number(formObj.rate) ;
               formObj.type = Number(formObj.type);
               const objId = mth.getDayId(new Date(date));
               const newEntry = entry({
@@ -70,7 +70,6 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
                 pmIcons: pmIcons,
               });
 
-              
               //updating balance in pmState /App-main screen
               const preBal = pmState[formObj.pm].balance;
               const preFreeze = pmState[formObj.pm].frozen;
@@ -105,17 +104,19 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
                   });
               }
 
+              const newdayObj = { ...dayArr, [objId]: [newEntry] };
+
               if (Object.keys(dayArr).includes(objId)) {
                 setnewday(false);
-
                 const old = dayArr[objId];
 
                 const newArr = [newEntry, ...old];
-                setdayArr({ ...dayArr, [objId]: newArr });
+                const samedayObj = { ...dayArr, [objId]: newArr };
+                setdayArr(samedayObj);
               } else {
                 setnewday(true);
-
-                setdayArr({ ...dayArr, [objId]: [newEntry] });
+                setdayArr(newdayObj);
+                // localStorage.
               }
 
               // For every new entry to dayArr state
@@ -152,6 +153,7 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
                 }}
               />
             </div>
+
             <div>
               <input
                 name="amount"
@@ -166,6 +168,16 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
               />
               {amountState && errorIcon}
             </div>
+
+            <div>
+              <input
+                name="rate"
+                placeholder="...Current rate"
+                defaultValue= {undefined}
+                type="number"
+              />
+            </div>
+
             <div>
               <select
                 name="pm"
