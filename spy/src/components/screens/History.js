@@ -47,7 +47,7 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
 
             for (let i = 0; i < formArr.length; i++) {
               const arr = formArr[i];
-              if (arr[1] === "") {
+              if (arr[1] === "" && i!=2) {
                 errKey = arr[0];
                 isPerfect = false;
                 break;
@@ -57,7 +57,7 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
             if (isPerfect) {
               const formObj = Object.fromEntries(formArr);
               formObj.amount = Number(formObj.amount);
-              formObj.rate =  formObj.rate=== undefined? pmState.generalProps.rate : Number(formObj.rate) ;
+              formObj.rate =   Number(formObj.rate)<=0 ? pmState.generalProps.rate : Number(formObj.rate) ;
               formObj.type = Number(formObj.type);
               const objId = mth.getDayId(new Date(date));
               const newEntry = entry({
