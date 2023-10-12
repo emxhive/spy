@@ -24,6 +24,8 @@ import Tracker from "./components/screens/Tracker";
 import MobLayout from "./components/MobLayout";
 
 function App() {
+
+  // localStorage.removeItem("historydayArr");
   const admin = "okpakomaraez@gmail.com";
   const [pmStates, setpmStates] = useState(objss().before());
   const [pmIcons, setpmIcons] = useState(objss().pmIcons);

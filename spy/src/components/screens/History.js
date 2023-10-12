@@ -25,7 +25,15 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
     toolbarArr: [<IoIosAddCircleOutline key="add" onClick={openDialogue} />],
   });
 
-  const [dayArr, setdayArr] = useState({});
+  const [dayArr, setdayArr] = useState(
+    (() => {
+      if (JSON.parse(localStorage.getItem("historydayArr"))) {
+        return JSON.parse(localStorage.getItem("historydayArr"));
+      } else {
+        return {}
+      }
+    })()
+  );
   const [isnewdayState, setnewday] = useState(true);
   const [amountState, setAmS] = useState(false);
   const [typeState, setTyS] = useState(false);
@@ -47,7 +55,7 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
 
             for (let i = 0; i < formArr.length; i++) {
               const arr = formArr[i];
-              if (arr[1] === "" && i!=2) {
+              if (arr[1] === "" && i !== 2) {
                 errKey = arr[0];
                 isPerfect = false;
                 break;
@@ -57,10 +65,13 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
             if (isPerfect) {
               const formObj = Object.fromEntries(formArr);
               formObj.amount = Number(formObj.amount);
-              formObj.rate =   Number(formObj.rate)<=0 ? pmState.generalProps.rate : Number(formObj.rate) ;
+              formObj.rate =
+                Number(formObj.rate) <= 0
+                  ? pmState.generalProps.rate
+                  : Number(formObj.rate);
               formObj.type = Number(formObj.type);
               const objId = mth.getDayId(new Date(date));
-              const newEntry = entry({
+              const newEntry = {
                 id: objId,
                 typeInt: formObj.type,
                 amount: pmState[formObj.pm].symbol + formObj.amount,
@@ -68,7 +79,7 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
                 pm: formObj.pm,
                 date: formObj.time,
                 pmIcons: pmIcons,
-              });
+              };
 
               //updating balance in pmState /App-main screen
               const preBal = pmState[formObj.pm].balance;
@@ -104,6 +115,14 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
                   });
               }
 
+              //updating rate in main pmstate
+              if (formObj.rate !== pmState.generalProps.rate) {
+                const newgenProps = {
+                  ...pmState.generalProps,
+                  ["generalProps"]: formObj.rate,
+                };
+              }
+
               const newdayObj = { ...dayArr, [objId]: [newEntry] };
 
               if (Object.keys(dayArr).includes(objId)) {
@@ -113,10 +132,17 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
                 const newArr = [newEntry, ...old];
                 const samedayObj = { ...dayArr, [objId]: newArr };
                 setdayArr(samedayObj);
+                localStorage.setItem(
+                  "historydayArr",
+                  JSON.stringify(samedayObj)
+                );
               } else {
                 setnewday(true);
                 setdayArr(newdayObj);
-                // localStorage.
+                localStorage.setItem(
+                  "historydayArr",
+                  JSON.stringify(newdayObj)
+                );
               }
 
               // For every new entry to dayArr state
@@ -173,7 +199,7 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
               <input
                 name="rate"
                 placeholder="...Current rate"
-                defaultValue= {undefined}
+                defaultValue={undefined}
                 type="number"
               />
             </div>
@@ -279,9 +305,7 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
 function entry({ id, typeInt, amount, category, pm, date, pmIcons }) {
   const retObj = (
     <div
-      dayid={id}
       key={mth.getTimeId(date)}
-      timeid={mth.getTimeId(date)}
       className="history-row-entry"
     >
       <div>
@@ -316,16 +340,17 @@ function entry({ id, typeInt, amount, category, pm, date, pmIcons }) {
   return retObj;
 }
 
-function day(divArr, isnewday) {
-  const objid = divArr[0].props.dayid;
+function day(arrObj, isnewday) {
+  const objid = arrObj[0].id;
+  const timeId = mth.getTimeId(arrObj[0].date);
   let time;
   let currentDate;
   if (isnewday) {
-    time = divArr[0].key?.replace("t", "");
+    time = timeId?.replace("t", "");
   } else {
-    time = divArr[0].key?.replace("t", "");
+    time = timeId?.replace("t", "");
   }
-  currentDate = new Date(new Date().setTime(time));
+  currentDate = new Date(Number(time));
   const options = {
     weekday: "short",
     year: "numeric",
@@ -337,7 +362,7 @@ function day(divArr, isnewday) {
       <div className="day-header">
         {currentDate.toLocaleDateString([], options)}
       </div>
-      <div className="day-scrollable">{divArr}</div>
+      <div className="day-scrollable">{entry({...arrObj})}</div>
     </div>
   );
 }
