@@ -30,284 +30,274 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
       if (JSON.parse(localStorage.getItem("historydayArr"))) {
         return JSON.parse(localStorage.getItem("historydayArr"));
       } else {
-        return {}
+        return {};
       }
     })()
   );
-  const [isnewdayState, setnewday] = useState(true);
+
   const [amountState, setAmS] = useState(false);
   const [typeState, setTyS] = useState(false);
   const [categoryState, setCaS] = useState(false);
   const [paymthState, setPmS] = useState(false);
 
+  function generateFloatFormContent() {
+    return (
+      <div>
+        <div>
+          <input
+            name="time"
+            placeholder="...Time"
+            type="datetime-local"
+            value={date}
+            onChange={(e) => {
+              const updateDateState = e.target.value;
+
+              setDate(updateDateState);
+            }}
+          />
+        </div>
+
+        <div>
+          <input
+            name="amount"
+            placeholder="...Amount"
+            defaultValue=""
+            type="number"
+            onChange={() => {
+              if (amountState) {
+                setAmS(false);
+              }
+            }}
+          />
+          {amountState && errorIcon}
+        </div>
+
+        <div>
+          <input
+            name="rate"
+            placeholder="...Current rate"
+            defaultValue={undefined}
+            type="number"
+          />
+        </div>
+
+        <div>
+          <select
+            name="pm"
+            onChange={() => {
+              if (paymthState) {
+                setPmS(false);
+              }
+            }}
+          >
+            <option value="">...Payment Method</option>
+            {Object.keys(pmObjs.pmAmount.all).map((keys) => {
+              if (pmObjs.pmAmount.all[keys]?.ispm)
+                return (
+                  <option key={keys} value={keys}>
+                    {keys}
+                  </option>
+                );
+            })}
+          </select>
+          {paymthState && errorIcon}
+        </div>
+
+        <div>
+          <select
+            name="type"
+            id=""
+            onChange={() => {
+              if (typeState) {
+                setTyS(false);
+              }
+            }}
+          >
+            <option value={""}>...Entry Type</option>
+            <option value={-1}>Cash Out</option>
+            <option value={2}>Freeze</option>
+            <option value={-2}>UnFreeze</option>
+            <option value={1}>Cash In</option>
+          </select>
+
+          {typeState && errorIcon}
+        </div>
+        <div>
+          <select
+            name="category"
+            id=""
+            onChange={() => {
+              if (categoryState) {
+                setCaS(false);
+              }
+            }}
+          >
+            <option value={""}>...Category</option>
+            <option value={"business"}>Business</option>
+            <option value={"personal"}>Personal</option>
+          </select>
+          {categoryState && errorIcon}
+        </div>
+        <div className="fill"></div>
+
+        <button type="submit">Save</button>
+      </div>
+    );
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    const formArr = Array.from(new FormData(e.target).entries());
+    let errKey = "";
+    let isPerfect = true;
+
+    for (let i = 0; i < formArr.length; i++) {
+      const arr = formArr[i];
+      if (arr[1] === "" && i !== 2) {
+        errKey = arr[0];
+        isPerfect = false;
+        break;
+      }
+    }
+
+    if (isPerfect) {
+      const formObj = Object.fromEntries(formArr);
+      formObj.amount = Number(formObj.amount);
+      formObj.rate =
+        Number(formObj.rate) <= 0
+          ? pmState.generalProps.rate
+          : Number(formObj.rate);
+      formObj.type = Number(formObj.type);
+      const objId = mth.getTimeId(new Date(date));
+      const newEntry = {
+        id: objId,
+        typeInt: formObj.type,
+        amount: pmState[formObj.pm].symbol + formObj.amount,
+        category: formObj.category,
+        pm: formObj.pm,
+        date: formObj.time,
+        pmIcons: pmIcons,
+      };
+
+      //updating balance in pmState /App-main screen
+      const preBal = pmState[formObj.pm].balance;
+      const preFreeze = pmState[formObj.pm].frozen;
+      const pm = pmState[formObj.pm];
+
+      switch (formObj.type) {
+        case -2:
+          setpmState({
+            ...pmState,
+            [formObj.pm]: { ...pm, frozen: preFreeze - formObj.amount },
+          });
+
+          break;
+        case -1:
+          setpmState({
+            ...pmState,
+            [formObj.pm]: { ...pm, balance: preBal - formObj.amount },
+          });
+
+          break;
+        case 1:
+          setpmState({
+            ...pmState,
+            [formObj.pm]: { ...pm, balance: preBal + formObj.amount },
+          });
+
+          break;
+        default:
+          setpmState({
+            ...pmState,
+            [formObj.pm]: { ...pm, frozen: preFreeze + formObj.amount },
+          });
+      }
+
+      //updating rate in main pmstate
+      if (formObj.rate !== pmState.generalProps.rate) {
+        const newgenProps = {
+          ...pmState.generalProps,
+          ["generalProps"]: formObj.rate,
+        };
+      }
+
+      const obj = { [objId]: newEntry, ...dayArr };
+
+      setdayArr(obj);
+      localStorage.setItem("historydayArr", JSON.stringify(obj));
+
+      // For every new entry to dayArr state
+      // a corresponding entry to daysArr (grouped from start)
+    } else {
+      switch (errKey) {
+        case "pm":
+          setPmS(true);
+          break;
+        case "type":
+          setTyS(true);
+          break;
+        case "category":
+          setCaS(true);
+          break;
+        default:
+          setAmS(true);
+          break;
+      }
+    }
+  }
+
+  function generateHistoryContent() {
+    return (
+      <div className="history-container">
+        {isDialog && (
+          <div
+            onClick={() => {
+              setDialog(false);
+            }}
+            className="form-bg"
+          ></div>
+        )}
+        <div className="history">
+          {isDialog && FloatingForm()}
+          <h3>Payment History</h3>
+
+          <div className="history-toolbar">{firstState.toolbarArr}</div>
+          <div className="history-entrybox">
+            {Object.keys(dayArr)
+              .map((keyz) => {
+                // printing the payment history here
+
+                return day(dayArr[keyz]);
+              })
+              .sort(
+                (b, a) =>
+                  a.dayid.replace("d", "") -
+                  b.dayid.replace("d", "")
+              )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   function FloatingForm() {
     return (
       <div className="floating-form-box">
         <div className="fill"></div>
-        <form
-          method="post"
-          onSubmit={(e) => {
-            e.preventDefault();
-
-            const formArr = Array.from(new FormData(e.target).entries());
-            let errKey = "";
-            let isPerfect = true;
-
-            for (let i = 0; i < formArr.length; i++) {
-              const arr = formArr[i];
-              if (arr[1] === "" && i !== 2) {
-                errKey = arr[0];
-                isPerfect = false;
-                break;
-              }
-            }
-
-            if (isPerfect) {
-              const formObj = Object.fromEntries(formArr);
-              formObj.amount = Number(formObj.amount);
-              formObj.rate =
-                Number(formObj.rate) <= 0
-                  ? pmState.generalProps.rate
-                  : Number(formObj.rate);
-              formObj.type = Number(formObj.type);
-              const objId = mth.getDayId(new Date(date));
-              const newEntry = {
-                id: objId,
-                typeInt: formObj.type,
-                amount: pmState[formObj.pm].symbol + formObj.amount,
-                category: formObj.category,
-                pm: formObj.pm,
-                date: formObj.time,
-                pmIcons: pmIcons,
-              };
-
-              //updating balance in pmState /App-main screen
-              const preBal = pmState[formObj.pm].balance;
-              const preFreeze = pmState[formObj.pm].frozen;
-              const pm = pmState[formObj.pm];
-
-              switch (formObj.type) {
-                case -2:
-                  setpmState({
-                    ...pmState,
-                    [formObj.pm]: { ...pm, frozen: preFreeze - formObj.amount },
-                  });
-
-                  break;
-                case -1:
-                  setpmState({
-                    ...pmState,
-                    [formObj.pm]: { ...pm, balance: preBal - formObj.amount },
-                  });
-
-                  break;
-                case 1:
-                  setpmState({
-                    ...pmState,
-                    [formObj.pm]: { ...pm, balance: preBal + formObj.amount },
-                  });
-
-                  break;
-                default:
-                  setpmState({
-                    ...pmState,
-                    [formObj.pm]: { ...pm, frozen: preFreeze + formObj.amount },
-                  });
-              }
-
-              //updating rate in main pmstate
-              if (formObj.rate !== pmState.generalProps.rate) {
-                const newgenProps = {
-                  ...pmState.generalProps,
-                  ["generalProps"]: formObj.rate,
-                };
-              }
-
-              const newdayObj = { ...dayArr, [objId]: [newEntry] };
-
-              if (Object.keys(dayArr).includes(objId)) {
-                setnewday(false);
-                const old = dayArr[objId];
-
-                const newArr = [newEntry, ...old];
-                const samedayObj = { ...dayArr, [objId]: newArr };
-                setdayArr(samedayObj);
-                localStorage.setItem(
-                  "historydayArr",
-                  JSON.stringify(samedayObj)
-                );
-              } else {
-                setnewday(true);
-                setdayArr(newdayObj);
-                localStorage.setItem(
-                  "historydayArr",
-                  JSON.stringify(newdayObj)
-                );
-              }
-
-              // For every new entry to dayArr state
-              // a corresponding entry to daysArr (grouped from start)
-            } else {
-              switch (errKey) {
-                case "pm":
-                  setPmS(true);
-                  break;
-                case "type":
-                  setTyS(true);
-                  break;
-                case "category":
-                  setCaS(true);
-                  break;
-                default:
-                  setAmS(true);
-                  break;
-              }
-            }
-          }}
-        >
-          <div>
-            <div>
-              <input
-                name="time"
-                placeholder="...Time"
-                type="datetime-local"
-                value={date}
-                onChange={(e) => {
-                  const updateDateState = e.target.value;
-
-                  setDate(updateDateState);
-                }}
-              />
-            </div>
-
-            <div>
-              <input
-                name="amount"
-                placeholder="...Amount"
-                defaultValue=""
-                type="number"
-                onChange={() => {
-                  if (amountState) {
-                    setAmS(false);
-                  }
-                }}
-              />
-              {amountState && errorIcon}
-            </div>
-
-            <div>
-              <input
-                name="rate"
-                placeholder="...Current rate"
-                defaultValue={undefined}
-                type="number"
-              />
-            </div>
-
-            <div>
-              <select
-                name="pm"
-                onChange={() => {
-                  if (paymthState) {
-                    setPmS(false);
-                  }
-                }}
-              >
-                <option value="">...Payment Method</option>
-                {Object.keys(pmObjs.pmAmount.all).map((keys) => {
-                  if (pmObjs.pmAmount.all[keys]?.ispm)
-                    return (
-                      <option key={keys} value={keys}>
-                        {keys}
-                      </option>
-                    );
-                })}
-              </select>
-              {paymthState && errorIcon}
-            </div>
-
-            <div>
-              <select
-                name="type"
-                id=""
-                onChange={() => {
-                  if (typeState) {
-                    setTyS(false);
-                  }
-                }}
-              >
-                <option value={""}>...Entry Type</option>
-                <option value={-1}>Cash Out</option>
-                <option value={2}>Freeze</option>
-                <option value={-2}>UnFreeze</option>
-                <option value={1}>Cash In</option>
-              </select>
-
-              {typeState && errorIcon}
-            </div>
-            <div>
-              <select
-                name="category"
-                id=""
-                onChange={() => {
-                  if (categoryState) {
-                    setCaS(false);
-                  }
-                }}
-              >
-                <option value={""}>...Category</option>
-                <option value={"business"}>Business</option>
-                <option value={"personal"}>Personal</option>
-              </select>
-              {categoryState && errorIcon}
-            </div>
-            <div className="fill"></div>
-
-            <button type="submit">Save</button>
-          </div>
+        <form method="post" onSubmit={(e) => handleSubmit(e)}>
+          {generateFloatFormContent()}
         </form>
       </div>
     );
   }
 
-  return (
-    <div className="history-container">
-      {isDialog && (
-        <div
-          onClick={() => {
-            setDialog(false);
-          }}
-          className="form-bg"
-        ></div>
-      )}
-      <div className="history">
-        {isDialog && FloatingForm()}
-        <h3>Payment History</h3>
-
-        <div className="history-toolbar">{firstState.toolbarArr}</div>
-        <div className="history-entrybox">
-          {Object.keys(dayArr)
-            .map((keyz) => {
-              // printing the payment history here
-
-              return day(dayArr[keyz], isnewdayState);
-            })
-            .sort(
-              (b, a) =>
-                a.props.dayid.replace("d", "") - b.props.dayid.replace("d", "")
-            )}
-        </div>
-      </div>
-    </div>
-  );
+  return generateHistoryContent();
 }
 
 function entry({ id, typeInt, amount, category, pm, date, pmIcons }) {
   const retObj = (
-    <div
-      key={mth.getTimeId(date)}
-      className="history-row-entry"
-    >
+    <div key={mth.getTimeId(date)} className="history-row-entry">
       <div>
         {(function () {
           switch (typeInt) {
@@ -340,17 +330,11 @@ function entry({ id, typeInt, amount, category, pm, date, pmIcons }) {
   return retObj;
 }
 
-function day(arrObj, isnewday) {
-  const objid = arrObj[0].id;
-  const timeId = mth.getTimeId(arrObj[0].date);
-  let time;
-  let currentDate;
-  if (isnewday) {
-    time = timeId?.replace("t", "");
-  } else {
-    time = timeId?.replace("t", "");
-  }
-  currentDate = new Date(Number(time));
+function day(arrObj) {
+  const objid = arrObj.id;
+  const timeId = mth.getTimeId(arrObj.date);
+  const time = timeId?.replace("t", "");
+  const currentDate = new Date(Number(time));
   const options = {
     weekday: "short",
     year: "numeric",
@@ -362,7 +346,7 @@ function day(arrObj, isnewday) {
       <div className="day-header">
         {currentDate.toLocaleDateString([], options)}
       </div>
-      <div className="day-scrollable">{entry({...arrObj})}</div>
+      <div className="day-scrollable">{entry({ ...arrObj })}</div>
     </div>
   );
 }
