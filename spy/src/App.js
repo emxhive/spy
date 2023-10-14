@@ -23,7 +23,7 @@ import Tracker from "./components/screens/Tracker";
 import MobLayout from "./components/MobLayout";
 
 function App() {
-  localStorage.removeItem("historydayArr");
+  // localStorage.removeItem("historydayArr");
   const admin = "okpakomaraez@gmail.com";
   const [pmStates, setpmStates] = useState(objss().before());
   const [pmIcons, setpmIcons] = useState(objss().pmIcons);
@@ -38,6 +38,7 @@ function App() {
     JSON.parse(localStorage.getItem("trackState"))
   );
 
+  // localStorage.setItem("pendingHistEntry", "false");
   const [pendHistEntry, setpendHistEntry] = useState(
     JSON.parse(localStorage.getItem("pendingHistEntry"))
   );

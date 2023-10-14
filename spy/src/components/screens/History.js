@@ -12,7 +12,14 @@ import { addDoc, collection } from "firebase/firestore";
 const errorIcon = <span>⚠️</span>;
 const mth = mthdss();
 
-export default function History({ pendHistEntry, setpendHistEntry, pmObjs, pmIcons, pmState, setpmState }) {
+export default function History({
+  pendHistEntry,
+  setpendHistEntry,
+  pmObjs,
+  pmIcons,
+  pmState,
+  setpmState,
+}) {
   const [isDialog, setDialog] = useState(false);
   const [date, setDate] = useState(new Date().toISOString().split(".")[0]);
 
@@ -134,8 +141,8 @@ export default function History({ pendHistEntry, setpendHistEntry, pmObjs, pmIco
             }}
           >
             <option value={""}>...Category</option>
-            <option value={"business"}>Business</option>
-            <option value={"personal"}>Personal</option>
+            <option value={0}>Business</option>
+            <option value={1}>Personal</option>
           </select>
           {categoryState && errorIcon}
         </div>
@@ -170,6 +177,7 @@ export default function History({ pendHistEntry, setpendHistEntry, pmObjs, pmIco
           ? pmState.generalProps.rate
           : Number(formObj.rate);
       formObj.type = Number(formObj.type);
+      formObj.category = Number(formObj.category);
       const objId = mth.getTimeId(new Date(date));
       const newEntry = {
         id: objId,
@@ -228,9 +236,37 @@ export default function History({ pendHistEntry, setpendHistEntry, pmObjs, pmIco
       setdayArr(obj);
       localStorage.setItem("historydayArr", JSON.stringify(obj));
 
-      //SET PENDING HISTORY ENTRY STATE
-      const pendingStateObj = {
-     
+
+
+
+      //SET PENDING HISTORY ENTRY STATE FOR TRACKER USE
+      if (Math.abs(formObj.type) == 1) {
+        //meaning only debits and credits.. no freezes are considered
+
+        const pm = pmObjs.pmAmount.all[formObj.pm];
+        const pendingStateObj = {
+          rate: formObj.rate,
+          pm: formObj.pm,
+          get amount() {
+            if (pm.isUsd) {
+              return formObj.amount * formObj.type;
+            } else {
+              return (formObj.amount / pm.rate) * formObj.type;
+            }
+          },
+        };
+
+        if (pendHistEntry) {
+          const obj = {
+            ...pendingStateObj,
+            amount: pendHistEntry.amount + pendingStateObj.amount,
+          };
+          setpendHistEntry(obj);
+          localStorage.setItem("pendingHistEntry", obj);
+        } else {
+          setpendHistEntry(pendingStateObj);
+        }
+        localStorage.setItem("pendingHistEntry", pendingStateObj);
       }
 
       // For every new entry to dayArr state
@@ -317,8 +353,11 @@ function entry({ id, typeInt, amount, category, pm, date, pmIcons }) {
         })()}
       </div>
 
-      <div>{category}</div>
-      <div>{symbTag(amount.symbol)}{amount.value}</div>
+      <div>{category == 0 ? "Work" : "Spend"}</div>
+      <div>
+        {symbTag(amount.symbol)}
+        {amount.value}
+      </div>
       <img src={pmIcons[pm]} alt={pm} />
       <div className="history-entry-time">
         {new Date(date).toLocaleTimeString([], {
