@@ -265,16 +265,12 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
           <div className="history-toolbar">{firstState.toolbarArr}</div>
           <div className="history-entrybox">
             {Object.keys(dayArr)
+              .sort((b, a) => a.replace("t", "") - b.replace("t", ""))
               .map((keyz) => {
                 // printing the payment history here
 
                 return day(dayArr[keyz]);
-              })
-              .sort(
-                (b, a) =>
-                  a.dayid.replace("d", "") -
-                  b.dayid.replace("d", "")
-              )}
+              })}
           </div>
         </div>
       </div>
