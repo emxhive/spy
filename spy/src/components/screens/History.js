@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import "../../css/history.css";
+import "../../css/mobhistory.css";
 import { FaLock, FaUnlock, FaQuestion } from "react-icons/fa";
 import { PiTrendUp, PiTrendDown } from "react-icons/pi";
 import { IoIosAddCircleOutline } from "react-icons/io";
@@ -11,7 +12,7 @@ import { addDoc, collection } from "firebase/firestore";
 const errorIcon = <span>⚠️</span>;
 const mth = mthdss();
 
-export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
+export default function History({ pendHistEntry, setpendHistEntry, pmObjs, pmIcons, pmState, setpmState }) {
   const [isDialog, setDialog] = useState(false);
   const [date, setDate] = useState(new Date().toISOString().split(".")[0]);
 
@@ -173,7 +174,7 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
       const newEntry = {
         id: objId,
         typeInt: formObj.type,
-        amount: pmState[formObj.pm].symbol + formObj.amount,
+        amount: { symbol: pmState[formObj.pm].symbol, value: formObj.amount },
         category: formObj.category,
         pm: formObj.pm,
         date: formObj.time,
@@ -226,6 +227,11 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
 
       setdayArr(obj);
       localStorage.setItem("historydayArr", JSON.stringify(obj));
+
+      //SET PENDING HISTORY ENTRY STATE
+      const pendingStateObj = {
+     
+      }
 
       // For every new entry to dayArr state
       // a corresponding entry to daysArr (grouped from start)
@@ -312,7 +318,7 @@ function entry({ id, typeInt, amount, category, pm, date, pmIcons }) {
       </div>
 
       <div>{category}</div>
-      <div>{amount}</div>
+      <div>{symbTag(amount.symbol)}{amount.value}</div>
       <img src={pmIcons[pm]} alt={pm} />
       <div className="history-entry-time">
         {new Date(date).toLocaleTimeString([], {
@@ -333,7 +339,6 @@ function day(arrObj) {
   const currentDate = new Date(Number(time));
   const options = {
     weekday: "short",
-    year: "numeric",
     day: "numeric",
     month: "long",
   };
@@ -345,4 +350,8 @@ function day(arrObj) {
       <div className="day-scrollable">{entry({ ...arrObj })}</div>
     </div>
   );
+}
+
+function symbTag(symbol) {
+  return <span className="gen-symb-tag">{symbol}</span>;
 }

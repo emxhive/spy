@@ -6,11 +6,10 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Outlet
+  Outlet,
 } from "react-router-dom";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Main from "./components/screens/Main";
 import AuthScreen from "./components/screens/AuthScreen";
@@ -24,8 +23,7 @@ import Tracker from "./components/screens/Tracker";
 import MobLayout from "./components/MobLayout";
 
 function App() {
-
-  // localStorage.removeItem("historydayArr");
+  localStorage.removeItem("historydayArr");
   const admin = "okpakomaraez@gmail.com";
   const [pmStates, setpmStates] = useState(objss().before());
   const [pmIcons, setpmIcons] = useState(objss().pmIcons);
@@ -40,11 +38,15 @@ function App() {
     JSON.parse(localStorage.getItem("trackState"))
   );
 
+  const [pendHistEntry, setpendHistEntry] = useState(
+    JSON.parse(localStorage.getItem("pendingHistEntry"))
+  );
+
   const mobLayout = MobLayout({
     pmState: pmStates,
     objs: objjs,
     signOut: signOut,
-    loggedIn: loggedIn
+    loggedIn: loggedIn,
   });
 
   //To fetch data as soon as data loads.. data from object.js is loaded first but shortly replaced by data from firebase if any.
@@ -153,6 +155,8 @@ function App() {
             path="history"
             element={
               <History
+                pendHistEntry={pendHistEntry}
+                setpendHistEntry={setpendHistEntry}
                 pmObjs={objjs}
                 pmIcons={pmIcons}
                 pmState={pmStates}
