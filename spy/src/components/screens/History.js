@@ -236,9 +236,6 @@ export default function History({
       setdayArr(obj);
       localStorage.setItem("historydayArr", JSON.stringify(obj));
 
-
-
-
       //SET PENDING HISTORY ENTRY STATE FOR TRACKER USE
       if (Math.abs(formObj.type) == 1) {
         //meaning only debits and credits.. no freezes are considered
@@ -256,17 +253,20 @@ export default function History({
           },
         };
 
-        if (pendHistEntry) {
+        if (JSON.parse(localStorage.getItem("pendingHistEntry"))) {
           const obj = {
             ...pendingStateObj,
             amount: pendHistEntry.amount + pendingStateObj.amount,
           };
           setpendHistEntry(obj);
-          localStorage.setItem("pendingHistEntry", obj);
+          localStorage.setItem("pendingHistEntry", JSON.stringify(obj));
         } else {
           setpendHistEntry(pendingStateObj);
         }
-        localStorage.setItem("pendingHistEntry", pendingStateObj);
+        localStorage.setItem(
+          "pendingHistEntry",
+          JSON.stringify(pendingStateObj)
+        );
       }
 
       // For every new entry to dayArr state

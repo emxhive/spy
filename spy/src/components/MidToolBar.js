@@ -10,11 +10,10 @@ import {
   BsChevronDown,
   BsChevronDoubleDown,
   BsFilter,
-  BsCheck
+  BsCheck,
 } from "react-icons/bs";
 import { pmUpdatespyStore } from "../utils/updatespyStore";
-import { toast } from 'react-toastify';
-
+import { toast } from "react-toastify";
 
 function MidToolBar({
   setEdit,
@@ -29,7 +28,7 @@ function MidToolBar({
   settrackState,
   showsavebuttons,
   setCurrentEntry,
-  currentEntry
+  currentEntry,
 }) {
   const mthds = mthdss();
 
@@ -54,8 +53,8 @@ function MidToolBar({
             ...state,
             [pm]: {
               ...state[pm],
-              ...entrydata
-            }
+              ...entrydata,
+            },
           });
 
           let json = "{";
@@ -66,7 +65,7 @@ function MidToolBar({
 
           pmUpdatespyStore({
             dataUpdate: JSON.parse(json),
-            spyCollection: "pmstate"
+            spyCollection: "pmstate",
           });
 
           setCurrentEntry(null);
@@ -115,17 +114,26 @@ function MidToolBar({
           in: objs.pmAmount.netInNgn - objs.pmAmount.netInNgnF,
           tiu: objs.pmAmount.netInUsd,
           tin: objs.pmAmount.netInNgn,
-          prev: previousData
-
+          get exp() {
+            return JSON.parse(localStorage.getItem("pendingHistEntry"))
+              ? Number(
+                  JSON.parse(localStorage.getItem("pendingHistEntry")).amount
+                )
+              : null ;
+          },
+          prev: previousData,
         },
-        ...trackState
+        ...trackState,
       };
 
-      const prevD = { r: localTrack[currentId].r, tiu: localTrack[currentId].tiu, tin: localTrack[currentId].tin };
-      localStorage.setItem("previousTrack", JSON.stringify(prevD))
+      const prevD = {
+        r: localTrack[currentId].r,
+        tiu: localTrack[currentId].tiu,
+        tin: localTrack[currentId].tin,
+      };
+      localStorage.setItem("previousTrack", JSON.stringify(prevD));
       settrackState(localTrack);
       localStorage.setItem("trackState", JSON.stringify(localTrack));
-
     }
   }
 

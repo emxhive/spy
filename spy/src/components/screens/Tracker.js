@@ -30,7 +30,14 @@ export default function Tracker({ trackState, settrackState }) {
 
     (function () {
       if (data.prev?.r > 0) {
-        x = Number(data.tiu - data.prev.tiu);
+        let y = 0;
+        if (data.exp) {
+          y = -data.exp;
+        }
+        x = data.tiu + y - data.prev.tiu;
+        localStorage.setItem("pendingHistEntry", "null");
+
+        //TODO useStorage here send this to firebase when the time comes
         if (x < 0) {
           pnlClass = "mob-track-pnl-mini-loss";
         } else {
@@ -60,6 +67,7 @@ export default function Tracker({ trackState, settrackState }) {
           <div className="mob-track-entry-box">
             <div>fx</div>
             <div>{data.r}</div>
+
             <div>u</div>
             <div>{mth.tidyFig(data.u)}</div>
             <div>n</div>
@@ -68,6 +76,11 @@ export default function Tracker({ trackState, settrackState }) {
             <div>{mth.tidyFig(data.iu)}</div>
             <div>in</div>
             <div>{mth.tidyFig(data.in)}</div>
+            {data.exp < 0 ||
+              (data.exp > 0 && [
+                <div key={"ex.label"}>ex</div>,
+                <div key={"ex.value"}>{mth.tidyFig(data.exp)}</div>,
+              ])}
           </div>
         </div>
       );
@@ -102,19 +115,17 @@ export default function Tracker({ trackState, settrackState }) {
     });
   }
 
-  const pastContent= [];
+  const pastContent = [];
   monthsCollapse.forEach((obj, n) => {
     if (n > 0) {
       pastContent.push(obj);
     }
-  })
+  });
 
   const trackerContent = (
     <div className="mob-trackercontent">
       {pasCount > 0 && (
-        <div className="mob-trackrecords-past">
-          {pastContent}
-        </div>
+        <div className="mob-trackrecords-past">{pastContent}</div>
       )}
       <div className="mob-trackrecords-current">{monthsCollapse[0]}</div>
     </div>
