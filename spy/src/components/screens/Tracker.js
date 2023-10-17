@@ -76,8 +76,8 @@ export default function Tracker({ trackState, settrackState }) {
             <div>{mth.tidyFig(data.iu)}</div>
             <div>in</div>
             <div>{mth.tidyFig(data.in)}</div>
-            {data.exp < 0 ||
-              (data.exp > 0 && [
+            {Number(data.exp) < 0 ||
+              (Number(data.exp) > 0 && [
                 <div key={"ex.label"}>ex</div>,
                 <div key={"ex.value"}>{mth.tidyFig(data.exp)}</div>,
               ])}
