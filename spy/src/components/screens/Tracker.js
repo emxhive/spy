@@ -1,12 +1,18 @@
-import React, { useRef } from "react";
-import { useState } from "react";
+import React, { useContext } from "react";
 import Collapsible from "react-collapsible";
-import "../../css/mobtracker.css";
 import mthdss from "../../consts/functions";
-import { Link } from "react-router-dom";
-import { parseActionCodeURL } from "firebase/auth";
+import "../../css/mobtracker.css";
+import {
+  PendingHiContext,
+  SetPendingHiContext,
+  TrackContext,
+} from "../../Context";
 
-export default function Tracker({ trackState, settrackState }) {
+export default function Tracker({}) {
+  const trackState = useContext(TrackContext);
+  const pendHiState = useContext(PendingHiContext);
+  const setPendingHiState = useContext(SetPendingHiContext);
+
   const mth = mthdss();
 
   let triggerText = "";
@@ -32,10 +38,11 @@ export default function Tracker({ trackState, settrackState }) {
       if (data.prev?.r > 0) {
         let y = 0;
         if (data.exp) {
-          y = -data.exp;
+          y = -2 * data.exp;
         }
         x = data.tiu + y - data.prev.tiu;
         localStorage.setItem("pendingHistEntry", "null");
+        setPendingHiState(null);
 
         //TODO useStorage here send this to firebase when the time comes
         if (x < 0) {
@@ -76,11 +83,10 @@ export default function Tracker({ trackState, settrackState }) {
             <div>{mth.tidyFig(data.iu)}</div>
             <div>in</div>
             <div>{mth.tidyFig(data.in)}</div>
-            {Number(data.exp) < 0 ||
-              (Number(data.exp) > 0 && [
-                <div key={"ex.label"}>ex</div>,
-                <div key={"ex.value"}>{mth.tidyFig(data.exp)}</div>,
-              ])}
+            {(() => data.exp < 0 || data.exp > 0)() && [
+              <div key={"ex.label"}>ex</div>,
+              <div key={"ex.value"}>{mth.tidyFig(data.exp)}</div>,
+            ]}
           </div>
         </div>
       );

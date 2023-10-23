@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 import "../../css/history.css";
 import "../../css/mobhistory.css";
@@ -9,17 +9,19 @@ import mthdss from "../../consts/functions";
 import { db } from "../../utils/db";
 import { addDoc, collection } from "firebase/firestore";
 
+import {
+  PendingHiContext,
+  SetPendingHiContext,
+  TrackContext,
+} from "../../Context";
+
 const errorIcon = <span>⚠️</span>;
 const mth = mthdss();
 
-export default function History({
-  pendHistEntry,
-  setpendHistEntry,
-  pmObjs,
-  pmIcons,
-  pmState,
-  setpmState,
-}) {
+export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
+  const pendHiState = useContext(PendingHiContext);
+  const setPendingHiState = useContext(SetPendingHiContext);
+
   const [isDialog, setDialog] = useState(false);
   const [date, setDate] = useState(new Date().toISOString().split(".")[0]);
 
@@ -256,12 +258,12 @@ export default function History({
         if (JSON.parse(localStorage.getItem("pendingHistEntry"))) {
           const obj = {
             ...pendingStateObj,
-            amount: pendHistEntry.amount + pendingStateObj.amount,
+            amount: pendHiState.amount + pendingStateObj.amount,
           };
-          setpendHistEntry(obj);
+          setPendingHiState(obj);
           localStorage.setItem("pendingHistEntry", JSON.stringify(obj));
         } else {
-          setpendHistEntry(pendingStateObj);
+          setPendingHiState(pendingStateObj);
         }
         localStorage.setItem(
           "pendingHistEntry",
