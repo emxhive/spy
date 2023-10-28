@@ -321,9 +321,10 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
             {Object.keys(dayArr)
               .sort(
                 (b, a) =>
-                  a.replace("d", "").replace(",", "") -
-                  b.replace("d", "").replace(",", "")
+                  a.replace("d", "").replaceAll(",", "") -
+                  b.replace("d", "").replaceAll(",", "")
               )
+
               .map((keyz) => {
                 // printing the payment history here
                 return day(keyz, dayArr[keyz]);
