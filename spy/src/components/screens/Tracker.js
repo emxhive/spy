@@ -55,6 +55,17 @@ export default function Tracker({}) {
       }
     })();
 
+    if (x) {
+      let result;
+      const earnings = JSON.parse(localStorage.getItem("trackEarns"));
+      result = {
+        ...earnings,
+        [key]: x,
+      };
+
+      localStorage.setItem("trackEarns", JSON.stringify(result));
+    }
+
     function createEntry() {
       return (
         <div key={key}>
