@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Collapsible from "react-collapsible";
 import mthdss from "../../consts/functions";
 import "../../css/mobtracker.css";
@@ -6,14 +6,34 @@ import {
   PendingHiContext,
   SetPendingHiContext,
   TrackContext,
+  TrackWatch,
 } from "../../Context";
+import fetchspyStore from "../../utils/fetchspyStore";
+import updatespyStore from "../../utils/updatespyStore";
 
 export default function Tracker({}) {
   const trackState = useContext(TrackContext);
   const pendHiState = useContext(PendingHiContext);
   const setPendingHiState = useContext(SetPendingHiContext);
+  const trackWatch = useContext(TrackWatch);
+
+  const monthEarns = useState({});
 
   const mth = mthdss();
+  let fetchedObj = {};
+  const fetchedData = fetchData();
+  async function fetchData() {
+    return await fetchspyStore({ spyCollection: "income" });
+  }
+
+  if (fetchedData) fetchedObj = fetchedData;
+
+  const [income, setIncome] = useState(fetchedObj);
+  let switfIncome;
+
+  useEffect(() => {
+    updatespyStore({ dataUpdate: { earnings }, spyCollection: "income" });
+  }, [income]);
 
   let triggerText = "";
 
@@ -38,7 +58,7 @@ export default function Tracker({}) {
       if (data.prev?.r > 0) {
         let y = 0;
         if (data.exp) {
-          y = -2 * data.exp;
+          y = -data.exp;
         }
         x = data.tiu + y - data.prev.tiu;
         localStorage.setItem("pendingHistEntry", "null");
@@ -60,10 +80,17 @@ export default function Tracker({}) {
       const earnings = JSON.parse(localStorage.getItem("trackEarns"));
       result = {
         ...earnings,
-        [key]: x,
+        [key]: {
+          value: x,
+          month: date.getMonth(),
+        },
       };
 
       localStorage.setItem("trackEarns", JSON.stringify(result));
+
+      if (trackWatch.current && triggerNo == 0) {
+        
+      }
     }
 
     function createEntry() {

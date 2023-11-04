@@ -26,6 +26,7 @@ import {
   SetPendingHiContext,
   SetTrackContext,
   TrackContext,
+  TrackWatch
 } from "./Context";
 
 function App() {
@@ -56,7 +57,8 @@ function App() {
     loggedIn: loggedIn,
   });
 
-  //To fetch data as soon as data loads.. data from object.js is loaded first but shortly replaced by data from firebase if any.
+  //To fetch data as soon as data loads.. data from object.js is loaded first but shortly
+  // replaced by data from firebase if any.
   useEffect(() => {
     async function fetchData() {
       const fetchedInfo = await fetchspyStore({ spyCollection: "pmstate" });
@@ -120,6 +122,8 @@ function App() {
       <SetTrackContext.Provider value={settrackState}>
         <PendingHiContext.Provider value={pendingHiState}>
           <SetPendingHiContext.Provider value={setpendingHisState}>
+            <TrackWatch
+
             <Router>
               <Routes>
                 <Route
@@ -165,6 +169,8 @@ function App() {
                 </Route>
               </Routes>
             </Router>
+
+            
           </SetPendingHiContext.Provider>
         </PendingHiContext.Provider>
       </SetTrackContext.Provider>

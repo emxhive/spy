@@ -14,6 +14,7 @@ import {
   SetPendingHiContext,
   TrackContext,
 } from "../../Context";
+import { pmUpdatespyStore } from "../../utils/updatespyStore";
 
 const errorIcon = <span>⚠️</span>;
 const mth = mthdss();
@@ -230,10 +231,16 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
 
       //updating rate in main pmstate
       if (formObj.rate !== pmState.generalProps.rate) {
-        const newgenProps = {
-          ...pmState.generalProps,
-          ["generalProps"]: formObj.rate,
+        const newpmState = {
+          ...pmState,
+          ["generalProps"]: {
+            ...pmState.generalProps,
+            rate: formObj.rate,
+          },
         };
+
+        setpmState(newpmState);
+        pmUpdatespyStore({ dataUpdate: newpmState, spyCollection: "pmstate" });
       }
 
       /////updating day array an
