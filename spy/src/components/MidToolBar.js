@@ -14,7 +14,12 @@ import {
 } from "react-icons/bs";
 import { pmUpdatespyStore } from "../utils/updatespyStore";
 import { toast } from "react-toastify";
-import { PendingHiContext, SetTrackContext, TrackContext } from "../Context";
+import {
+  PendingHiContext,
+  SetTrackContext,
+  TrackContext,
+  TrackWatch,
+} from "../Context";
 
 function MidToolBar({
   setEdit,
@@ -32,6 +37,7 @@ function MidToolBar({
   const trackState = useContext(TrackContext);
   const settrackState = useContext(SetTrackContext);
   const pendHiState = useContext(PendingHiContext);
+  const trackWatch = useContext(TrackWatch);
 
   const mthds = mthdss();
   const previousData = JSON.parse(localStorage.getItem("previousTrack"));
@@ -132,6 +138,7 @@ function MidToolBar({
       localStorage.setItem("previousTrack", JSON.stringify(prevD));
       settrackState(localTrack);
       localStorage.setItem("trackState", JSON.stringify(localTrack));
+      trackWatch.current = true;
     }
   }
 

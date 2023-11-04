@@ -26,7 +26,7 @@ import {
   SetPendingHiContext,
   SetTrackContext,
   TrackContext,
-  TrackWatch
+  TrackWatch,
 } from "./Context";
 
 function App() {
@@ -47,6 +47,8 @@ function App() {
   const [pendingHiState, setpendingHisState] = useState(
     JSON.parse(localStorage.getItem("pendingHistEntry"))
   );
+
+  const trackWatch = useRef(false);
 
   // localStorage.setItem("pendingHistEntry", "false");
 
@@ -122,55 +124,53 @@ function App() {
       <SetTrackContext.Provider value={settrackState}>
         <PendingHiContext.Provider value={pendingHiState}>
           <SetPendingHiContext.Provider value={setpendingHisState}>
-            <TrackWatch
-
-            <Router>
-              <Routes>
-                <Route
-                  path="/"
-                  element={
-                    <div className="main-parent">
-                      {mobLayout.mobTop}
-                      <Outlet />
-                      {mobLayout.mobFooter}
-                      <ToastContainer position="bottom-right" />
-                    </div>
-                  }
-                >
+            <TrackWatch.Provider value={trackWatch}>
+              <Router>
+                <Routes>
                   <Route
-                    index
+                    path="/"
                     element={
-                      <Main
-                        isPc={isPc}
-                        loggedIn={loggedIn}
-                        setlogStatus={setLogStatus}
-                        signOut={signOut}
-                        mthds={mthdds}
-                        objs={objjs}
-                        pmIcons={pmIcons}
-                        setpmIcons={setpmIcons}
-                        pmState={pmStates}
-                        setpmState={setpmStates}
-                      />
+                      <div className="main-parent">
+                        {mobLayout.mobTop}
+                        <Outlet />
+                        {mobLayout.mobFooter}
+                        <ToastContainer position="bottom-right" />
+                      </div>
                     }
-                  />
-                  <Route path="track" element={<Tracker pmobjs={objjs} />} />
-                  <Route
-                    path="history"
-                    element={
-                      <History
-                        pmObjs={objjs}
-                        pmIcons={pmIcons}
-                        pmState={pmStates}
-                        setpmState={setpmStates}
-                      />
-                    }
-                  />
-                </Route>
-              </Routes>
-            </Router>
-
-            
+                  >
+                    <Route
+                      index
+                      element={
+                        <Main
+                          isPc={isPc}
+                          loggedIn={loggedIn}
+                          setlogStatus={setLogStatus}
+                          signOut={signOut}
+                          mthds={mthdds}
+                          objs={objjs}
+                          pmIcons={pmIcons}
+                          setpmIcons={setpmIcons}
+                          pmState={pmStates}
+                          setpmState={setpmStates}
+                        />
+                      }
+                    />
+                    <Route path="track" element={<Tracker pmobjs={objjs} />} />
+                    <Route
+                      path="history"
+                      element={
+                        <History
+                          pmObjs={objjs}
+                          pmIcons={pmIcons}
+                          pmState={pmStates}
+                          setpmState={setpmStates}
+                        />
+                      }
+                    />
+                  </Route>
+                </Routes>
+              </Router>
+            </TrackWatch.Provider>
           </SetPendingHiContext.Provider>
         </PendingHiContext.Provider>
       </SetTrackContext.Provider>

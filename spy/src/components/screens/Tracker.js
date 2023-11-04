@@ -89,8 +89,7 @@ export default function Tracker({}) {
       localStorage.setItem("trackEarns", JSON.stringify(result));
 
       if (trackWatch.current && triggerNo == 0) {
-        
-      }
+        }
     }
 
     function createEntry() {
