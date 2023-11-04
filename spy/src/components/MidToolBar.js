@@ -1,5 +1,5 @@
 import mthdss from "../consts/functions";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { CgScrollV } from "react-icons/cg";
 import {
   BsPlusCircle,
@@ -14,6 +14,7 @@ import {
 } from "react-icons/bs";
 import { pmUpdatespyStore } from "../utils/updatespyStore";
 import { toast } from "react-toastify";
+import { PendingHiContext, SetTrackContext, TrackContext } from "../Context";
 
 function MidToolBar({
   setEdit,
@@ -24,14 +25,15 @@ function MidToolBar({
   setState,
   setaddpmS,
   setshowbuttons,
-  trackState,
-  settrackState,
   showsavebuttons,
   setCurrentEntry,
   currentEntry,
 }) {
-  const mthds = mthdss();
+  const trackState = useContext(TrackContext);
+  const settrackState = useContext(SetTrackContext);
+  const pendHiState = useContext(PendingHiContext);
 
+  const mthds = mthdss();
   const previousData = JSON.parse(localStorage.getItem("previousTrack"));
 
   const showtoolbar = (
@@ -115,11 +117,7 @@ function MidToolBar({
           tiu: objs.pmAmount.netInUsd,
           tin: objs.pmAmount.netInNgn,
           get exp() {
-            return JSON.parse(localStorage.getItem("pendingHistEntry"))
-              ? Number(
-                  JSON.parse(localStorage.getItem("pendingHistEntry")).amount
-                )
-              : null ;
+            return pendHiState ? Number(pendHiState.amount) : null;
           },
           prev: previousData,
         },

@@ -21,6 +21,13 @@ import { useMediaQuery } from "react-responsive";
 import { spyAuth } from "./utils/db";
 import Tracker from "./components/screens/Tracker";
 import MobLayout from "./components/MobLayout";
+import {
+  PendingHiContext,
+  SetPendingHiContext,
+  SetTrackContext,
+  TrackContext,
+  TrackWatch
+} from "./Context";
 
 function App() {
   // localStorage.removeItem("historydayArr");
@@ -37,11 +44,11 @@ function App() {
   const [trackState, settrackState] = useState(
     JSON.parse(localStorage.getItem("trackState"))
   );
-
-  // localStorage.setItem("pendingHistEntry", "false");
-  const [pendHistEntry, setpendHistEntry] = useState(
+  const [pendingHiState, setpendingHisState] = useState(
     JSON.parse(localStorage.getItem("pendingHistEntry"))
   );
+
+  // localStorage.setItem("pendingHistEntry", "false");
 
   const mobLayout = MobLayout({
     pmState: pmStates,
@@ -50,7 +57,8 @@ function App() {
     loggedIn: loggedIn,
   });
 
-  //To fetch data as soon as data loads.. data from object.js is loaded first but shortly replaced by data from firebase if any.
+  //To fetch data as soon as data loads.. data from object.js is loaded first but shortly
+  // replaced by data from firebase if any.
   useEffect(() => {
     async function fetchData() {
       const fetchedInfo = await fetchspyStore({ spyCollection: "pmstate" });
@@ -110,64 +118,63 @@ function App() {
   );
 
   const mobileVersion = (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <div className="main-parent">
-              {mobLayout.mobTop}
-              <Outlet />
-              {mobLayout.mobFooter}
-              <ToastContainer position="bottom-right" />
-            </div>
-          }
-        >
-          <Route
-            index
-            element={
-              <Main
-                isPc={isPc}
-                loggedIn={loggedIn}
-                setlogStatus={setLogStatus}
-                signOut={signOut}
-                mthds={mthdds}
-                objs={objjs}
-                pmIcons={pmIcons}
-                setpmIcons={setpmIcons}
-                pmState={pmStates}
-                setpmState={setpmStates}
-                trackState={trackState}
-                settrackState={settrackState}
-              />
-            }
-          />
-          <Route
-            path="track"
-            element={
-              <Tracker
-                trackState={trackState}
-                settrackState={settrackState}
-                pmobjs={objjs}
-              />
-            }
-          />
-          <Route
-            path="history"
-            element={
-              <History
-                pendHistEntry={pendHistEntry}
-                setpendHistEntry={setpendHistEntry}
-                pmObjs={objjs}
-                pmIcons={pmIcons}
-                pmState={pmStates}
-                setpmState={setpmStates}
-              />
-            }
-          />
-        </Route>
-      </Routes>
-    </Router>
+    <TrackContext.Provider value={trackState}>
+      <SetTrackContext.Provider value={settrackState}>
+        <PendingHiContext.Provider value={pendingHiState}>
+          <SetPendingHiContext.Provider value={setpendingHisState}>
+            <TrackWatch
+
+            <Router>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <div className="main-parent">
+                      {mobLayout.mobTop}
+                      <Outlet />
+                      {mobLayout.mobFooter}
+                      <ToastContainer position="bottom-right" />
+                    </div>
+                  }
+                >
+                  <Route
+                    index
+                    element={
+                      <Main
+                        isPc={isPc}
+                        loggedIn={loggedIn}
+                        setlogStatus={setLogStatus}
+                        signOut={signOut}
+                        mthds={mthdds}
+                        objs={objjs}
+                        pmIcons={pmIcons}
+                        setpmIcons={setpmIcons}
+                        pmState={pmStates}
+                        setpmState={setpmStates}
+                      />
+                    }
+                  />
+                  <Route path="track" element={<Tracker pmobjs={objjs} />} />
+                  <Route
+                    path="history"
+                    element={
+                      <History
+                        pmObjs={objjs}
+                        pmIcons={pmIcons}
+                        pmState={pmStates}
+                        setpmState={setpmStates}
+                      />
+                    }
+                  />
+                </Route>
+              </Routes>
+            </Router>
+
+            
+          </SetPendingHiContext.Provider>
+        </PendingHiContext.Provider>
+      </SetTrackContext.Provider>
+    </TrackContext.Provider>
   );
 
   if (loggedIn) {

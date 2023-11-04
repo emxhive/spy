@@ -1,13 +1,39 @@
-import React, { useRef } from "react";
-import { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Collapsible from "react-collapsible";
-import "../../css/mobtracker.css";
 import mthdss from "../../consts/functions";
-import { Link } from "react-router-dom";
-import { parseActionCodeURL } from "firebase/auth";
+import "../../css/mobtracker.css";
+import {
+  PendingHiContext,
+  SetPendingHiContext,
+  TrackContext,
+  TrackWatch,
+} from "../../Context";
+import fetchspyStore from "../../utils/fetchspyStore";
+import updatespyStore from "../../utils/updatespyStore";
 
-export default function Tracker({ trackState, settrackState }) {
+export default function Tracker({}) {
+  const trackState = useContext(TrackContext);
+  const pendHiState = useContext(PendingHiContext);
+  const setPendingHiState = useContext(SetPendingHiContext);
+  const trackWatch = useContext(TrackWatch);
+
+  const monthEarns = useState({});
+
   const mth = mthdss();
+  let fetchedObj = {};
+  const fetchedData = fetchData();
+  async function fetchData() {
+    return await fetchspyStore({ spyCollection: "income" });
+  }
+
+  if (fetchedData) fetchedObj = fetchedData;
+
+  const [income, setIncome] = useState(fetchedObj);
+  let switfIncome;
+
+  useEffect(() => {
+    updatespyStore({ dataUpdate: { earnings }, spyCollection: "income" });
+  }, [income]);
 
   let triggerText = "";
 
@@ -36,6 +62,7 @@ export default function Tracker({ trackState, settrackState }) {
         }
         x = data.tiu + y - data.prev.tiu;
         localStorage.setItem("pendingHistEntry", "null");
+        setPendingHiState(null);
 
         //TODO useStorage here send this to firebase when the time comes
         if (x < 0) {
@@ -47,6 +74,24 @@ export default function Tracker({ trackState, settrackState }) {
         x = 0;
       }
     })();
+
+    if (x) {
+      let result;
+      const earnings = JSON.parse(localStorage.getItem("trackEarns"));
+      result = {
+        ...earnings,
+        [key]: {
+          value: x,
+          month: date.getMonth(),
+        },
+      };
+
+      localStorage.setItem("trackEarns", JSON.stringify(result));
+
+      if (trackWatch.current && triggerNo == 0) {
+        
+      }
+    }
 
     function createEntry() {
       return (
@@ -76,11 +121,10 @@ export default function Tracker({ trackState, settrackState }) {
             <div>{mth.tidyFig(data.iu)}</div>
             <div>in</div>
             <div>{mth.tidyFig(data.in)}</div>
-            {data.exp < 0 ||
-              (data.exp > 0 && [
-                <div key={"ex.label"}>ex</div>,
-                <div key={"ex.value"}>{mth.tidyFig(data.exp)}</div>,
-              ])}
+            {(() => data.exp < 0 || data.exp > 0)() && [
+              <div key={"ex.label"}>ex</div>,
+              <div key={"ex.value"}>{mth.tidyFig(data.exp)}</div>,
+            ]}
           </div>
         </div>
       );

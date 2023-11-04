@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 import "../../css/history.css";
 import "../../css/mobhistory.css";
@@ -9,17 +9,20 @@ import mthdss from "../../consts/functions";
 import { db } from "../../utils/db";
 import { addDoc, collection } from "firebase/firestore";
 
+import {
+  PendingHiContext,
+  SetPendingHiContext,
+  TrackContext,
+} from "../../Context";
+import { pmUpdatespyStore } from "../../utils/updatespyStore";
+
 const errorIcon = <span>⚠️</span>;
 const mth = mthdss();
 
-export default function History({
-  pendHistEntry,
-  setpendHistEntry,
-  pmObjs,
-  pmIcons,
-  pmState,
-  setpmState,
-}) {
+export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
+  const pendHiState = useContext(PendingHiContext);
+  const setPendingHiState = useContext(SetPendingHiContext);
+
   const [isDialog, setDialog] = useState(false);
   const [date, setDate] = useState(new Date().toISOString().split(".")[0]);
 
@@ -33,15 +36,17 @@ export default function History({
     toolbarArr: [<IoIosAddCircleOutline key="add" onClick={openDialogue} />],
   });
 
-  const [dayArr, setdayArr] = useState(
-    (() => {
-      if (JSON.parse(localStorage.getItem("historydayArr"))) {
-        return JSON.parse(localStorage.getItem("historydayArr"));
-      } else {
-        return {};
-      }
-    })()
-  );
+  sortHistArr();
+  const dayArrObj = (() => {
+    if (JSON.parse(localStorage.getItem("historydayArr"))) {
+      return JSON.parse(localStorage.getItem("historydayArr"));
+    } else {
+      return {};
+    }
+  })();
+
+  const [dayArr, setdayArr] = useState(dayArrObj);
+  const daysArr = [];
 
   const [amountState, setAmS] = useState(false);
   const [typeState, setTyS] = useState(false);
@@ -181,6 +186,7 @@ export default function History({
       const objId = mth.getTimeId(new Date(date));
       const newEntry = {
         id: objId,
+        dayId: mth.getDayId(new Date(formObj.time)),
         typeInt: formObj.type,
         amount: { symbol: pmState[formObj.pm].symbol, value: formObj.amount },
         category: formObj.category,
@@ -225,13 +231,26 @@ export default function History({
 
       //updating rate in main pmstate
       if (formObj.rate !== pmState.generalProps.rate) {
-        const newgenProps = {
-          ...pmState.generalProps,
-          ["generalProps"]: formObj.rate,
+        const newpmState = {
+          ...pmState,
+          ["generalProps"]: {
+            ...pmState.generalProps,
+            rate: formObj.rate,
+          },
         };
+
+        setpmState(newpmState);
+        pmUpdatespyStore({ dataUpdate: newpmState, spyCollection: "pmstate" });
       }
 
-      const obj = { [objId]: newEntry, ...dayArr };
+      /////updating day array an
+      // const obj = { [objId]: newEntry, ...dayArr };
+      let obj = {};
+      Object.assign(obj, dayArr);
+      if (!obj[newEntry.dayId]) {
+        obj[newEntry.dayId] = [];
+      }
+      obj[newEntry.dayId].unshift(newEntry);
 
       setdayArr(obj);
       localStorage.setItem("historydayArr", JSON.stringify(obj));
@@ -256,12 +275,12 @@ export default function History({
         if (JSON.parse(localStorage.getItem("pendingHistEntry"))) {
           const obj = {
             ...pendingStateObj,
-            amount: pendHistEntry.amount + pendingStateObj.amount,
+            amount: pendHiState.amount + pendingStateObj.amount,
           };
-          setpendHistEntry(obj);
+          setPendingHiState(obj);
           localStorage.setItem("pendingHistEntry", JSON.stringify(obj));
         } else {
-          setpendHistEntry(pendingStateObj);
+          setPendingHiState(pendingStateObj);
         }
         localStorage.setItem(
           "pendingHistEntry",
@@ -307,11 +326,15 @@ export default function History({
           <div className="history-toolbar">{firstState.toolbarArr}</div>
           <div className="history-entrybox">
             {Object.keys(dayArr)
-              .sort((b, a) => a.replace("t", "") - b.replace("t", ""))
+              .sort(
+                (b, a) =>
+                  a.replace("d", "").replaceAll(",", "") -
+                  b.replace("d", "").replaceAll(",", "")
+              )
+
               .map((keyz) => {
                 // printing the payment history here
-
-                return day(dayArr[keyz]);
+                return day(keyz, dayArr[keyz]);
               })}
           </div>
         </div>
@@ -333,7 +356,7 @@ export default function History({
   return generateHistoryContent();
 }
 
-function entry({ id, typeInt, amount, category, pm, date, pmIcons }) {
+function entry({ id, typeInt, dayId, amount, category, pm, date, pmIcons }) {
   const retObj = (
     <div key={mth.getTimeId(date)} className="history-row-entry">
       <div>
@@ -371,26 +394,90 @@ function entry({ id, typeInt, amount, category, pm, date, pmIcons }) {
   return retObj;
 }
 
-function day(arrObj) {
-  const objid = arrObj.id;
-  const timeId = mth.getTimeId(arrObj.date);
-  const time = timeId?.replace("t", "");
-  const currentDate = new Date(Number(time));
+function day(id, arrObj) {
+  console.log(arrObj);
+  const time = id?.replace("d", "");
+  const currentDate = new Date(time);
   const options = {
     weekday: "short",
     day: "numeric",
     month: "long",
   };
   return (
-    <div key={objid} dayid={objid} className="history-day">
+    <div key={id} dayid={id} className="history-day">
       <div className="day-header">
         {currentDate.toLocaleDateString([], options)}
       </div>
-      <div className="day-scrollable">{entry({ ...arrObj })}</div>
+      <div className="day-scrollable">{arrObj.map((o) => entry(o))}</div>
     </div>
   );
 }
 
 function symbTag(symbol) {
   return <span className="gen-symb-tag">{symbol}</span>;
+}
+
+function sortHistArr() {
+  const obj = (() => {
+    if (JSON.parse(localStorage.getItem("historydayArr"))) {
+      return JSON.parse(localStorage.getItem("historydayArr"));
+    } else {
+      return {};
+    }
+  })();
+  const beenSorted = JSON.parse(localStorage.getItem("histSortedStatus"));
+  function idtoDate(str) {
+    if (str.includes("t")) {
+      return new Date(str.replace("t", ""));
+    } else {
+      throw new Error(
+        "idtoDate only takes in timeIds- format 't89557585685885' instead it received " +
+          str
+      );
+    }
+  }
+  if (beenSorted) {
+    // been sorted
+
+    return true;
+  } else {
+    if (obj) {
+      if (Object.keys(obj).length > 0) {
+        const genKeys = Object.keys(obj);
+        const idKey = genKeys[0];
+        if (idKey.includes("d")) {
+          //if it has "d" then it's been sorted..
+          //difference bwteen sorted and unsorted is "d" and "t" respective beginnings
+          localStorage.setItem("histSortedStatus", "true");
+          return true;
+        } else {
+          // now to sort the unsorted data
+
+          if (!obj[idKey]?.dayId) {
+            //if dayId does not exists
+            genKeys.forEach(
+              (key) => (obj[key].dayId = mth.getDayId(new Date(obj[key].date)))
+            );
+          }
+          const dayKeys = [
+            ...new Set(Object.keys(obj).map((key) => obj[key].dayId)),
+          ];
+
+          let result = {};
+          genKeys.forEach((key) => {
+            const child = obj[key];
+            const reschildRef = result[child.dayId];
+            if (reschildRef) {
+              reschildRef.push(child);
+            } else {
+              result[child.dayId] = [child];
+            }
+          });
+
+          localStorage.setItem("historydayArr", JSON.stringify(result));
+          localStorage.setItem("histSortedStatus", "true");
+        }
+      }
+    }
+  }
 }

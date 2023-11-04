@@ -17,11 +17,10 @@ export default function Main({
   pmState,
   setpmState,
   isPc,
-  trackState,
-  settrackState,
+
   loggedIn,
   setlogStatus,
-  signOut
+  signOut,
 }) {
   const balance = useRef(false);
   const frozen = useRef(false);
@@ -75,8 +74,6 @@ export default function Main({
           setCurrentEntry={setCurrentEntry}
           currentEntry={currentEntry}
           state={pmState}
-          trackState={trackState}
-          settrackState={settrackState}
         />
 
         <Entries
@@ -176,7 +173,7 @@ export default function Main({
         {(() => {
           const arr = [
             <EntryHead key="entryhead" count={pmcount} />,
-            <hr key="hr" />
+            <hr key="hr" />,
           ];
           return arr;
         })()}
