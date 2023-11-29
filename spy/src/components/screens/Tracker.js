@@ -81,13 +81,16 @@ export default function Tracker({}) {
       for (let i = 0; i < 7; i++) {
         switch (i) {
           case 0:
+            let obj0;
+
             for (let j = 0; j < 5; j++) {
               switch (j) {
                 case 0:
-                  resultObj.current[0] = arr[0]?.arr?.length > 0 && (
+                  obj0 = arr[j];
+                  resultObj.current[0] = obj0?.keys?.length > 0 && (
                     <Collapsible trigger={"Today"} key={"m0w0"}>
-                      {arr[j].forEach((ar) => {
-                        setdkd(ar.arr, ar.id, mth.idtoDate(ar.id));
+                      {obj0.keys.forEach((key) => {
+                        setdkd(obj0.obj[key], key, mth.idtoDate(key));
                         return createEntry();
                       })}
                     </Collapsible>
@@ -95,10 +98,11 @@ export default function Tracker({}) {
                   break;
 
                 default:
-                  resultObj.current[j] = arr[j]?.arr?.length > 0 && (
+                  obj0 = arr[j];
+                  resultObj.current[j] = obj0?.keys?.length > 0 && (
                     <Collapsible trigger={`WK ${5 - j}`} key={`m0w${j}`}>
-                      {arr[j].forEach((ar) => {
-                        setdkd(ar.arr, ar.id, mth.idtoDate(ar.id));
+                      {obj0.keys.forEach((key) => {
+                        setdkd(obj0.obj[key], key, mth.idtoDate(key));
                         return createEntry();
                       })}
                     </Collapsible>
@@ -158,7 +162,6 @@ function generateCurrentMonth(trackState) {
         }
       }
     });
-
     return resultArr;
   }
 }
