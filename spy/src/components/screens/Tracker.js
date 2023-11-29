@@ -18,6 +18,7 @@ export default function Tracker({}) {
   const trackWatch = useContext(TrackWatch);
 
   const currentMonthArr = generateCurrentMonth(trackState);
+
   const collapsibles = getCollapsibles({
     arr: currentMonthArr,
     track: trackState,
@@ -71,47 +72,49 @@ export default function Tracker({}) {
     );
   }
   function getCollapsibles(arr) {
-    const resultObj = {
-      past: [],
-      current: [],
-    };
+    if (arr) {
+      const resultObj = {
+        past: [],
+        current: [],
+      };
 
-    for (let i = 1; i < 7; i++) {
-      switch (i) {
-        case 0:
-          for (let j = 0; j < 5; j++) {
-            switch (j) {
-              case 0:
-                resultObj.current[0] = arr[0].length > 0 && (
-                  <Collapsible trigger={"Today"} key={"m0w0"}>
-                    {arr[j].forEach((ar) => {
-                      setdkd(ar.arr, ar.id, mth.idtoDate(ar.id));
-                      return createEntry();
-                    })}
-                  </Collapsible>
-                );
-                break;
+      for (let i = 0; i < 7; i++) {
+        switch (i) {
+          case 0:
+            for (let j = 0; j < 5; j++) {
+              switch (j) {
+                case 0:
+                  resultObj.current[0] = arr[0]?.arr?.length > 0 && (
+                    <Collapsible trigger={"Today"} key={"m0w0"}>
+                      {arr[j].forEach((ar) => {
+                        setdkd(ar.arr, ar.id, mth.idtoDate(ar.id));
+                        return createEntry();
+                      })}
+                    </Collapsible>
+                  );
+                  break;
 
-              default:
-                resultObj.current[j] = arr[0].arr.length > 0 && (
-                  <Collapsible trigger={`WK ${5 - j}`} key={`m0w${j}`}>
-                    {arr[j].forEach((ar) => {
-                      setdkd(ar.arr, ar.id, mth.idtoDate(ar.id));
-                      return createEntry();
-                    })}
-                  </Collapsible>
-                );
-                break;
+                default:
+                  resultObj.current[j] = arr[j]?.arr?.length > 0 && (
+                    <Collapsible trigger={`WK ${5 - j}`} key={`m0w${j}`}>
+                      {arr[j].forEach((ar) => {
+                        setdkd(ar.arr, ar.id, mth.idtoDate(ar.id));
+                        return createEntry();
+                      })}
+                    </Collapsible>
+                  );
+                  break;
+              }
             }
-          }
-          break;
+            break;
 
-        default:
-          break;
+          default:
+            break;
+        }
       }
+
+      return resultObj;
     }
-    console.log(resultObj);
-    return resultObj;
   }
 
   const trackerContent = (
@@ -130,7 +133,11 @@ let pnl;
 
 function generateCurrentMonth(trackState) {
   if (trackState) {
-    const resultArr = [[], [], [], [], [], []];
+    const resultArr = [];
+    for (let i = 0; i < 5; i++) {
+      resultArr[i] = { obj: {}, keys: [] };
+    }
+
     const objs = trackState[0].arr;
     const ids = trackState[0].ids;
 
@@ -138,16 +145,21 @@ function generateCurrentMonth(trackState) {
       const date = mth.idtoDate(key);
       const day = date.getDate();
       if (day === new Date().getDate()) {
-        resultArr[0].push({ arr: objs[key], id: key });
+        resultArr[0].obj[key] = objs[key];
+        resultArr[0].keys.push(key);
       } else {
         const sKey = day / 8;
         if (sKey > 3) {
-          resultArr[sKey].push({ arr: objs[key], id: key });
+          resultArr[sKey].obj[key] = objs[key];
+          resultArr[sKey].keys.push(key);
         } else {
-          resultArr[sKey + 1].push({ arr: objs[key], id: key });
+          resultArr[sKey + 1].obj[key] = objs[key];
+          resultArr[sKey + 1].keys.push(key);
         }
       }
     });
+
+    return resultArr;
   }
 }
 

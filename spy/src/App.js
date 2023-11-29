@@ -39,13 +39,13 @@ function App() {
   const mthdds = mthdss(pmStates, setpmStates);
   const isPc = useMediaQuery({ query: "(min-width: 900px)" });
   const [loggedIn, setLogStatus] = useState(
-    JSON.parse(localStorage.getItem("logged")),
+    JSON.parse(localStorage.getItem("logged"))
   );
   const [trackState, settrackState] = useState(
-    sortTrackData(JSON.parse(localStorage.getItem("trackState"))),
+    sortTrackData(JSON.parse(localStorage.getItem("trackState")))
   );
   const [pendingHiState, setpendingHisState] = useState(
-    JSON.parse(localStorage.getItem("pendingHistEntry")),
+    JSON.parse(localStorage.getItem("pendingHistEntry"))
   );
 
   const trackWatch = {
@@ -218,9 +218,7 @@ function sortTrackData(trackState) {
     return trackState;
   } else if (trackState) {
     const keys = Object.keys(trackState);
-    keys.forEach((key) => {
-      console.log(new Date(Number(key.replace("t", ""))));
-    });
+
     if (keys[0]) {
       if (keys[0].includes("m")) {
         settrackStatus();
