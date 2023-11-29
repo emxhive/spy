@@ -42,13 +42,15 @@ function App() {
     JSON.parse(localStorage.getItem("logged"))
   );
   const [trackState, settrackState] = useState(
-    JSON.parse(localStorage.getItem("trackState"))
+    sortTrackData(JSON.parse(localStorage.getItem("trackState")))
   );
   const [pendingHiState, setpendingHisState] = useState(
     JSON.parse(localStorage.getItem("pendingHistEntry"))
   );
 
-  const trackWatch = useRef(false);
+  const trackWatch = {
+    current: false,
+  };
 
   // localStorage.setItem("pendingHistEntry", "false");
 
@@ -185,3 +187,58 @@ function App() {
 }
 
 export default App;
+
+function sortTrackData(trackState) {
+  const TRACKSTATUSKEY = "trackSortedStatus";
+  const TRACKSTATEKEY = "trackState";
+  const checker = JSON.parse(localStorage.getItem(TRACKSTATUSKEY));
+  const settrackStatus = () => {
+    localStorage.setItem(TRACKSTATUSKEY, "true");
+  };
+  const getMonthNo = (id) => {
+    const currentYear = new Date().getFullYear();
+    const date = new Date(Number(id.replace("t", "")));
+    let no;
+
+    if (currentYear === new Date().getFullYear()) {
+      no = new Date().getMonth() - date.getMonth();
+    } else if (new Date().getFullYear - 1 === currentYear) {
+      no = new Date().getMonth() + 12 - date.getMonth();
+    }
+
+    return no;
+  };
+  const result = [];
+
+  for (let i = 0; i < 7; i++) {
+    result.push({ arr: [], ids: [] });
+  }
+
+  if (checker === true) {
+    return trackState;
+  } else {
+    const keys = Object.keys(trackState);
+    keys.forEach((key) => {
+      console.log(new Date(Number(key.replace("t", ""))));
+    });
+    if (keys[0]) {
+      if (keys[0].includes("m")) {
+        settrackStatus();
+      } else {
+        keys.sort((a, b) => b.replace("t", "") - a.replace("t", ""));
+        keys.forEach((key) => {
+          const x = getMonthNo(key);
+          if (x > -1 && x < 7) {
+            result[x].arr.push({ [key]: trackState[key] });
+            result[x].ids.push(key);
+          }
+        });
+
+        result.push(keys);
+        settrackStatus();
+        localStorage.setItem(TRACKSTATEKEY, JSON.stringify(result));
+        return result;
+      }
+    }
+  }
+}

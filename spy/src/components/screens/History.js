@@ -395,7 +395,7 @@ function entry({ id, typeInt, dayId, amount, category, pm, date, pmIcons }) {
 }
 
 function day(id, arrObj) {
-  console.log(arrObj);
+  
   const time = id?.replace("d", "");
   const currentDate = new Date(time);
   const options = {

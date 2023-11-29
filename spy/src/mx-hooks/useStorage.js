@@ -4,15 +4,22 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import updatespyStore from "../utils/updatespyStore";
 
 const useStorage = ({ file, notFirst, setNotFirst, url, setUrl }) => {
-  useEffect(() => {
-    if (notFirst) {
+  //weired approach .. suprised it workes
   
-      const storeRef = ref(spyStorage, `/pmicons/${file.icon.name}`);
+  useEffect(() => {
+    if (notFirst && file.id !== "undefined") {
+      const storeRef = ref(
+        spyStorage,
+        `/pmicons/${file.id.replaceAll(" ", "")}`
+      );
       uploadBytes(storeRef, file.icon).then(
         async (snapshot) => {
           const storeurl = await getDownloadURL(storeRef);
-      
-          updatespyStore({ dataUpdate: { [file.id]: storeurl }, spyCollection: 'pmicons' })
+
+          updatespyStore({
+            dataUpdate: { [file.id]: storeurl },
+            spyCollection: "pmicons",
+          });
           setUrl(storeurl);
         },
         (error) => {

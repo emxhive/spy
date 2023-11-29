@@ -17,272 +17,155 @@ export default function Tracker({}) {
   const setPendingHiState = useContext(SetPendingHiContext);
   const trackWatch = useContext(TrackWatch);
 
-  const monthEarns = useState({});
-
-  const mth = mthdss();
-  let fetchedObj = {};
-  const fetchedData = fetchData();
-  async function fetchData() {
-    return await fetchspyStore({ spyCollection: "income" });
-  }
-
-  if (fetchedData) fetchedObj = fetchedData;
-
-  const [income, setIncome] = useState(fetchedObj);
-  let switfIncome;
-
-  useEffect(() => {
-    updatespyStore({ dataUpdate: { earnings }, spyCollection: "income" });
-  }, [income]);
-
-  let triggerText = "";
-
-  let triggerNo = -1;
-  let altTrigNo;
-  let prevTrigNo;
-  let pasCount = 0;
-
-  const months = setMonthArr();
-
-  const monthsCollapse = [];
-
-  for (const key in trackState) {
-    const data = trackState[key];
-    const date = new Date(Number(key.replace("t", "")));
-    const collaspKey = getCollapsKey(date, triggerNo);
-
-    let pnlClass = "mob-track-pnl-mini-gain";
-    let x;
-
-    (function () {
-      if (data.prev?.r > 0) {
-        let y = 0;
-        if (data.exp) {
-          y = -data.exp;
-        }
-        x = data.tiu + y - data.prev.tiu;
-        localStorage.setItem("pendingHistEntry", "null");
-        setPendingHiState(null);
-
-        //TODO useStorage here send this to firebase when the time comes
-        if (x < 0) {
-          pnlClass = "mob-track-pnl-mini-loss";
-        } else {
-          pnlClass = "mob-track-pnl-mini-gain";
-        }
-      } else {
-        x = 0;
-      }
-    })();
-
-    if (x) {
-      let result;
-      const earnings = JSON.parse(localStorage.getItem("trackEarns"));
-      result = {
-        ...earnings,
-        [key]: {
-          value: x,
-          month: date.getMonth(),
-        },
-      };
-
-      localStorage.setItem("trackEarns", JSON.stringify(result));
-
-      if (trackWatch.current && triggerNo == 0) {
-        }
-    }
-
-    function createEntry() {
-      return (
-        <div key={key}>
-          {date.toLocaleDateString(undefined, {
-            weekday: "short",
-            day: "numeric",
-          })}{" "}
-          {" • "}
-          {date
-            .toLocaleTimeString(undefined, {
-              hour: "2-digit",
-              minute: "2-digit",
-            })
-            .replace("AM", "")
-            .replace("PM", "")}
-          <span className={pnlClass}> {mth.tidyFig(x)}</span>
-          <div className="mob-track-entry-box">
-            <div>fx</div>
-            <div>{data.r}</div>
-
-            <div>u</div>
-            <div>{mth.tidyFig(data.u)}</div>
-            <div>n</div>
-            <div>{mth.tidyFig(data.n)}</div>
-            <div>iu</div>
-            <div>{mth.tidyFig(data.iu)}</div>
-            <div>in</div>
-            <div>{mth.tidyFig(data.in)}</div>
-            {(() => data.exp < 0 || data.exp > 0)() && [
-              <div key={"ex.label"}>ex</div>,
-              <div key={"ex.value"}>{mth.tidyFig(data.exp)}</div>,
-            ]}
-          </div>
-        </div>
-      );
-    }
-
-    const result = determineTrigger(date);
-    triggerNo = result.b;
-    altTrigNo = result.a;
-
-    if (new Date().getMonth() === date.getMonth()) {
-      months[0].data[triggerNo].push(createEntry());
-      months[0].collaspKey[triggerNo] = collaspKey;
-
-      prevTrigNo = triggerNo;
-    } else {
-      //past tense
-
-      const index = getMonthIndex(date);
-
-      if (index < 7) {
-        pasCount++;
-        months[index].data.push(createEntry());
-        months[index].collaspKey = collaspKey;
-      }
-    }
-
-    setMonthCollapses({
-      date: date,
-      months: months,
-      monthsCollapse: monthsCollapse,
-      altTrigNo: altTrigNo,
-    });
-  }
-
-  const pastContent = [];
-  monthsCollapse.forEach((obj, n) => {
-    if (n > 0) {
-      pastContent.push(obj);
-    }
+  const currentMonthArr = generateCurrentMonth(trackState);
+  const collapsibles = getCollapsibles({
+    arr: currentMonthArr,
+    track: trackState,
   });
+
+  let data;
+  let key;
+  let date;
+
+  function setdkd(dat, ki, dait) {
+    data = dat;
+    key = ki;
+    date = dait;
+  }
+
+  function createEntry() {
+    setpnl(data);
+    return (
+      <div key={key}>
+        {date.toLocaleDateString(undefined, {
+          weekday: "short",
+          day: "numeric",
+        })}{" "}
+        {" • "}
+        {date
+          .toLocaleTimeString(undefined, {
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+          .replace("AM", "")
+          .replace("PM", "")}
+        <span className={pnlClass}> {mth.tidyFig(pnl)}</span>
+        <div className="mob-track-entry-box">
+          <div>fx</div>
+          <div>{data.r}</div>
+
+          <div>u</div>
+          <div>{mth.tidyFig(data.u)}</div>
+          <div>n</div>
+          <div>{mth.tidyFig(data.n)}</div>
+          <div>iu</div>
+          <div>{mth.tidyFig(data.iu)}</div>
+          <div>in</div>
+          <div>{mth.tidyFig(data.in)}</div>
+          {(() => data.exp < 0 || data.exp > 0)() && [
+            <div key={"ex.label"}>ex</div>,
+            <div key={"ex.value"}>{mth.tidyFig(data.exp)}</div>,
+          ]}
+        </div>
+      </div>
+    );
+  }
+  function getCollapsibles(arr) {
+    const resultObj = {
+      past: [],
+      current: [],
+    };
+
+    for (let i = 1; i < 7; i++) {
+      switch (i) {
+        case 0:
+          for (let j = 0; j < 5; j++) {
+            switch (j) {
+              case 0:
+                resultObj.current[0] = arr[0].length > 0 && (
+                  <Collapsible trigger={"Today"} key={"m0w0"}>
+                    {arr[j].forEach((ar) => {
+                      setdkd(ar.arr, ar.id, mth.idtoDate(ar.id));
+                      return createEntry();
+                    })}
+                  </Collapsible>
+                );
+                break;
+
+              default:
+                resultObj.current[j] = arr[0].arr.length > 0 && (
+                  <Collapsible trigger={`WK ${5 - j}`} key={`m0w${j}`}>
+                    {arr[j].forEach((ar) => {
+                      setdkd(ar.arr, ar.id, mth.idtoDate(ar.id));
+                      return createEntry();
+                    })}
+                  </Collapsible>
+                );
+                break;
+            }
+          }
+          break;
+
+        default:
+          break;
+      }
+    }
+    console.log(resultObj);
+    return resultObj;
+  }
 
   const trackerContent = (
     <div className="mob-trackercontent">
-      {pasCount > 0 && (
-        <div className="mob-trackrecords-past">{pastContent}</div>
-      )}
-      <div className="mob-trackrecords-current">{monthsCollapse[0]}</div>
+      {<div className="mob-trackrecords-past">{collapsibles.past}</div>}
+      <div className="mob-trackrecords-current">{collapsibles.current}</div>
     </div>
   );
   return trackerContent;
 }
+const mth = mthdss();
+let pastContent;
+let currentContent;
+let pnlClass = "mob-track-pnl-mini-gain";
+let pnl;
 
-function determineTrigger(date) {
-  const today = new Date().getDate();
-  const dateDay = date.getDate();
-  if (dateDay === today) {
-    return { a: 0, b: 0 };
+function generateCurrentMonth(trackState) {
+  const resultArr = [[], [], [], [], [], []];
+  const objs = trackState[0].arr;
+  const ids = trackState[0].ids;
+
+  ids.forEach((key) => {
+    const date = mth.idtoDate(key);
+    const day = date.getDate();
+    if (day === new Date().getDate()) {
+      resultArr[0].push({ arr: objs[key], id: key });
+    } else {
+      const sKey = day / 8;
+      if (sKey > 3) {
+        resultArr[sKey].push({ arr: objs[key], id: key });
+      } else {
+        resultArr[sKey + 1].push({ arr: objs[key], id: key });
+      }
+    }
+  });
+}
+
+function setpnl(data, setPendingHiState) {
+  if (data.prev?.r > 0) {
+    let y = 0;
+    if (data.exp) {
+      y = -data.exp;
+    }
+    pnl = data.tiu + y - data.prev.tiu;
+    localStorage.setItem("pendingHistEntry", "null");
+    setPendingHiState(null);
+
+    //TODO useStorage here send this to firebase when the time comes
+    if (pnl < 0) {
+      pnlClass = "mob-track-pnl-mini-loss";
+    } else {
+      pnlClass = "mob-track-pnl-mini-gain";
+    }
   } else {
-    const key = Math.floor(date.getDate() / 8);
-    switch (key) {
-      case 0:
-        return { a: 1, b: 4 };
-      case 1:
-        return { a: 2, b: 3 };
-      case 2:
-        return { a: 3, b: 2 };
-      case 3:
-        return { a: 4, b: 1 };
-      case 4:
-        return { a: 4, b: 1 };
-      default:
-        return -1;
-    }
-  }
-}
-
-function getCollapsKey(date, trigNo) {
-  return `m${date.getMonth()}tn${trigNo}`;
-}
-
-function setMonthCollapses({ date, months, monthsCollapse, altTrigNo }) {
-  const mth = mthdss();
-  for (let i = 0; i < 7; i++) {
-    switch (i) {
-      //MONTH
-      case 0:
-        monthsCollapse[0] = [];
-        for (let j = 0; j < 5; j++) {
-          switch (j) {
-            //WEEKS
-            case 0:
-              monthsCollapse[0][0] = months[0].data[0]?.length > 0 && (
-                <Collapsible trigger={"Today"} key={months[0].collaspKey[0]}>
-                  {months[0].data[0]}
-                </Collapsible>
-              );
-
-              break;
-
-            default:
-              monthsCollapse[i][j] = months[i].data[j]?.length > 0 && (
-                <Collapsible
-                  trigger={`WK-${5 - j}`}
-                  key={months[i].collaspKey[j]}
-                >
-                  {months[i].data[j]}
-                </Collapsible>
-              );
-              break;
-          }
-        }
-        break;
-
-      default:
-        monthsCollapse[i] = months[i].data.length > 0 && (
-          <Collapsible
-            trigger={mth.getMonthName(date)}
-            key={months[i].collaspKey}
-          >
-            {months[i].data}
-          </Collapsible>
-        );
-        break;
-    }
-  }
-}
-
-function setMonthArr() {
-  const arr = [];
-  for (let x = 0; x < 7; x++) {
-    let obj;
-    switch (x) {
-      case 0:
-        obj = {
-          data: [[], [], [], [], []],
-          collaspKey: [],
-        };
-        arr[x] = obj;
-        break;
-
-      default:
-        obj = {
-          data: [],
-          collaspKey: "",
-        };
-        arr[x] = obj;
-
-        break;
-    }
-  }
-
-  return arr;
-}
-
-function getMonthIndex(date) {
-  const difference = new Date().getMonth() - date.getMonth();
-  if (difference > 0) {
-    return difference;
-  } else {
-    return 12 + difference;
+    pnl = 0;
   }
 }

@@ -4,7 +4,13 @@ function functions(pmState, setpmState) {
       return `t${new Date(date).valueOf()}`;
     },
     getDayId(date) {
-      return `d${date.getYear() + 1900},${date.getMonth() + 1},${date.getDate()}`;
+      return `d${date.getYear() + 1900},${
+        date.getMonth() + 1
+      },${date.getDate()}`;
+    },
+
+    idtoDate(id) {
+      return new Date(Number(id.replace("t", "")));
     },
     isObj(obj) {
       return typeof obj === "object";
