@@ -19,10 +19,7 @@ export default function Tracker({}) {
 
   const currentMonthArr = generateCurrentMonth(trackState);
 
-  const collapsibles = getCollapsibles({
-    arr: currentMonthArr,
-    track: trackState,
-  });
+  const collapsibles = getCollapsibles(currentMonthArr);
 
   let data;
   let key;
@@ -81,12 +78,14 @@ export default function Tracker({}) {
       for (let i = 0; i < 7; i++) {
         switch (i) {
           case 0:
-            let obj0;
+            var obj0;
 
             for (let j = 0; j < 5; j++) {
               switch (j) {
                 case 0:
                   obj0 = arr[j];
+                  console.log(obj0);
+
                   resultObj.current[0] = obj0?.keys?.length > 0 && (
                     <Collapsible trigger={"Today"} key={"m0w0"}>
                       {obj0.keys.forEach((key) => {
@@ -142,7 +141,7 @@ function generateCurrentMonth(trackState) {
       resultArr[i] = { obj: {}, keys: [] };
     }
 
-    const objs = trackState[0].arr;
+    const objs = trackState[0].obj;
     const ids = trackState[0].ids;
 
     ids.forEach((key) => {

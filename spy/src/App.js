@@ -211,7 +211,7 @@ function sortTrackData(trackState) {
   const result = [];
 
   for (let i = 0; i < 7; i++) {
-    result.push({ arr: [], ids: [] });
+    result.push({ obj: {}, ids: [] });
   }
 
   if (checker === true) {
@@ -227,7 +227,7 @@ function sortTrackData(trackState) {
         keys.forEach((key) => {
           const x = getMonthNo(key);
           if (x > -1 && x < 7) {
-            result[x].arr.push({ [key]: trackState[key] });
+            result[x].obj[key] = trackState[key];
             result[x].ids.push(key);
           }
         });
