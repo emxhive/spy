@@ -129,24 +129,26 @@ let pnlClass = "mob-track-pnl-mini-gain";
 let pnl;
 
 function generateCurrentMonth(trackState) {
-  const resultArr = [[], [], [], [], [], []];
-  const objs = trackState[0].arr;
-  const ids = trackState[0].ids;
+  if (trackState) {
+    const resultArr = [[], [], [], [], [], []];
+    const objs = trackState[0].arr;
+    const ids = trackState[0].ids;
 
-  ids.forEach((key) => {
-    const date = mth.idtoDate(key);
-    const day = date.getDate();
-    if (day === new Date().getDate()) {
-      resultArr[0].push({ arr: objs[key], id: key });
-    } else {
-      const sKey = day / 8;
-      if (sKey > 3) {
-        resultArr[sKey].push({ arr: objs[key], id: key });
+    ids.forEach((key) => {
+      const date = mth.idtoDate(key);
+      const day = date.getDate();
+      if (day === new Date().getDate()) {
+        resultArr[0].push({ arr: objs[key], id: key });
       } else {
-        resultArr[sKey + 1].push({ arr: objs[key], id: key });
+        const sKey = day / 8;
+        if (sKey > 3) {
+          resultArr[sKey].push({ arr: objs[key], id: key });
+        } else {
+          resultArr[sKey + 1].push({ arr: objs[key], id: key });
+        }
       }
-    }
-  });
+    });
+  }
 }
 
 function setpnl(data, setPendingHiState) {
