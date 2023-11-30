@@ -21,7 +21,6 @@ const mth = mthdss();
 
 export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
   const pendHiState = useContext(PendingHiContext);
-  const setPendingHiState = useContext(SetPendingHiContext);
 
   const [isDialog, setDialog] = useState(false);
   const [date, setDate] = useState(new Date().toISOString().split(".")[0]);
@@ -277,10 +276,10 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
             ...pendingStateObj,
             amount: pendHiState.amount + pendingStateObj.amount,
           };
-          setPendingHiState(obj);
+          pendHiState.current = obj;
           localStorage.setItem("pendingHistEntry", JSON.stringify(obj));
         } else {
-          setPendingHiState(pendingStateObj);
+          pendHiState(pendingStateObj);
         }
         localStorage.setItem(
           "pendingHistEntry",
@@ -395,7 +394,6 @@ function entry({ id, typeInt, dayId, amount, category, pm, date, pmIcons }) {
 }
 
 function day(id, arrObj) {
-  
   const time = id?.replace("d", "");
   const currentDate = new Date(time);
   const options = {

@@ -109,31 +109,34 @@ function MidToolBar({
   function populatetracker() {
     if (!state.generalProps.isDefaultState) {
       const currentId = mthds.getTimeId(new Date());
-      let localTrack = {};
-      toast("New Track Record");
-      localTrack = {
-        [currentId]: {
-          r: state.generalProps.rate,
-          uf: objs.pmAmount.netUsdF,
-          nf: objs.pmAmount.netNgnF,
-          u: objs.pmAmount.netUsd - objs.pmAmount.netUsdF,
-          n: objs.pmAmount.netNgn - objs.pmAmount.netNgnF,
-          iu: objs.pmAmount.netInUsd - objs.pmAmount.netInUsdF,
-          in: objs.pmAmount.netInNgn - objs.pmAmount.netInNgnF,
-          tiu: objs.pmAmount.netInUsd,
-          tin: objs.pmAmount.netInNgn,
-          get exp() {
-            return pendHiState ? Number(pendHiState.amount) : null;
-          },
-          prev: previousData,
+      const currentObj = {
+        r: state.generalProps.rate,
+        uf: objs.pmAmount.netUsdF,
+        nf: objs.pmAmount.netNgnF,
+        u: objs.pmAmount.netUsd - objs.pmAmount.netUsdF,
+        n: objs.pmAmount.netNgn - objs.pmAmount.netNgnF,
+        iu: objs.pmAmount.netInUsd - objs.pmAmount.netInUsdF,
+        in: objs.pmAmount.netInNgn - objs.pmAmount.netInNgnF,
+        tiu: objs.pmAmount.netInUsd,
+        tin: objs.pmAmount.netInNgn,
+        get exp() {
+          return pendHiState.current
+            ? Number(pendHiState.current.amount)
+            : null;
         },
-        ...trackState,
+        prev: previousData,
       };
+      let localTrack = {};
+      Object.assign(localTrack, trackState);
+      toast("New Track Record");
+      localTrack[0].obj[currentId] = currentObj;
+      localTrack[0].ids.unshift(currentId);
+      localTrack[7].unshift(currentId);
 
       const prevD = {
-        r: localTrack[currentId].r,
-        tiu: localTrack[currentId].tiu,
-        tin: localTrack[currentId].tin,
+        r: currentObj.r,
+        tiu: currentObj.tiu,
+        tin: currentObj.tin,
       };
       localStorage.setItem("previousTrack", JSON.stringify(prevD));
       settrackState(localTrack);

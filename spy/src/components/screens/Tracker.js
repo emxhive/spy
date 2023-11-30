@@ -14,7 +14,7 @@ import updatespyStore from "../../utils/updatespyStore";
 export default function Tracker({}) {
   const trackState = useContext(TrackContext);
   const pendHiState = useContext(PendingHiContext);
-  const setPendingHiState = useContext(SetPendingHiContext);
+
   const trackWatch = useContext(TrackWatch);
 
   let data;
@@ -32,7 +32,7 @@ export default function Tracker({}) {
   }
 
   function createEntry() {
-    setpnl(data, setPendingHiState);
+    setpnl(data, pendHiState);
     return (
       <div key={key}>
         {date.toLocaleDateString(undefined, {
@@ -178,7 +178,7 @@ function generateCurrentMonth(trackState) {
   }
 }
 
-function setpnl(data, setPendingHiState) {
+function setpnl(data, pendHiState) {
   if (data.prev?.r > 0) {
     let y = 0;
     if (data.exp) {
@@ -186,8 +186,7 @@ function setpnl(data, setPendingHiState) {
     }
     pnl = data.tiu + y - data.prev.tiu;
     localStorage.setItem("pendingHistEntry", "null");
-    setPendingHiState(null);
-
+    pendHiState.current = null;
     //TODO useStorage here send this to firebase when the time comes
     if (pnl < 0) {
       pnlClass = "mob-track-pnl-mini-loss";
