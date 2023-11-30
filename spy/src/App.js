@@ -203,7 +203,7 @@ function sortTrackData(trackState) {
     if (currentYear === new Date().getFullYear()) {
       no = new Date().getMonth() - date.getMonth();
     } else if (new Date().getFullYear - 1 === currentYear) {
-      no = new Date().getMonth() + 12 - date.getMonth();
+      no = new Date().getMonth() + 11 - date.getMonth();
     }
 
     return no;

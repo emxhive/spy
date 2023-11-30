@@ -17,13 +17,13 @@ export default function Tracker({}) {
   const setPendingHiState = useContext(SetPendingHiContext);
   const trackWatch = useContext(TrackWatch);
 
-  const currentMonthArr = generateCurrentMonth(trackState);
-
-  const collapsibles = getCollapsibles(currentMonthArr);
-
   let data;
   let key;
   let date;
+
+  const currentMonthArr = generateCurrentMonth(trackState);
+
+  const collapsibles = getCollapsibles(currentMonthArr);
 
   function setdkd(dat, ki, dait) {
     data = dat;
@@ -32,7 +32,7 @@ export default function Tracker({}) {
   }
 
   function createEntry() {
-    setpnl(data);
+    setpnl(data, setPendingHiState);
     return (
       <div key={key}>
         {date.toLocaleDateString(undefined, {
@@ -78,17 +78,16 @@ export default function Tracker({}) {
       for (let i = 0; i < 7; i++) {
         switch (i) {
           case 0:
-            var obj0;
+            let obj0;
 
             for (let j = 0; j < 5; j++) {
               switch (j) {
                 case 0:
                   obj0 = arr[j];
-                  console.log(obj0);
 
                   resultObj.current[0] = obj0?.keys?.length > 0 && (
                     <Collapsible trigger={"Today"} key={"m0w0"}>
-                      {obj0.keys.forEach((key) => {
+                      {obj0.keys.map((key) => {
                         setdkd(obj0.obj[key], key, mth.idtoDate(key));
                         return createEntry();
                       })}
@@ -100,7 +99,7 @@ export default function Tracker({}) {
                   obj0 = arr[j];
                   resultObj.current[j] = obj0?.keys?.length > 0 && (
                     <Collapsible trigger={`WK ${5 - j}`} key={`m0w${j}`}>
-                      {obj0.keys.forEach((key) => {
+                      {obj0.keys?.map((key) => {
                         setdkd(obj0.obj[key], key, mth.idtoDate(key));
                         return createEntry();
                       })}
@@ -112,6 +111,20 @@ export default function Tracker({}) {
             break;
 
           default:
+            let keyvar = 0;
+
+            const obj = trackState[i];
+            resultObj.past[i] = obj?.ids?.length > 0 && (
+              <Collapsible
+                trigger={monthFromIndex(i)}
+                key={`m${i}w${++keyvar}`}
+              >
+                {obj.ids?.map((key) => {
+                  setdkd(obj.obj[key], key, mth.idtoDate(key));
+                  return createEntry();
+                })}
+              </Collapsible>
+            );
             break;
         }
       }
@@ -122,8 +135,8 @@ export default function Tracker({}) {
 
   const trackerContent = (
     <div className="mob-trackercontent">
-      {<div className="mob-trackrecords-past">{collapsibles.past}</div>}
-      <div className="mob-trackrecords-current">{collapsibles.current}</div>
+      {<div className="mob-trackrecords-past">{collapsibles?.past}</div>}
+      <div className="mob-trackrecords-current">{collapsibles?.current}</div>
     </div>
   );
   return trackerContent;
@@ -184,4 +197,20 @@ function setpnl(data, setPendingHiState) {
   } else {
     pnl = 0;
   }
+}
+
+/**
+ *
+ * @param {*Number Takes a number ..for example month in question is "i" month away from current month..} int i
+ * @returns {*String returns a string of the resulting month "December", ..etc}
+ *
+ *if i=0 , month in question is current month
+ */
+function monthFromIndex(i) {
+  const monthsArr = require("moment").months();
+  const diff = new Date().getMonth() - i;
+  if (diff < 0) {
+    diff += 11;
+  }
+  return monthsArr[diff];
 }
