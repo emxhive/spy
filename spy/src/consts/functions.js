@@ -19,6 +19,16 @@ function functions(pmState, setpmState) {
     p(str) {
       console.log(str);
     },
+    fromLocalStorage(str) {
+      const result = JSON.parse(localStorage.getItem(str));
+      if (result) {
+        return result;
+      }
+      return null;
+    },
+    toLocalStorage(str, obj) {
+      localStorage.setItem(str, JSON.stringify(obj));
+    },
 
     toDigits(s) {
       const result = s.match(/[\d.]+/g);

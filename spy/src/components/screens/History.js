@@ -279,7 +279,7 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
           pendHiState.current = obj;
           localStorage.setItem("pendingHistEntry", JSON.stringify(obj));
         } else {
-          pendHiState(pendingStateObj);
+          pendHiState.current=pendingStateObj;
         }
         localStorage.setItem(
           "pendingHistEntry",

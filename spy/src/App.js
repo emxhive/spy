@@ -83,7 +83,9 @@ function App() {
       }
     }
 
-    if (loggedIn?.email === admin) fetchData();
+    if (loggedIn?.email === admin) {
+      fetchData();
+    }
   }, [loggedIn]);
 
   // Data feching ends here
@@ -237,4 +239,9 @@ function sortTrackData(trackState) {
       }
     }
   }
+}
+
+function newMonthCheck() {
+  const fetchedData = fetchspyStore({ spyCollection: "auto" });
+  console.log(fetchedData?.month);
 }

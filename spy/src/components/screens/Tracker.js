@@ -164,7 +164,7 @@ function generateCurrentMonth(trackState) {
         resultArr[0].obj[key] = objs[key];
         resultArr[0].keys.push(key);
       } else {
-        const sKey = day / 8;
+        const sKey = Math.floor(day / 8);
         if (sKey > 3) {
           resultArr[sKey].obj[key] = objs[key];
           resultArr[sKey].keys.push(key);
@@ -213,3 +213,4 @@ function monthFromIndex(i) {
   }
   return monthsArr[diff];
 }
+
