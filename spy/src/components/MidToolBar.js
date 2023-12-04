@@ -131,7 +131,7 @@ function MidToolBar({
       toast("New Track Record");
       localTrack[0].obj[currentId] = currentObj;
       localTrack[0].ids.unshift(currentId);
-      localTrack[7].unshift(currentId);
+     
 
       const prevD = {
         r: currentObj.r,

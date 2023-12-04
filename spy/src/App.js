@@ -36,7 +36,8 @@ function App() {
   const [pmIcons, setpmIcons] = useState(objss().pmIcons);
   const objjs = objss().after(pmStates, pmIcons);
 
-  const mthdds = mthdss(pmStates, setpmStates);
+  const mth = mthdss(pmStates, setpmStates);
+
   const isPc = useMediaQuery({ query: "(min-width: 900px)" });
   const [loggedIn, setLogStatus] = useState(
     JSON.parse(localStorage.getItem("logged"))
@@ -84,6 +85,7 @@ function App() {
     }
 
     if (loggedIn?.email === admin) {
+      monthlyCheck(trackState, settrackState);
       fetchData();
     }
   }, [loggedIn]);
@@ -107,7 +109,7 @@ function App() {
         loggedIn={loggedIn}
         setlogStatus={setLogStatus}
         signOut={signOut}
-        mthds={mthdds}
+        mthds={mth}
         objs={objjs}
         pmIcons={pmIcons}
         setpmIcons={setpmIcons}
@@ -149,7 +151,7 @@ function App() {
                         loggedIn={loggedIn}
                         setlogStatus={setLogStatus}
                         signOut={signOut}
-                        mthds={mthdds}
+                        mthds={mth}
                         objs={objjs}
                         pmIcons={pmIcons}
                         setpmIcons={setpmIcons}
@@ -187,6 +189,7 @@ function App() {
 }
 
 export default App;
+let firstTime = true;
 
 function sortTrackData(trackState) {
   const TRACKSTATUSKEY = "trackSortedStatus";
@@ -232,7 +235,6 @@ function sortTrackData(trackState) {
           }
         });
 
-        result.push(keys);
         settrackStatus();
         localStorage.setItem(TRACKSTATEKEY, JSON.stringify(result));
         return result;
@@ -241,7 +243,48 @@ function sortTrackData(trackState) {
   }
 }
 
-function newMonthCheck() {
-  const fetchedData = fetchspyStore({ spyCollection: "auto" });
-  console.log(fetchedData?.month);
+function monthlyCheck(trackState, settrackState) {
+  if (firstTime) {
+    const track = [];
+    for (let i = 0; i < 7; i++) {
+      track[i] = trackState[i];
+    }
+    const fxn = mthdss();
+    let data = Number(fxn.fromLocalStorage("month"));
+    function updateTrack(track) {
+      track.pop();
+      track.unshift({ obj: {}, ids: [] });
+    }
+    let repeat = true;
+
+    do {
+      if (data) {
+        if (data !== new Date().getMonth()) {
+          updateTrack(track);
+          data++;
+        } else {
+          repeat = false;
+          fxn.toLocalStorage("month", data);
+          fxn.toLocalStorage("trackState", track);
+          settrackState(track);
+        }
+      } else {
+        const track0 = track[0];
+        const id = track0.ids[track0.ids.length - 1];
+        const date = fxn.idtoDate(id);
+        let data1 = date.getMonth();
+        if (data1 !== new Date().getMonth()) {
+          updateTrack(track);
+          data1++;
+        } else {
+          repeat = false;
+          fxn.toLocalStorage("month", data1);
+          fxn.toLocalStorage("trackState", track);
+          settrackState(track);
+        }
+      }
+    } while (repeat);
+
+    firstTime = false;
+  }
 }
