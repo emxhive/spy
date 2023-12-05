@@ -105,7 +105,7 @@ export default function Main({
           currency="$"
           frozen={mthds.tidyFig(objs.pmAmount.netUsdF)}
           available={mthds.tidyFig(
-            objs.pmAmount.netUsd - objs.pmAmount.netUsdF
+            objs.pmAmount.netUsd - objs.pmAmount.netUsdF,
           )}
         />
         <BalContainer
@@ -113,7 +113,7 @@ export default function Main({
           currency="₦"
           frozen={mthds.tidyFig(objs.pmAmount.netNgnF)}
           available={mthds.tidyFig(
-            objs.pmAmount.netNgn - objs.pmAmount.netNgnF
+            objs.pmAmount.netNgn - objs.pmAmount.netNgnF,
           )}
         />
       </div>
@@ -136,7 +136,7 @@ export default function Main({
             {mthds.tidyFig(
               objs.pmAmount.netUsd -
                 objs.pmAmount.netUsdFee -
-                objs.pmAmount.netUsdF
+                objs.pmAmount.netUsdF,
             )}
           </div>
           <div className="mid-labels"> NGN: </div>

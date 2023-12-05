@@ -40,13 +40,13 @@ function App() {
 
   const isPc = useMediaQuery({ query: "(min-width: 900px)" });
   const [loggedIn, setLogStatus] = useState(
-    JSON.parse(localStorage.getItem("logged"))
+    JSON.parse(localStorage.getItem("logged")),
   );
   const [trackState, settrackState] = useState(
-    sortTrackData(JSON.parse(localStorage.getItem("trackState")))
+    sortTrackData(JSON.parse(localStorage.getItem("trackState"))),
   );
   const pendingHiState = useRef(
-    JSON.parse(localStorage.getItem("pendingHistEntry"))
+    JSON.parse(localStorage.getItem("pendingHistEntry")),
   );
 
   const trackWatch = {
@@ -85,7 +85,7 @@ function App() {
     }
 
     if (loggedIn?.email === admin) {
-      monthlyCheck(trackState, settrackState);
+      // monthlyCheck(trackState, settrackState);
       fetchData();
     }
   }, [loggedIn]);
@@ -244,7 +244,7 @@ function sortTrackData(trackState) {
 }
 
 function monthlyCheck(trackState, settrackState) {
-  if (firstTime) {
+  if (firstTime && trackState) {
     const track = [];
     for (let i = 0; i < 7; i++) {
       track[i] = trackState[i];
@@ -270,17 +270,19 @@ function monthlyCheck(trackState, settrackState) {
         }
       } else {
         const track0 = track[0];
-        const id = track0.ids[track0.ids.length - 1];
-        const date = fxn.idtoDate(id);
-        let data1 = date.getMonth();
-        if (data1 !== new Date().getMonth()) {
-          updateTrack(track);
-          data1++;
-        } else {
-          repeat = false;
-          fxn.toLocalStorage("month", data1);
-          fxn.toLocalStorage("trackState", track);
-          settrackState(track);
+        if (track0.ids.length > 0) {
+          const id = track0.ids[track0.ids.length - 1];
+          const date = fxn.idtoDate(id);
+          let data1 = date.getMonth();
+          if (data1 !== new Date().getMonth()) {
+            updateTrack(track);
+            data1++;
+          } else {
+            repeat = false;
+            fxn.toLocalStorage("month", data1);
+            fxn.toLocalStorage("trackState", track);
+            settrackState(track);
+          }
         }
       }
     } while (repeat);
