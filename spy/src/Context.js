@@ -1,7 +1,6 @@
-import { createContext } from "react";
+import { createContext, useRef } from "react";
 
 export const TrackContext = createContext();
 export const SetTrackContext = createContext();
-export const PendingHiContext = createContext();
-
+export const ClearContentEditorMTB = createContext();
 export const TrackWatch = createContext();
