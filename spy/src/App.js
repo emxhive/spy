@@ -244,7 +244,7 @@ function sortTrackData(trackState) {
 }
 
 function monthlyCheck(trackState, settrackState) {
-  if (firstTime) {
+  if (firstTime && trackState) {
     const track = [];
     for (let i = 0; i < 7; i++) {
       track[i] = trackState[i];
@@ -270,17 +270,19 @@ function monthlyCheck(trackState, settrackState) {
         }
       } else {
         const track0 = track[0];
-        const id = track0.ids[track0.ids.length - 1];
-        const date = fxn.idtoDate(id);
-        let data1 = date.getMonth();
-        if (data1 !== new Date().getMonth()) {
-          updateTrack(track);
-          data1++;
-        } else {
-          repeat = false;
-          fxn.toLocalStorage("month", data1);
-          fxn.toLocalStorage("trackState", track);
-          settrackState(track);
+        if (track0.ids.length > 0) {
+          const id = track0.ids[track0.ids.length - 1];
+          const date = fxn.idtoDate(id);
+          let data1 = date.getMonth();
+          if (data1 !== new Date().getMonth()) {
+            updateTrack(track);
+            data1++;
+          } else {
+            repeat = false;
+            fxn.toLocalStorage("month", data1);
+            fxn.toLocalStorage("trackState", track);
+            settrackState(track);
+          }
         }
       }
     } while (repeat);
