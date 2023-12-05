@@ -18,7 +18,7 @@ function Entries({
   setshowbuttons,
   setCurrentEntry,
   objs,
-  styleId,
+  styleId
 }) {
   //setting the edit state
 
@@ -63,7 +63,7 @@ function Entries({
     const newtext =
       text.search(regex) > -1
         ? `${text.slice(0, text.search(regex))}(${text.slice(
-            text.search(regex),
+            text.search(regex)
           )})`
         : text;
 
@@ -92,11 +92,7 @@ function Entries({
     );
   }
 
-  ////////////////////////////////////FIGURES/////////////
-
-  //--------- WAHALA -------
-
-  //////////////////////////////////////////////
+  /////////////////////////////////////FIGURES/////////////
   function Figures(text, key, id, symbol) {
     let spanSym = "";
     let isChanging = false;
@@ -134,7 +130,7 @@ function Entries({
           html={text}
           onPaste={(e) => {
             textz.current = mthds.tidyFig(
-              mthds.toDigits(e.clipboardData.getData("number")),
+              mthds.toDigits(e.clipboardData.getData("number"))
             );
 
             isChanging = true;
@@ -195,7 +191,7 @@ function Entries({
               pm.balance - pm.frozen - pm.payFee,
               "balance",
               pm.id,
-              pm.balance - pm.frozen - pm.payFee > 0 ? pm.symbol : "",
+              pm.balance - pm.frozen - pm.payFee > 0 ? pm.symbol : ""
             )}
           </div>
           {(!edit[pm.id] || pm.frozen > 0) && (
@@ -242,7 +238,7 @@ function Entries({
                     pm.balance - pm.frozen - pm.payFee,
                     "balance",
                     pm.id,
-                    pm.symbol,
+                    pm.symbol
                   );
                   break;
                 case 2:
@@ -260,7 +256,7 @@ function Entries({
             divs.push(
               <div key={pm.id + new Date().getTime()} className="entry-row">
                 {rowEntry}
-              </div>,
+              </div>
             );
           }
         });
@@ -270,10 +266,7 @@ function Entries({
     </div>
   );
 
-  //------------
-  //-------------MOBILE
-  //----------------------------DON'T MISS IT
-  //-------------MOBILE HERE
+  //MOBILE
   const entriesMobile = (
     <div className="entries-main-body" id={styleId}>
       {(function () {
@@ -283,7 +276,7 @@ function Entries({
             divs.push(
               <div key={pm.id + new Date().getTime()} className="entry-row">
                 {mobileRow(pm)}
-              </div>,
+              </div>
             );
           }
         });

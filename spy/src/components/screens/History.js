@@ -198,49 +198,49 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
       const preBal = pmState[formObj.pm].balance;
       const preFreeze = pmState[formObj.pm].frozen;
       const pm = pmState[formObj.pm];
+      let newpmState;
 
       switch (formObj.type) {
         case -2:
-          setpmState({
+          newpmState = {
             ...pmState,
             [formObj.pm]: { ...pm, frozen: preFreeze - formObj.amount },
-          });
+          };
 
           break;
         case -1:
-          setpmState({
+          newpmState = {
             ...pmState,
             [formObj.pm]: { ...pm, balance: preBal - formObj.amount },
-          });
+          };
 
           break;
         case 1:
-          setpmState({
+          newpmState = {
             ...pmState,
             [formObj.pm]: { ...pm, balance: preBal + formObj.amount },
-          });
+          };
 
           break;
         default:
-          setpmState({
+          newpmState = {
             ...pmState,
             [formObj.pm]: { ...pm, frozen: preFreeze + formObj.amount },
-          });
+          };
       }
 
       //updating rate in main pmstate
       if (formObj.rate !== pmState.generalProps.rate) {
-        const newpmState = {
-          ...pmState,
+        newpmState = {
+          ...newpmState,
           ["generalProps"]: {
             ...pmState.generalProps,
             rate: formObj.rate,
           },
         };
-
-        setpmState(newpmState);
-        pmUpdatespyStore({ dataUpdate: newpmState, spyCollection: "pmstate" });
       }
+      setpmState(newpmState);
+      pmUpdatespyStore({ dataUpdate: newpmState, spyCollection: "pmstate" });
 
       /////updating day array an
       // const obj = { [objId]: newEntry, ...dayArr };
@@ -255,37 +255,37 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
       localStorage.setItem("historydayArr", JSON.stringify(obj));
 
       //SET PENDING HISTORY ENTRY STATE FOR TRACKER USE
-      if (Math.abs(formObj.type) == 1) {
-        //meaning only debits and credits.. no freezes are considered
+      // if (Math.abs(formObj.type) == 1) {
+      //   //meaning only debits and credits.. no freezes are considered
 
-        const pm = pmObjs.pmAmount.all[formObj.pm];
-        const pendingStateObj = {
-          rate: formObj.rate,
-          pm: formObj.pm,
-          get amount() {
-            if (pm.isUsd) {
-              return formObj.amount * formObj.type;
-            } else {
-              return (formObj.amount / pm.rate) * formObj.type;
-            }
-          },
-        };
+      //   const pm = pmObjs.pmAmount.all[formObj.pm];
+      //   const pendingStateObj = {
+      //     rate: formObj.rate,
+      //     pm: formObj.pm,
+      //     get amount() {
+      //       if (pm.isUsd) {
+      //         return formObj.amount * formObj.type;
+      //       } else {
+      //         return (formObj.amount / pm.rate) * formObj.type;
+      //       }
+      //     },
+      //   };
 
-        if (JSON.parse(localStorage.getItem("pendingHistEntry"))) {
-          const obj = {
-            ...pendingStateObj,
-            amount: pendHiState.amount + pendingStateObj.amount,
-          };
-          pendHiState.current = obj;
-          localStorage.setItem("pendingHistEntry", JSON.stringify(obj));
-        } else {
-          pendHiState.current=pendingStateObj;
-        }
-        localStorage.setItem(
-          "pendingHistEntry",
-          JSON.stringify(pendingStateObj)
-        );
-      }
+      //   if (JSON.parse(localStorage.getItem("pendingHistEntry"))) {
+      //     const obj = {
+      //       ...pendingStateObj,
+      //       amount: pendHiState.amount + pendingStateObj.amount,
+      //     };
+      //     pendHiState.current = obj;
+      //     localStorage.setItem("pendingHistEntry", JSON.stringify(obj));
+      //   } else {
+      //     pendHiState.current=pendingStateObj;
+      //   }
+      //   localStorage.setItem(
+      //     "pendingHistEntry",
+      //     JSON.stringify(pendingStateObj)
+      //   );
+      // }
 
       // For every new entry to dayArr state
       // a corresponding entry to daysArr (grouped from start)
