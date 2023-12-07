@@ -15,7 +15,7 @@ import {
 import { pmUpdatespyStore } from "../utils/updatespyStore";
 import { toast } from "react-toastify";
 import {
-  ClearContentEditorMTB,
+  PendingHiContext,
   SetTrackContext,
   TrackContext,
   TrackWatch,
@@ -36,9 +36,7 @@ function MidToolBar({
 }) {
   const trackState = useContext(TrackContext);
   const settrackState = useContext(SetTrackContext);
-
-  const clearContentEditor = useContext(ClearContentEditorMTB);
-
+  const pendHiState = useContext(PendingHiContext);
   const trackWatch = useContext(TrackWatch);
 
   const mthds = mthdss();
@@ -90,16 +88,7 @@ function MidToolBar({
           setCurrentEntry(null);
         }}
       >
-        save+++
-      </button>
-
-      <button
-        onClick={() => {
-          const [clearState, setClearState] = clearContentEditor;
-          setClearState(clearState + 1);
-        }}
-      >
-        Clear---
+        save+
       </button>
     </div>
   );
@@ -130,7 +119,11 @@ function MidToolBar({
         in: objs.pmAmount.netInNgn - objs.pmAmount.netInNgnF,
         tiu: objs.pmAmount.netInUsd,
         tin: objs.pmAmount.netInNgn,
-
+        get exp() {
+          return pendHiState.current
+            ? Number(pendHiState.current.amount)
+            : null;
+        },
         prev: previousData,
       };
       let localTrack = {};
@@ -138,6 +131,7 @@ function MidToolBar({
       toast("New Track Record");
       localTrack[0].obj[currentId] = currentObj;
       localTrack[0].ids.unshift(currentId);
+     
 
       const prevD = {
         r: currentObj.r,
