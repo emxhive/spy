@@ -3,8 +3,8 @@ import Collapsible from "react-collapsible";
 import mthdss from "../../consts/functions";
 import "../../css/mobtracker.css";
 import {
-
-
+  PendingHiContext,
+  SetPendingHiContext,
   TrackContext,
   TrackWatch,
 } from "../../Context";
@@ -13,6 +13,7 @@ import updatespyStore from "../../utils/updatespyStore";
 
 export default function Tracker({}) {
   const trackState = useContext(TrackContext);
+  const pendHiState = useContext(PendingHiContext);
 
   const trackWatch = useContext(TrackWatch);
 
@@ -31,7 +32,7 @@ export default function Tracker({}) {
   }
 
   function createEntry() {
-    setpnl(data);
+    setpnl(data, pendHiState);
     return (
       <div key={key}>
         {date.toLocaleDateString(undefined, {
@@ -59,10 +60,10 @@ export default function Tracker({}) {
           <div>{mth.tidyFig(data.iu)}</div>
           <div>in</div>
           <div>{mth.tidyFig(data.in)}</div>
-          {/* {(() => data.exp < 0 || data.exp > 0)() && [
+          {(() => data.exp < 0 || data.exp > 0)() && [
             <div key={"ex.label"}>ex</div>,
             <div key={"ex.value"}>{mth.tidyFig(data.exp)}</div>,
-          ]} */}
+          ]}
         </div>
       </div>
     );
@@ -177,12 +178,15 @@ function generateCurrentMonth(trackState) {
   }
 }
 
-function setpnl(data) {
+function setpnl(data, pendHiState) {
   if (data.prev?.r > 0) {
     let y = 0;
-
+    if (data.exp) {
+      y = -data.exp;
+    }
     pnl = data.tiu + y - data.prev.tiu;
-
+    localStorage.setItem("pendingHistEntry", "null");
+    pendHiState.current = null;
     //TODO useStorage here send this to firebase when the time comes
     if (pnl < 0) {
       pnlClass = "mob-track-pnl-mini-loss";
@@ -209,3 +213,4 @@ function monthFromIndex(i) {
   }
   return monthsArr[diff];
 }
+
