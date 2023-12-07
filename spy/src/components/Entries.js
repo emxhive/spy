@@ -1,10 +1,12 @@
 import PropTypes from "prop-types";
 import mthdss from "../consts/functions";
 import { FiEdit } from "react-icons/fi";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import ContentEditable from "react-contenteditable";
+import { ClearContentEditorMTB } from "../Context";
 
 const mthds = mthdss();
+let globalChange = false;
 
 function Entries({
   setEdit,
@@ -18,7 +20,7 @@ function Entries({
   setshowbuttons,
   setCurrentEntry,
   objs,
-  styleId
+  styleId,
 }) {
   //setting the edit state
 
@@ -34,6 +36,12 @@ function Entries({
 
     setEdit(localstateobj);
   }, [state]);
+
+  const [clearState, setClearState] = useContext(ClearContentEditorMTB);
+
+  useEffect(() => {
+    if (showsavebuttons) globalChange = true;
+  }, [clearState]);
 
   const objsArr = [];
   for (const key in objs) {
@@ -92,11 +100,12 @@ function Entries({
     );
   }
 
-  /////////////////////////////////////FIGURES/////////////
+  ///////////////////////FIGURES/////////////////
   function Figures(text, key, id, symbol) {
+    let textz;
     let spanSym = "";
     let isChanging = false;
-    let textz;
+
     switch (key) {
       case "balance":
         spanSym = <span key={"currency"}>{symbol}</span>;
@@ -117,6 +126,10 @@ function Entries({
       if (!isChanging) {
         isChanging = true;
       }
+      if (globalChange) {
+        e.target.value = "";
+        globalChange = false;
+      }
       textz.current = mthds.tidyFig(mthds.toDigits(e.target.value));
     };
 
@@ -135,8 +148,17 @@ function Entries({
 
             isChanging = true;
           }}
+          onFocus={(e) => {
+
+          }}
           onBlur={(e) => {
-            if (isChanging) e.target.innerText = textz.current;
+            if (isChanging) {
+              e.target.innerText = textz.current;
+            }
+            if (globalChange) {
+              globalChange = false;
+              e.target.innerText = " ";
+            }
           }}
           onChange={handleChange}
         />

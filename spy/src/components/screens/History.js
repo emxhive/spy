@@ -10,8 +10,8 @@ import { db } from "../../utils/db";
 import { addDoc, collection } from "firebase/firestore";
 
 import {
-  PendingHiContext,
-  SetPendingHiContext,
+
+
   TrackContext,
 } from "../../Context";
 import { pmUpdatespyStore } from "../../utils/updatespyStore";
@@ -20,7 +20,7 @@ const errorIcon = <span>⚠️</span>;
 const mth = mthdss();
 
 export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
-  const pendHiState = useContext(PendingHiContext);
+
 
   const [isDialog, setDialog] = useState(false);
   const [date, setDate] = useState(new Date().toISOString().split(".")[0]);
@@ -255,6 +255,8 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
       localStorage.setItem("historydayArr", JSON.stringify(obj));
 
       //SET PENDING HISTORY ENTRY STATE FOR TRACKER USE
+
+      ///// OUT FOR NOW////////
       // if (Math.abs(formObj.type) == 1) {
       //   //meaning only debits and credits.. no freezes are considered
 
