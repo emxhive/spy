@@ -30,7 +30,7 @@ import {
 } from "./Context";
 
 function App() {
-  // localStorage.removeItem("historydayArr");
+  // localStorage.clear();
   const admin = "okpakomaraez@gmail.com";
   const [pmStates, setpmStates] = useState(objss().before());
   const [pmIcons, setpmIcons] = useState(objss().pmIcons);
