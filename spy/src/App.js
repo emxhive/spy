@@ -22,8 +22,7 @@ import { spyAuth } from "./utils/db";
 import Tracker from "./components/screens/Tracker";
 import MobLayout from "./components/MobLayout";
 import {
-  PendingHiContext,
-  SetPendingHiContext,
+  ClearContentEditorMTB,
   SetTrackContext,
   TrackContext,
   TrackWatch,
@@ -45,9 +44,7 @@ function App() {
   const [trackState, settrackState] = useState(
     sortTrackData(JSON.parse(localStorage.getItem("trackState")))
   );
-  const pendingHiState = useRef(
-    JSON.parse(localStorage.getItem("pendingHistEntry"))
-  );
+  const clearContentEditor = useState(0);
 
   const trackWatch = {
     current: false,
@@ -128,7 +125,7 @@ function App() {
   const mobileVersion = (
     <TrackContext.Provider value={trackState}>
       <SetTrackContext.Provider value={settrackState}>
-        <PendingHiContext.Provider value={pendingHiState}>
+        <ClearContentEditorMTB.Provider value={clearContentEditor}>
           <TrackWatch.Provider value={trackWatch}>
             <Router>
               <Routes>
@@ -176,7 +173,7 @@ function App() {
               </Routes>
             </Router>
           </TrackWatch.Provider>
-        </PendingHiContext.Provider>
+        </ClearContentEditorMTB.Provider>
       </SetTrackContext.Provider>
     </TrackContext.Provider>
   );
