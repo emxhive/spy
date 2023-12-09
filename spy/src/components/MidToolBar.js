@@ -15,7 +15,7 @@ import {
 import { pmUpdatespyStore } from "../utils/updatespyStore";
 import { toast } from "react-toastify";
 import {
-  ClearContentEditorMTB,
+
   SetTrackContext,
   TrackContext,
   TrackWatch,
@@ -37,7 +37,7 @@ function MidToolBar({
   const trackState = useContext(TrackContext);
   const settrackState = useContext(SetTrackContext);
 
-  const clearContentEditor = useContext(ClearContentEditorMTB);
+ 
 
   const trackWatch = useContext(TrackWatch);
 
@@ -95,8 +95,7 @@ function MidToolBar({
 
       <button
         onClick={() => {
-          const [clearState, setClearState] = clearContentEditor;
-          setClearState(clearState + 1);
+       
         }}
       >
         Clear---

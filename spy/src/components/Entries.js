@@ -3,7 +3,7 @@ import mthdss from "../consts/functions";
 import { FiEdit } from "react-icons/fi";
 import { useContext, useEffect, useRef, useState } from "react";
 import ContentEditable from "react-contenteditable";
-import { ClearContentEditorMTB } from "../Context";
+import { PiBroomLight } from "react-icons/pi";
 
 const mthds = mthdss();
 let globalChange = false;
@@ -37,11 +37,9 @@ function Entries({
     setEdit(localstateobj);
   }, [state]);
 
-  const [clearState, setClearState] = useContext(ClearContentEditorMTB);
+ 
 
-  useEffect(() => {
-    if (showsavebuttons) globalChange = true;
-  }, [clearState]);
+
 
   const objsArr = [];
   for (const key in objs) {
@@ -156,7 +154,7 @@ function Entries({
               e.target.innerText = textz.current;
             }
             if (globalChange) {
-              globalChange = false;
+              globalChange = false; 
               e.target.innerText = " ";
             }
           }}

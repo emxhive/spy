@@ -21,12 +21,7 @@ import { useMediaQuery } from "react-responsive";
 import { spyAuth } from "./utils/db";
 import Tracker from "./components/screens/Tracker";
 import MobLayout from "./components/MobLayout";
-import {
-  ClearContentEditorMTB,
-  SetTrackContext,
-  TrackContext,
-  TrackWatch,
-} from "./Context";
+import { SetTrackContext, TrackContext, TrackWatch } from "./Context";
 
 function App() {
   // localStorage.clear();
@@ -44,7 +39,6 @@ function App() {
   const [trackState, settrackState] = useState(
     sortTrackData(JSON.parse(localStorage.getItem("trackState")))
   );
-  const clearContentEditor = useState(0);
 
   const trackWatch = {
     current: false,
@@ -125,55 +119,53 @@ function App() {
   const mobileVersion = (
     <TrackContext.Provider value={trackState}>
       <SetTrackContext.Provider value={settrackState}>
-        <ClearContentEditorMTB.Provider value={clearContentEditor}>
-          <TrackWatch.Provider value={trackWatch}>
-            <Router>
-              <Routes>
+        <TrackWatch.Provider value={trackWatch}>
+          <Router>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <div className="main-parent">
+                    {mobLayout.mobTop}
+                    <Outlet />
+                    {mobLayout.mobFooter}
+                    <ToastContainer position="bottom-right" />
+                  </div>
+                }
+              >
                 <Route
-                  path="/"
+                  index
                   element={
-                    <div className="main-parent">
-                      {mobLayout.mobTop}
-                      <Outlet />
-                      {mobLayout.mobFooter}
-                      <ToastContainer position="bottom-right" />
-                    </div>
+                    <Main
+                      isPc={isPc}
+                      loggedIn={loggedIn}
+                      setlogStatus={setLogStatus}
+                      signOut={signOut}
+                      mthds={mth}
+                      objs={objjs}
+                      pmIcons={pmIcons}
+                      setpmIcons={setpmIcons}
+                      pmState={pmStates}
+                      setpmState={setpmStates}
+                    />
                   }
-                >
-                  <Route
-                    index
-                    element={
-                      <Main
-                        isPc={isPc}
-                        loggedIn={loggedIn}
-                        setlogStatus={setLogStatus}
-                        signOut={signOut}
-                        mthds={mth}
-                        objs={objjs}
-                        pmIcons={pmIcons}
-                        setpmIcons={setpmIcons}
-                        pmState={pmStates}
-                        setpmState={setpmStates}
-                      />
-                    }
-                  />
-                  <Route path="track" element={<Tracker pmobjs={objjs} />} />
-                  <Route
-                    path="history"
-                    element={
-                      <History
-                        pmObjs={objjs}
-                        pmIcons={pmIcons}
-                        pmState={pmStates}
-                        setpmState={setpmStates}
-                      />
-                    }
-                  />
-                </Route>
-              </Routes>
-            </Router>
-          </TrackWatch.Provider>
-        </ClearContentEditorMTB.Provider>
+                />
+                <Route path="track" element={<Tracker pmobjs={objjs} />} />
+                <Route
+                  path="history"
+                  element={
+                    <History
+                      pmObjs={objjs}
+                      pmIcons={pmIcons}
+                      pmState={pmStates}
+                      setpmState={setpmStates}
+                    />
+                  }
+                />
+              </Route>
+            </Routes>
+          </Router>
+        </TrackWatch.Provider>
       </SetTrackContext.Provider>
     </TrackContext.Provider>
   );
