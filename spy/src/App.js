@@ -24,11 +24,13 @@ import MobLayout from "./components/MobLayout";
 import { SetTrackContext, TrackContext, TrackWatch } from "./Context";
 
 function App() {
-  // localStorage.clear();
+  
   const admin = "okpakomaraez@gmail.com";
   const [pmStates, setpmStates] = useState(objss().before());
   const [pmIcons, setpmIcons] = useState(objss().pmIcons);
   const objjs = objss().after(pmStates, pmIcons);
+
+  // localStorage.clear();
 
   const mth = mthdss(pmStates, setpmStates);
 

@@ -1,12 +1,11 @@
 import PropTypes from "prop-types";
 import mthdss from "../consts/functions";
 import { FiEdit } from "react-icons/fi";
-import { useContext, useEffect, useRef, useState } from "react";
+import { createElement, useCallback, useContext, useEffect, useRef, useState } from "react";
 import ContentEditable from "react-contenteditable";
 import { PiBroomLight } from "react-icons/pi";
 
 const mthds = mthdss();
-let globalChange = false;
 
 function Entries({
   setEdit,
@@ -22,6 +21,16 @@ function Entries({
   objs,
   styleId,
 }) {
+  const [focusState, setFocusState] = useState(false);
+  const contentEditStyle = useRef({});
+  const [, updateComp] = useState();
+  const forceUpdate = useCallback(() => {
+    updateComp({});
+  }, []);
+
+  const currentFocus = useRef();
+  const elementX = document.createElement("span");
+
   //setting the edit state
 
   useEffect(() => {
@@ -36,10 +45,6 @@ function Entries({
 
     setEdit(localstateobj);
   }, [state]);
-
- 
-
-
 
   const objsArr = [];
   for (const key in objs) {
@@ -101,12 +106,12 @@ function Entries({
   ///////////////////////FIGURES/////////////////
   function Figures(text, key, id, symbol) {
     let textz;
-    let spanSym = "";
+    let spanSymbol = "";
     let isChanging = false;
 
     switch (key) {
       case "balance":
-        spanSym = <span key={"currency"}>{symbol}</span>;
+        spanSymbol = <span key={"currency"}>{symbol}</span>;
         textz = balance;
         break;
       case "frozen":
@@ -124,18 +129,18 @@ function Entries({
       if (!isChanging) {
         isChanging = true;
       }
-      if (globalChange) {
-        e.target.value = "";
-        globalChange = false;
-      }
+
       textz.current = mthds.tidyFig(mthds.toDigits(e.target.value));
+      console.log(e.target.value);
     };
 
     return (
       <div key={`figuresdiv-${id}-${key}`} className="div-with-contenteditable">
-        {spanSym}
+        {spanSymbol}
+
         <ContentEditable
           key={key}
+          ref={currentFocus}
           className="entries-figures content-edit"
           disabled={edit[id]}
           html={text}
@@ -147,18 +152,23 @@ function Entries({
             isChanging = true;
           }}
           onFocus={(e) => {
-
+            contentEditStyle.current = { minWidth: "50px" };
+            
+            elementX.innerText= "X";
+          
+            e.target.innerText = .0;
+            e.target.insertAdjacentElement("afterend", elementX);
+           
           }}
           onBlur={(e) => {
+            elementX.remove();
+            contentEditStyle.current = {};
             if (isChanging) {
               e.target.innerText = textz.current;
             }
-            if (globalChange) {
-              globalChange = false; 
-              e.target.innerText = " ";
-            }
           }}
           onChange={handleChange}
+          style={contentEditStyle.current}
         />
       </div>
     );

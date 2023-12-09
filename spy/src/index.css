@@ -256,6 +256,10 @@ hr {
   font-size: 0.95em;
 }
 
+/* .mob-entry-blur .div-with-contenteditable {
+  min-width: 10px;
+} */
+
 .div-with-contenteditable span {
   font-size: 0.85em;
   padding-top: 2.5%;
@@ -283,8 +287,6 @@ hr {
 
 /* ...............MOB-PHONES...............MEDIA QUERIES */
 @media screen and (max-width: 600px) {
-
-
   .mob-entryrow-box-x-flex {
     display: flex;
     gap: 15px;
@@ -376,16 +378,13 @@ hr {
     margin-top: 10px;
     margin-bottom: 5px;
   }
-   .toolbar-right-before{
+  .toolbar-right-before {
     margin-top: 10px;
     margin-bottom: 5px;
-
   }
-  .mob-toolbar-tic{
+  .mob-toolbar-tic {
     width: 2em;
   }
-
- 
 
   #mid-entrybox .entry-row {
     gap: 0;
