@@ -39,6 +39,7 @@ function Entries({
 
   const clickCount = useRef(0);
   const focusing = useRef(false);
+  const stayFocused = useRef(false);
 
   //setting the edit state
 
@@ -135,7 +136,7 @@ function Entries({
     }
     text = mthds.tidyFig(text);
     const handleChange = (e) => {
-      focusing.current = false;
+      stayFocused.current = false;
       if (!isChanging) {
         isChanging = true;
       }
@@ -155,7 +156,6 @@ function Entries({
           html={text}
           onClick={(e) => {
             try {
-              console.log("");
               // navigator.clipboard.writeText(
               //   Number(e.target.innerText.replaceAll(",", ""))
               // );
@@ -171,40 +171,46 @@ function Entries({
             isChanging = true;
           }}
           onFocus={(e) => {
+            if (clickCount.current == 1) {
+              elementX.remove();
+              focusing.current = true;
+            }
+
             const eFocus = e;
-            contentEditStyle.current = { minWidth: "50px" };
-            if (clickCount.current < 1) {
+
+            if (clickCount.current < 1 || focusing.current) {
               flushSync(() => {
                 rootIsh.render(
                   <PiBroomLight
                     className="clear-contentedit"
                     onClick={(e) => {
-                      focusing.current = true;
-                      console.log(focusing.current);
+                      stayFocused.current = true;
+                      console.log("focus ran ");
+
                       eFocus.target.innerText = 0;
                     }}
                   />
                 );
               });
               e.target.insertAdjacentElement("afterend", elementX);
-              clickCount.current++;
+              clickCount.current = 1;
             }
           }}
           onBlur={(e) => {
             setTimeout(() => {
-              console.log(focusing.current);
-              if (!focusing.current) {
+              if (!stayFocused.current && !focusing.current) {
+                console.log("blur ran " + stayFocused.current);
                 elementX.remove();
                 clickCount.current = 0;
-                contentEditStyle.current = {};
-                if (isChanging) {
-                  e.target.innerText = textz.current;
-                }
               }
-            }, 2);
+
+              focusing.current = false;
+            }, 100);
+            if (isChanging) {
+              e.target.innerText = textz.current;
+            }
           }}
           onChange={handleChange}
-          style={contentEditStyle.current}
         />
       </div>
     );

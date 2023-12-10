@@ -27,6 +27,9 @@ img {
   aspect-ratio: 1;
   border-radius: 50%;
 }
+contenteditable{
+  text-wrap: wrap;
+}
 
 .main-parent {
   width: 100vw;
@@ -225,6 +228,10 @@ hr {
   margin-left: 5px;
   stroke: var(--blue);
   font-size: 1.5em;
+}
+
+.clear-contentedit:active{
+ color: red;
 }
 .entry-row .edit-button {
   margin-right: 10px;
