@@ -3,4 +3,4 @@ import { createContext, useRef } from "react";
 export const TrackContext = createContext();
 export const SetTrackContext = createContext();
 export const ClearContentEditorMTB = createContext();
-export const TrackWatch = createContext();
+export const HistoryWatch = createContext();

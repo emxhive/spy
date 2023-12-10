@@ -18,7 +18,7 @@ import {
 
   SetTrackContext,
   TrackContext,
-  TrackWatch,
+  HistoryWatch,
 } from "../Context";
 
 function MidToolBar({
@@ -39,7 +39,7 @@ function MidToolBar({
 
  
 
-  const trackWatch = useContext(TrackWatch);
+  const historyWatch = useContext(HistoryWatch);
 
   const mthds = mthdss();
   const previousData = JSON.parse(localStorage.getItem("previousTrack"));
@@ -140,7 +140,7 @@ function MidToolBar({
       localStorage.setItem("previousTrack", JSON.stringify(prevD));
       settrackState(localTrack);
       localStorage.setItem("trackState", JSON.stringify(localTrack));
-      trackWatch.current = true;
+      historyWatch.current = true;
     }
   }
 

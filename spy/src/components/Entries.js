@@ -205,7 +205,7 @@ function Entries({
               }
 
               focusing.current = false;
-            }, 100);
+            }, 500);
             if (isChanging) {
               e.target.innerText = textz.current;
             }

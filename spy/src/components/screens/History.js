@@ -9,19 +9,13 @@ import mthdss from "../../consts/functions";
 import { db } from "../../utils/db";
 import { addDoc, collection } from "firebase/firestore";
 
-import {
-
-
-  TrackContext,
-} from "../../Context";
+import { HistoryWatch, TrackContext } from "../../Context";
 import { pmUpdatespyStore } from "../../utils/updatespyStore";
 
 const errorIcon = <span>⚠️</span>;
 const mth = mthdss();
 
 export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
-
-
   const [isDialog, setDialog] = useState(false);
   const [date, setDate] = useState(new Date().toISOString().split(".")[0]);
 
@@ -254,40 +248,38 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
       setdayArr(obj);
       localStorage.setItem("historydayArr", JSON.stringify(obj));
 
-      //SET PENDING HISTORY ENTRY STATE FOR TRACKER USE
+      //SET PENDING HISTORY ENTRY STATE FOR TRACKER USE it's really for personal expenses only
 
-      ///// OUT FOR NOW////////
-      // if (Math.abs(formObj.type) == 1) {
-      //   //meaning only debits and credits.. no freezes are considered
+      /// OUT FOR NOW////////
+      if (Math.abs(formObj.type) == 1 && formObj.category === 1) {
+        let localStorageWatch = mth.fromLocalStorage("historyWatch");
+        //meaning only debits and credits under personal category.. no freezes are considered
 
-      //   const pm = pmObjs.pmAmount.all[formObj.pm];
-      //   const pendingStateObj = {
-      //     rate: formObj.rate,
-      //     pm: formObj.pm,
-      //     get amount() {
-      //       if (pm.isUsd) {
-      //         return formObj.amount * formObj.type;
-      //       } else {
-      //         return (formObj.amount / pm.rate) * formObj.type;
-      //       }
-      //     },
-      //   };
+        const pm = pmObjs.pmAmount.all[formObj.pm];
+        const newExpenseObj = {
+          rate: formObj.rate,
+          pm: formObj.pm,
+          get amount() {
+            if (pm.isUsd) {
+              return formObj.amount * formObj.type;
+            } else {
+              return (formObj.amount / pm.rate) * formObj.type;
+            }
+          },
+        };
 
-      //   if (JSON.parse(localStorage.getItem("pendingHistEntry"))) {
-      //     const obj = {
-      //       ...pendingStateObj,
-      //       amount: pendHiState.amount + pendingStateObj.amount,
-      //     };
-      //     pendHiState.current = obj;
-      //     localStorage.setItem("pendingHistEntry", JSON.stringify(obj));
-      //   } else {
-      //     pendHiState.current=pendingStateObj;
-      //   }
-      //   localStorage.setItem(
-      //     "pendingHistEntry",
-      //     JSON.stringify(pendingStateObj)
-      //   );
-      // }
+        if (localStorageWatch && localStorageWatch?.data) {
+          mth.toLocalStorage("historyWatch", {
+            status: true,
+            data: newExpenseObj.amount + Number(localStorageWatch.data),
+          });
+        } else {
+          mth.toLocalStorage("historyWatch", {
+            status: true,
+            data: newExpenseObj.amount,
+          });
+        }
+      }
 
       // For every new entry to dayArr state
       // a corresponding entry to daysArr (grouped from start)

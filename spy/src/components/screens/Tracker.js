@@ -6,7 +6,7 @@ import {
 
 
   TrackContext,
-  TrackWatch,
+  HistoryWatch,
 } from "../../Context";
 import fetchspyStore from "../../utils/fetchspyStore";
 import updatespyStore from "../../utils/updatespyStore";
@@ -14,7 +14,7 @@ import updatespyStore from "../../utils/updatespyStore";
 export default function Tracker({}) {
   const trackState = useContext(TrackContext);
 
-  const trackWatch = useContext(TrackWatch);
+  const historyWatch = useContext(HistoryWatch);
 
   let data;
   let key;

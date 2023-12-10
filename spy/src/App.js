@@ -21,10 +21,9 @@ import { useMediaQuery } from "react-responsive";
 import { spyAuth } from "./utils/db";
 import Tracker from "./components/screens/Tracker";
 import MobLayout from "./components/MobLayout";
-import { SetTrackContext, TrackContext, TrackWatch } from "./Context";
+import { SetTrackContext, TrackContext, HistoryWatch } from "./Context";
 
 function App() {
-  
   const admin = "okpakomaraez@gmail.com";
   const [pmStates, setpmStates] = useState(objss().before());
   const [pmIcons, setpmIcons] = useState(objss().pmIcons);
@@ -42,8 +41,9 @@ function App() {
     sortTrackData(JSON.parse(localStorage.getItem("trackState")))
   );
 
-  const trackWatch = {
-    current: false,
+  const historyWatch = {
+    status: false,
+    data: 0
   };
 
   // localStorage.setItem("pendingHistEntry", "false");
@@ -121,7 +121,7 @@ function App() {
   const mobileVersion = (
     <TrackContext.Provider value={trackState}>
       <SetTrackContext.Provider value={settrackState}>
-        <TrackWatch.Provider value={trackWatch}>
+        <HistoryWatch.Provider value={historyWatch}>
           <Router>
             <Routes>
               <Route
@@ -167,7 +167,7 @@ function App() {
               </Route>
             </Routes>
           </Router>
-        </TrackWatch.Provider>
+        </HistoryWatch.Provider>
       </SetTrackContext.Provider>
     </TrackContext.Provider>
   );
