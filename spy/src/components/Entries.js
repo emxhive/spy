@@ -1,9 +1,18 @@
 import PropTypes from "prop-types";
 import mthdss from "../consts/functions";
 import { FiEdit } from "react-icons/fi";
-import { createElement, useCallback, useContext, useEffect, useRef, useState } from "react";
+import {
+  createElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import ContentEditable from "react-contenteditable";
 import { PiBroomLight } from "react-icons/pi";
+import { createRoot } from "react-dom/client";
+import { flushSync } from "react-dom";
 
 const mthds = mthdss();
 
@@ -23,13 +32,13 @@ function Entries({
 }) {
   const [focusState, setFocusState] = useState(false);
   const contentEditStyle = useRef({});
-  const [, updateComp] = useState();
-  const forceUpdate = useCallback(() => {
-    updateComp({});
-  }, []);
 
   const currentFocus = useRef();
   const elementX = document.createElement("span");
+  const rootIsh = createRoot(elementX);
+
+  const clickCount = useRef(0);
+  const focusing = useRef(false);
 
   //setting the edit state
 
@@ -126,12 +135,12 @@ function Entries({
     }
     text = mthds.tidyFig(text);
     const handleChange = (e) => {
+      focusing.current = false;
       if (!isChanging) {
         isChanging = true;
       }
 
       textz.current = mthds.tidyFig(mthds.toDigits(e.target.value));
-      console.log(e.target.value);
     };
 
     return (
@@ -144,6 +153,16 @@ function Entries({
           className="entries-figures content-edit"
           disabled={edit[id]}
           html={text}
+          onClick={(e) => {
+            try {
+              console.log("");
+              // navigator.clipboard.writeText(
+              //   Number(e.target.innerText.replaceAll(",", ""))
+              // );
+            } catch (e) {
+              console.error();
+            }
+          }}
           onPaste={(e) => {
             textz.current = mthds.tidyFig(
               mthds.toDigits(e.clipboardData.getData("number"))
@@ -152,20 +171,37 @@ function Entries({
             isChanging = true;
           }}
           onFocus={(e) => {
+            const eFocus = e;
             contentEditStyle.current = { minWidth: "50px" };
-            
-            elementX.innerText= "X";
-          
-            e.target.innerText = .0;
-            e.target.insertAdjacentElement("afterend", elementX);
-           
+            if (clickCount.current < 1) {
+              flushSync(() => {
+                rootIsh.render(
+                  <PiBroomLight
+                    className="clear-contentedit"
+                    onClick={(e) => {
+                      focusing.current = true;
+                      console.log(focusing.current);
+                      eFocus.target.innerText = 0;
+                    }}
+                  />
+                );
+              });
+              e.target.insertAdjacentElement("afterend", elementX);
+              clickCount.current++;
+            }
           }}
           onBlur={(e) => {
-            elementX.remove();
-            contentEditStyle.current = {};
-            if (isChanging) {
-              e.target.innerText = textz.current;
-            }
+            setTimeout(() => {
+              console.log(focusing.current);
+              if (!focusing.current) {
+                elementX.remove();
+                clickCount.current = 0;
+                contentEditStyle.current = {};
+                if (isChanging) {
+                  e.target.innerText = textz.current;
+                }
+              }
+            }, 2);
           }}
           onChange={handleChange}
           style={contentEditStyle.current}

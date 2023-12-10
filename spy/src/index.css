@@ -221,6 +221,11 @@ hr {
   padding-top: 0px;
 } */
 
+.clear-contentedit{
+  margin-left: 5px;
+  stroke: var(--blue);
+  font-size: 1.5em;
+}
 .entry-row .edit-button {
   margin-right: 10px;
   transition: font-size 0.1s, stroke 0.5s;
@@ -254,11 +259,8 @@ hr {
 .div-with-contenteditable {
   display: flex;
   font-size: 0.95em;
-}
-
-/* .mob-entry-blur .div-with-contenteditable {
   min-width: 10px;
-} */
+}
 
 .div-with-contenteditable span {
   font-size: 0.85em;
@@ -287,6 +289,8 @@ hr {
 
 /* ...............MOB-PHONES...............MEDIA QUERIES */
 @media screen and (max-width: 600px) {
+
+
   .mob-entryrow-box-x-flex {
     display: flex;
     gap: 15px;
@@ -316,6 +320,7 @@ hr {
 
   .content-edit {
     font-size: 1em;
+    
   }
 
   .content-edit:focus {
@@ -326,6 +331,10 @@ hr {
   }
   .mob-entry-blur .content-edit:focus {
     font-size: 1.2em;
+  }
+
+  .mob-entry-blur .clear-contentedit{
+    font-size: 1.5em;
   }
 
   .mob-entryrow-box-x-flex > img {
@@ -378,13 +387,16 @@ hr {
     margin-top: 10px;
     margin-bottom: 5px;
   }
-  .toolbar-right-before {
+   .toolbar-right-before{
     margin-top: 10px;
     margin-bottom: 5px;
+
   }
-  .mob-toolbar-tic {
+  .mob-toolbar-tic{
     width: 2em;
   }
+
+ 
 
   #mid-entrybox .entry-row {
     gap: 0;

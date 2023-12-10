@@ -90,16 +90,10 @@ function MidToolBar({
           setCurrentEntry(null);
         }}
       >
-        save+++
+        save+
       </button>
 
-      <button
-        onClick={() => {
-       
-        }}
-      >
-        Clear---
-      </button>
+ 
     </div>
   );
   const toolbar = (
