@@ -37,6 +37,7 @@ function functions(pmState, setpmState) {
       } else return 0;
     },
     tidyFig(s) {
+      
       //short for tidy figures
       s = this.twodp(s);
 

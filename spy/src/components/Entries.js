@@ -136,6 +136,7 @@ function Entries({
     }
     text = mthds.tidyFig(text);
     const handleChange = (e) => {
+      
       stayFocused.current = false;
       if (!isChanging) {
         isChanging = true;
@@ -164,9 +165,10 @@ function Entries({
             }
           }}
           onPaste={(e) => {
-            textz.current = mthds.tidyFig(
-              mthds.toDigits(e.clipboardData.getData("number"))
-            );
+            e.preventDefault();
+            let copiedData = e.clipboardData.getData("text/plain");
+            copiedData = mthds.tidyFig(mthds.toDigits(copiedData));
+            e.target.innerText = copiedData;
 
             isChanging = true;
           }}
@@ -185,7 +187,6 @@ function Entries({
                     className="clear-contentedit"
                     onClick={(e) => {
                       stayFocused.current = true;
-                      console.log("focus ran ");
 
                       eFocus.target.innerText = 0;
                     }}
@@ -199,7 +200,6 @@ function Entries({
           onBlur={(e) => {
             setTimeout(() => {
               if (!stayFocused.current && !focusing.current) {
-                console.log("blur ran " + stayFocused.current);
                 elementX.remove();
                 clickCount.current = 0;
               }
