@@ -269,15 +269,12 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
         };
 
         if (localStorageWatch && localStorageWatch?.data) {
-          mth.toLocalStorage("historyWatch", {
-            status: true,
-            data: newExpenseObj.amount + Number(localStorageWatch.data),
-          });
+          mth.toLocalStorage(
+            "historyWatch",
+            newExpenseObj.amount + Number(localStorageWatch)
+          );
         } else {
-          mth.toLocalStorage("historyWatch", {
-            status: true,
-            data: newExpenseObj.amount,
-          });
+          mth.toLocalStorage("historyWatch", newExpenseObj.amount);
         }
       }
 

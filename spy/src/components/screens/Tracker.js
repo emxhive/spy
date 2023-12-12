@@ -2,19 +2,12 @@ import React, { useContext, useEffect, useState } from "react";
 import Collapsible from "react-collapsible";
 import mthdss from "../../consts/functions";
 import "../../css/mobtracker.css";
-import {
-
-
-  TrackContext,
-  HistoryWatch,
-} from "../../Context";
+import { TrackContext } from "../../Context";
 import fetchspyStore from "../../utils/fetchspyStore";
 import updatespyStore from "../../utils/updatespyStore";
 
 export default function Tracker({}) {
   const trackState = useContext(TrackContext);
-
-  const historyWatch = useContext(HistoryWatch);
 
   let data;
   let key;
@@ -59,10 +52,10 @@ export default function Tracker({}) {
           <div>{mth.tidyFig(data.iu)}</div>
           <div>in</div>
           <div>{mth.tidyFig(data.in)}</div>
-          {/* {(() => data.exp < 0 || data.exp > 0)() && [
+          {(() => data.exp < 0 || data.exp > 0)() && [
             <div key={"ex.label"}>ex</div>,
             <div key={"ex.value"}>{mth.tidyFig(data.exp)}</div>,
-          ]} */}
+          ]}
         </div>
       </div>
     );

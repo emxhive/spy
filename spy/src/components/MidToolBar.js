@@ -14,12 +14,7 @@ import {
 } from "react-icons/bs";
 import { pmUpdatespyStore } from "../utils/updatespyStore";
 import { toast } from "react-toastify";
-import {
-
-  SetTrackContext,
-  TrackContext,
-  HistoryWatch,
-} from "../Context";
+import { SetTrackContext, TrackContext, HistoryWatch } from "../Context";
 
 function MidToolBar({
   setEdit,
@@ -36,8 +31,6 @@ function MidToolBar({
 }) {
   const trackState = useContext(TrackContext);
   const settrackState = useContext(SetTrackContext);
-
- 
 
   const historyWatch = useContext(HistoryWatch);
 
@@ -92,8 +85,6 @@ function MidToolBar({
       >
         save+
       </button>
-
- 
     </div>
   );
   const toolbar = (
@@ -111,6 +102,7 @@ function MidToolBar({
   );
   const [toolRight, setToolRight] = useState(showtoolbar);
   function populatetracker() {
+    const historyWatch = mthds.fromLocalStorage("historyWatch");
     if (!state.generalProps.isDefaultState) {
       const currentId = mthds.getTimeId(new Date());
       const currentObj = {
@@ -123,7 +115,7 @@ function MidToolBar({
         in: objs.pmAmount.netInNgn - objs.pmAmount.netInNgnF,
         tiu: objs.pmAmount.netInUsd,
         tin: objs.pmAmount.netInNgn,
-
+        exp: Number(historyWatch),
         prev: previousData,
       };
       let localTrack = {};
@@ -153,7 +145,7 @@ function MidToolBar({
 
   return (
     <div className="toolbar">
-      {showsavebuttons && savebuttons}
+      {showsavebuttons && savebuttons} 
       <div className="toolbar-left"></div>
       {toolRight}
     </div>

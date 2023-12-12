@@ -43,7 +43,7 @@ function App() {
 
   const historyWatch = {
     status: false,
-    data: 0
+    data: 0,
   };
 
   // localStorage.setItem("pendingHistEntry", "false");
@@ -190,8 +190,9 @@ function sortTrackData(trackState) {
     localStorage.setItem(TRACKSTATUSKEY, "true");
   };
   const getMonthNo = (id) => {
-    const currentYear = new Date().getFullYear();
     const date = new Date(Number(id.replace("t", "")));
+    const currentYear = date.getFullYear();
+
     let no;
 
     if (currentYear === new Date().getFullYear()) {
@@ -225,17 +226,24 @@ function sortTrackData(trackState) {
             result[x].ids.push(key);
           }
         });
-
-        settrackStatus();
-        localStorage.setItem(TRACKSTATEKEY, JSON.stringify(result));
-        return result;
       }
     }
   }
+
+  settrackStatus();
+  localStorage.setItem(TRACKSTATEKEY, JSON.stringify(result));
+  return result;
 }
 
 function monthlyCheck(trackState, settrackState) {
-  if (firstTime && trackState) {
+  let trackCount = 0;
+
+  for (let i = 0; i < 7; i++) {
+    const obj = trackState[i];
+    trackCount += obj.ids.length;
+  }
+
+  if (firstTime && trackCount > 0) {
     const track = [];
     for (let i = 0; i < 7; i++) {
       track[i] = trackState[i];
