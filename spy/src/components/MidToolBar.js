@@ -1,5 +1,5 @@
 import mthdss from "../consts/functions";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { CgScrollV } from "react-icons/cg";
 import {
   BsPlusCircle,
@@ -14,7 +14,12 @@ import {
 } from "react-icons/bs";
 import { pmUpdatespyStore } from "../utils/updatespyStore";
 import { toast } from "react-toastify";
-import { SetTrackContext, TrackContext, HistoryWatch } from "../Context";
+import {
+  SetTrackContext,
+  TrackContext,
+  HistoryWatch,
+  PmState,
+} from "../Context";
 
 function MidToolBar({
   setEdit,
@@ -29,19 +34,16 @@ function MidToolBar({
   setCurrentEntry,
   currentEntry,
 }) {
+
+
+  const mthds = mthdss();
+
   const trackState = useContext(TrackContext);
   const settrackState = useContext(SetTrackContext);
 
-  const historyWatch = useContext(HistoryWatch);
+  const historyWatch = mthds.fromLocalStorage("historyWatch");
 
-  const mthds = mthdss();
   const previousData = JSON.parse(localStorage.getItem("previousTrack"));
-
-  const showtoolbar = (
-    <div className="toolbar-right-before">
-      <BsChevronLeft onClick={open} />
-    </div>
-  );
 
   const savebuttons = (
     <div className="save-buttons">
@@ -87,22 +89,9 @@ function MidToolBar({
       </button>
     </div>
   );
-  const toolbar = (
-    <div className="toolbar-right">
-      <BsPlusCircle onClick={() => setaddpmS(true)} />
-      <BsCheck className="mob-toolbar-tic" onClick={() => populatetracker()} />
-      <BsChevronDoubleUp />
-      <BsChevronUp />
-      <CgScrollV />
-      <BsChevronDown />
-      <BsChevronDoubleDown />
-      <BsFilter />
-      <BsChevronRight onClick={close} />
-    </div>
-  );
-  const [toolRight, setToolRight] = useState(showtoolbar);
+
   function populatetracker() {
-    const historyWatch = mthds.fromLocalStorage("historyWatch");
+
     if (!state.generalProps.isDefaultState) {
       const currentId = mthds.getTimeId(new Date());
       const currentObj = {
@@ -118,6 +107,39 @@ function MidToolBar({
         exp: Number(historyWatch),
         prev: previousData,
       };
+      let pnl = 0;
+      if (currentObj.prev?.r > 0) {
+        let y = 0;
+        if (currentObj.exp) {
+          y = -currentObj.exp;
+        }
+
+        pnl = mthds.twodp(currentObj.tiu + y - currentObj.prev.tiu);
+        const monthEarnz = mthds.fromLocalStorage("monthEarnz");
+        let monthEarnzResult = monthEarnz;
+
+        if (!monthEarnz) {
+          monthEarnzResult = [];
+
+          for (let i = 0; i < 7; i++) {
+            if (i == 0) {
+              monthEarnzResult[0] = { ids: [], obj: {}, sum: 0 }
+            } else {
+              monthEarnzResult[i] = [];
+            }
+          }
+          mthds.toLocalStorage("monthEarnz", monthEarnzResult);
+        }
+
+        if (pnl !== 0) {
+          const month0 = monthEarnzResult[0];
+          month0.ids.unshift(currentId);
+          month0.obj[currentId] = pnl;
+          month0.sum += pnl;
+          mthds.toLocalStorage("monthEarnz", monthEarnzResult);
+        }
+
+      }
       let localTrack = {};
       Object.assign(localTrack, trackState);
       toast("New Track Record");
@@ -132,24 +154,47 @@ function MidToolBar({
       localStorage.setItem("previousTrack", JSON.stringify(prevD));
       settrackState(localTrack);
       localStorage.setItem("trackState", JSON.stringify(localTrack));
-      historyWatch.current = true;
     }
-  }
-
-  function open() {
-    setToolRight(toolbar);
-  }
-  function close() {
-    setToolRight(showtoolbar);
   }
 
   return (
     <div className="toolbar">
-      {showsavebuttons && savebuttons} 
+      {showsavebuttons && savebuttons}
       <div className="toolbar-left"></div>
-      {toolRight}
+      <ToolBar
+        isDefault={state.generalProps.isDefaultState + ''}
+        trackerFn={populatetracker}
+        setaddpmS={setaddpmS}
+      />
     </div>
   );
 }
 
+const ToolBar = ({ trackerFn, isDefault, setaddpmS }) => {
+  const [open, setOpen] = useState(false);
+
+  let className = 'toolbar-right';
+  return (
+    <div className={className + `${open ? '' : '-before'}`}>
+      {open ? (
+        <>
+          <BsPlusCircle onClick={() => setaddpmS(true)} />
+          <BsCheck className="mob-toolbar-tic" onClick={() => trackerFn()} />
+          <BsChevronDoubleUp />
+          <BsChevronUp />
+          <CgScrollV />
+          <BsChevronDown />
+          <BsChevronDoubleDown />
+          <BsFilter />
+        </>
+      ) : ''}
+      <span onClick={() => setOpen(!open)}>
+        {!open ? <BsChevronLeft /> : <BsChevronRight />}
+      </span>
+    </div>
+  )
+}
+
 export default MidToolBar;
+
+

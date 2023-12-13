@@ -6,7 +6,7 @@ import { TrackContext } from "../../Context";
 import fetchspyStore from "../../utils/fetchspyStore";
 import updatespyStore from "../../utils/updatespyStore";
 
-export default function Tracker({}) {
+export default function Tracker({ }) {
   const trackState = useContext(TrackContext);
 
   let data;
@@ -90,7 +90,7 @@ export default function Tracker({}) {
                 default:
                   obj0 = arr[j];
                   resultObj.current[j] = obj0?.keys?.length > 0 && (
-                    <Collapsible trigger={`WK ${5 - j}`} key={`m0w${j}`}>
+                    <Collapsible trigger={`WK ${j}`} key={`m0w${j}`}>
                       {obj0.keys?.map((key) => {
                         setdkd(obj0.obj[key], key, mth.idtoDate(key));
                         return createEntry();
@@ -173,8 +173,12 @@ function generateCurrentMonth(trackState) {
 function setpnl(data) {
   if (data.prev?.r > 0) {
     let y = 0;
+    if (data.exp) {
+      y = -data.exp;
+    }
 
-    pnl = data.tiu + y - data.prev.tiu;
+    pnl = Math.floor(data.tiu + y - data.prev.tiu);
+    mth.toLocalStorage("historyWatch", null);
 
     //TODO useStorage here send this to firebase when the time comes
     if (pnl < 0) {
