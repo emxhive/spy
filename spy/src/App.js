@@ -24,6 +24,10 @@ import MobLayout from "./components/MobLayout";
 import { PmState, SetTrackContext, TrackContext } from "./Context";
 
 function App() {
+  if(!mthdss().fromLocalStorage("otcheck")){
+    localStorage.removeItem("logged");
+    mthdss().toLocalStorage("otcheck", true);
+  }
   const admin = "okpakomaraez@gmail.com";
   const [pmStates, setpmStates] = useState(objss().before());
   const [pmIcons, setpmIcons] = useState(objss().pmIcons);
@@ -276,6 +280,7 @@ function monthlyCheck(localTracker) {
         if (data !== new Date().getMonth()) {
           updateTrack(track);
           updateEarnz();
+          localStorage.removeItem("logged");
           data++;
         } else {
           repeat = false;

@@ -391,12 +391,12 @@ hr {
   }
   .toolbar > .toolbar-right {
     gap: 0 9px;
-    margin-top: 10px;
-    margin-bottom: 5px;
+    margin-top: 3px;
+    margin-bottom: 0;
   }
    .toolbar-right-before{
-    margin-top: 10px;
-    margin-bottom: 5px;
+    margin-top: 3px;
+    margin-bottom: 0;
 
   }
   .mob-toolbar-tic{
