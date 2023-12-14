@@ -2,18 +2,18 @@ import React, { useContext, useEffect, useState } from "react";
 import Collapsible from "react-collapsible";
 import mthdss from "../../consts/functions";
 import "../../css/mobtracker.css";
-import { TrackContext } from "../../Context";
+
 import fetchspyStore from "../../utils/fetchspyStore";
 import updatespyStore from "../../utils/updatespyStore";
 
-export default function Tracker({ }) {
-  const trackState = useContext(TrackContext);
+export default function Tracker({}) {
+  const localTracker = mth.fromLocalStorage("trackState");
 
   let data;
   let key;
   let date;
 
-  const currentMonthArr = generateCurrentMonth(trackState);
+  const currentMonthArr = generateCurrentMonth(localTracker);
 
   const collapsibles = getCollapsibles(currentMonthArr);
 
@@ -105,7 +105,7 @@ export default function Tracker({ }) {
           default:
             let keyvar = 0;
 
-            const obj = trackState[i];
+            const obj = localTracker[i];
             resultObj.past[i] = obj?.ids?.length > 0 && (
               <Collapsible
                 trigger={monthFromIndex(i)}
@@ -139,15 +139,15 @@ let currentContent;
 let pnlClass = "mob-track-pnl-mini-gain";
 let pnl;
 
-function generateCurrentMonth(trackState) {
-  if (trackState) {
+function generateCurrentMonth(localTracker) {
+  if (localTracker) {
     const resultArr = [];
     for (let i = 0; i < 5; i++) {
       resultArr[i] = { obj: {}, keys: [] };
     }
 
-    const objs = trackState[0].obj;
-    const ids = trackState[0].ids;
+    const objs = localTracker[0].obj;
+    const ids = localTracker[0].ids;
 
     ids.forEach((key) => {
       const date = mth.idtoDate(key);

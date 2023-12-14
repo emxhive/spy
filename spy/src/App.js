@@ -21,7 +21,7 @@ import { useMediaQuery } from "react-responsive";
 import { spyAuth } from "./utils/db";
 import Tracker from "./components/screens/Tracker";
 import MobLayout from "./components/MobLayout";
-import { PmState, SetTrackContext, TrackContext} from "./Context";
+import { PmState, SetTrackContext, TrackContext } from "./Context";
 
 function App() {
   const admin = "okpakomaraez@gmail.com";
@@ -37,11 +37,9 @@ function App() {
   const [loggedIn, setLogStatus] = useState(
     JSON.parse(localStorage.getItem("logged"))
   );
-  const [trackState, settrackState] = useState(
-    sortTrackData(JSON.parse(localStorage.getItem("trackState")))
+  let localTracker = sortTrackData(
+    JSON.parse(localStorage.getItem("trackState"))
   );
-
- 
 
   // localStorage.setItem("pendingHistEntry", "false");
 
@@ -75,7 +73,7 @@ function App() {
     }
 
     if (loggedIn?.email === admin) {
-      monthlyCheck(trackState, settrackState);
+      monthlyCheck(localTracker);
       fetchData();
     }
   }, [loggedIn]);
@@ -116,57 +114,53 @@ function App() {
   );
 
   const mobileVersion = (
-    <TrackContext.Provider value={trackState}>
-      <SetTrackContext.Provider value={settrackState}>
-        <PmState.Provider value={pmStates}>
-          <Router>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <div className="main-parent">
-                    {mobLayout.mobTop}
-                    <Outlet />
-                    {mobLayout.mobFooter}
-                    <ToastContainer position="bottom-right" />
-                  </div>
-                }
-              >
-                <Route
-                  index
-                  element={
-                    <Main
-                      isPc={isPc}
-                      loggedIn={loggedIn}
-                      setlogStatus={setLogStatus}
-                      signOut={signOut}
-                      mthds={mth}
-                      objs={objjs}
-                      pmIcons={pmIcons}
-                      setpmIcons={setpmIcons}
-                      pmState={pmStates}
-                      setpmState={setpmStates}
-                    />
-                  }
+    <PmState.Provider value={pmStates}>
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <div className="main-parent">
+                {mobLayout.mobTop}
+                <Outlet />
+                {mobLayout.mobFooter}
+                <ToastContainer position="bottom-right" />
+              </div>
+            }
+          >
+            <Route
+              index
+              element={
+                <Main
+                  isPc={isPc}
+                  loggedIn={loggedIn}
+                  setlogStatus={setLogStatus}
+                  signOut={signOut}
+                  mthds={mth}
+                  objs={objjs}
+                  pmIcons={pmIcons}
+                  setpmIcons={setpmIcons}
+                  pmState={pmStates}
+                  setpmState={setpmStates}
                 />
-                <Route path="track" element={<Tracker pmobjs={objjs} />} />
-                <Route
-                  path="history"
-                  element={
-                    <History
-                      pmObjs={objjs}
-                      pmIcons={pmIcons}
-                      pmState={pmStates}
-                      setpmState={setpmStates}
-                    />
-                  }
+              }
+            />
+            <Route path="track" element={<Tracker pmobjs={objjs} />} />
+            <Route
+              path="history"
+              element={
+                <History
+                  pmObjs={objjs}
+                  pmIcons={pmIcons}
+                  pmState={pmStates}
+                  setpmState={setpmStates}
                 />
-              </Route>
-            </Routes>
-          </Router>
-        </PmState.Provider>
-      </SetTrackContext.Provider>
-    </TrackContext.Provider>
+              }
+            />
+          </Route>
+        </Routes>
+      </Router>
+    </PmState.Provider>
   );
 
   if (loggedIn) {
@@ -179,7 +173,7 @@ function App() {
 export default App;
 let firstTime = true;
 
-function sortTrackData(trackState) {
+function sortTrackData(localTracker) {
   const TRACKSTATUSKEY = "trackSortedStatus";
   const TRACKSTATEKEY = "trackState";
   const checker = JSON.parse(localStorage.getItem(TRACKSTATUSKEY));
@@ -207,9 +201,9 @@ function sortTrackData(trackState) {
   }
 
   if (checker === true) {
-    return trackState;
-  } else if (trackState) {
-    const keys = Object.keys(trackState);
+    return localTracker;
+  } else if (localTracker) {
+    const keys = Object.keys(localTracker);
 
     if (keys[0]) {
       if (keys[0].includes("m")) {
@@ -219,7 +213,7 @@ function sortTrackData(trackState) {
         keys.forEach((key) => {
           const x = getMonthNo(key);
           if (x > -1 && x < 7) {
-            result[x].obj[key] = trackState[key];
+            result[x].obj[key] = localTracker[key];
             result[x].ids.push(key);
           }
         });
@@ -232,18 +226,18 @@ function sortTrackData(trackState) {
   return result;
 }
 
-function monthlyCheck(trackState, settrackState) {
+function monthlyCheck(localTracker) {
   let trackCount = 0;
 
   for (let i = 0; i < 7; i++) {
-    const obj = trackState[i];
+    const obj = localTracker[i];
     trackCount += obj.ids.length;
   }
 
   if (firstTime && trackCount > 0) {
     const track = [];
     for (let i = 0; i < 7; i++) {
-      track[i] = trackState[i];
+      track[i] = localTracker[i];
     }
     const fxn = mthdss();
     let data = Number(fxn.fromLocalStorage("month"));
@@ -262,7 +256,7 @@ function monthlyCheck(trackState, settrackState) {
           repeat = false;
           fxn.toLocalStorage("month", data);
           fxn.toLocalStorage("trackState", track);
-          settrackState(track);
+          localTracker = track;
         }
       } else {
         const track0 = track[0];
@@ -277,7 +271,7 @@ function monthlyCheck(trackState, settrackState) {
             repeat = false;
             fxn.toLocalStorage("month", data1);
             fxn.toLocalStorage("trackState", track);
-            settrackState(track);
+            localTracker = track;
           }
         }
       }
