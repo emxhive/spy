@@ -157,9 +157,9 @@ function Entries({
           html={text}
           onClick={(e) => {
             try {
-              // navigator.clipboard.writeText(
-              //   Number(e.target.innerText.replaceAll(",", ""))
-              // );
+              navigator.clipboard.writeText(
+                Number(e.target.innerText.replaceAll(",", ""))
+              );
             } catch (e) {
               console.error();
             }

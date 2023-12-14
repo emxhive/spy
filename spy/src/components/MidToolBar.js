@@ -38,12 +38,6 @@ function MidToolBar({
 
   const mthds = mthdss();
 
-  const trackState = useContext(TrackContext);
-  const settrackState = useContext(SetTrackContext);
-
-  const historyWatch = mthds.fromLocalStorage("historyWatch");
-
-  const previousData = JSON.parse(localStorage.getItem("previousTrack"));
 
   const savebuttons = (
     <div className="save-buttons">
@@ -93,6 +87,12 @@ function MidToolBar({
   function populatetracker() {
 
     if (!state.generalProps.isDefaultState) {
+
+      
+  const localTracker = mthds.fromLocalStorage("trackState");
+  const historyWatch = mthds.fromLocalStorage("historyWatch");
+  const previousData = JSON.parse(localStorage.getItem("previousTrack"));
+      
       const currentId = mthds.getTimeId(new Date());
       const currentObj = {
         r: state.generalProps.rate,
@@ -141,7 +141,7 @@ function MidToolBar({
 
       }
       let localTrack = {};
-      Object.assign(localTrack, trackState);
+      Object.assign(localTrack, localTracker);
       toast("New Track Record");
       localTrack[0].obj[currentId] = currentObj;
       localTrack[0].ids.unshift(currentId);
@@ -152,7 +152,7 @@ function MidToolBar({
         tin: currentObj.tin,
       };
       localStorage.setItem("previousTrack", JSON.stringify(prevD));
-      settrackState(localTrack);
+    
       localStorage.setItem("trackState", JSON.stringify(localTrack));
     }
   }

@@ -8,14 +8,19 @@ import updatespyStore from "../../utils/updatespyStore";
 
 export default function Tracker({}) {
   const localTracker = mth.fromLocalStorage("trackState");
+  const localEarnz = mth.fromLocalStorage("monthEarnz");
 
   let data;
   let key;
   let date;
 
-  const currentMonthArr = generateCurrentMonth(localTracker);
+  const currentMonthTrackArr = generateCurrentMonthTrack(localTracker);
+  const currentMonthEarnsArr = generateCurrentMonthEarns(localEarnz);
 
-  const collapsibles = getCollapsibles(currentMonthArr);
+  const collapsibles = getCollapsibles(
+    currentMonthTrackArr,
+    currentMonthEarnsArr
+  );
 
   function setdkd(dat, ki, dait) {
     data = dat;
@@ -60,7 +65,7 @@ export default function Tracker({}) {
       </div>
     );
   }
-  function getCollapsibles(arr) {
+  function getCollapsibles(arr, arrEarnz) {
     if (arr) {
       const resultObj = {
         past: [],
@@ -71,14 +76,22 @@ export default function Tracker({}) {
         switch (i) {
           case 0:
             let obj0;
+            let earnz0 = 0;
 
             for (let j = 0; j < 5; j++) {
               switch (j) {
                 case 0:
                   obj0 = arr[j];
+                  if(arrEarnz?.[0]!==0 && arrEarnz){
+                    earnz0 = arrEarnz[0];
+                  }
+                  
 
                   resultObj.current[0] = obj0?.keys?.length > 0 && (
-                    <Collapsible trigger={"Today"} key={"m0w0"}>
+                    <Collapsible
+                      trigger={`Today  •  ${earnz0} `}
+                      key={"m0w0"}
+                    >
                       {obj0.keys.map((key) => {
                         setdkd(obj0.obj[key], key, mth.idtoDate(key));
                         return createEntry();
@@ -89,8 +102,14 @@ export default function Tracker({}) {
 
                 default:
                   obj0 = arr[j];
+                   if(arrEarnz?.[j]!==0 && arrEarnz){
+                    earnz0 = arrEarnz[j];
+                  }
                   resultObj.current[j] = obj0?.keys?.length > 0 && (
-                    <Collapsible trigger={`WK ${j}`} key={`m0w${j}`}>
+                    <Collapsible
+                      trigger={`WK ${j}  •   ${earnz0}  `}
+                      key={`m0w${j}`}
+                    >
                       {obj0.keys?.map((key) => {
                         setdkd(obj0.obj[key], key, mth.idtoDate(key));
                         return createEntry();
@@ -106,9 +125,10 @@ export default function Tracker({}) {
             let keyvar = 0;
 
             const obj = localTracker[i];
+            const earnz = localEarnz?.[i];
             resultObj.past[i] = obj?.ids?.length > 0 && (
               <Collapsible
-                trigger={monthFromIndex(i)}
+                trigger={`${monthFromIndex(i)}  •  ${earnz && earnz}`}
                 key={`m${i}w${++keyvar}`}
               >
                 {obj.ids?.map((key) => {
@@ -138,8 +158,9 @@ let pastContent;
 let currentContent;
 let pnlClass = "mob-track-pnl-mini-gain";
 let pnl;
+let current;
 
-function generateCurrentMonth(localTracker) {
+function generateCurrentMonthTrack(localTracker) {
   if (localTracker) {
     const resultArr = [];
     for (let i = 0; i < 5; i++) {
@@ -156,13 +177,41 @@ function generateCurrentMonth(localTracker) {
         resultArr[0].obj[key] = objs[key];
         resultArr[0].keys.push(key);
       } else {
-        const sKey = Math.floor(day / 8);
+        const sKey = Math.trunc(day / 8);
         if (sKey > 3) {
           resultArr[sKey].obj[key] = objs[key];
           resultArr[sKey].keys.push(key);
         } else {
           resultArr[sKey + 1].obj[key] = objs[key];
           resultArr[sKey + 1].keys.push(key);
+        }
+      }
+    });
+    return resultArr;
+  }
+}
+
+function generateCurrentMonthEarns(localEarnz) {
+  if (localEarnz) {
+    const resultArr = [];
+    for (let i = 0; i < 5; i++) {
+      resultArr[i] = 0;
+    }
+
+    const objs = localEarnz[0].obj;
+    const ids = localEarnz[0].ids;
+
+    ids.forEach((key) => {
+      const date = mth.idtoDate(key);
+      const day = date.getDate();
+      if (day === new Date().getDate()) {
+        resultArr[0] += Number(objs[key]);
+      } else {
+        const sKey = Math.trunc(day / 8);
+        if (sKey > 3) {
+          resultArr[sKey] += Number(objs[key]);
+        } else {
+          resultArr[sKey + 1] += Number(objs[key]);
         }
       }
     });
@@ -177,7 +226,7 @@ function setpnl(data) {
       y = -data.exp;
     }
 
-    pnl = Math.floor(data.tiu + y - data.prev.tiu);
+    pnl = Math.trunc(data.tiu + y - data.prev.tiu);
     mth.toLocalStorage("historyWatch", null);
 
     //TODO useStorage here send this to firebase when the time comes

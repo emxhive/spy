@@ -227,6 +227,8 @@ function sortTrackData(localTracker) {
 }
 
 function monthlyCheck(localTracker) {
+  const fxn = mthdss();
+
   let trackCount = 0;
 
   for (let i = 0; i < 7; i++) {
@@ -235,15 +237,37 @@ function monthlyCheck(localTracker) {
   }
 
   if (firstTime && trackCount > 0) {
+    let localEarnz = fxn.fromLocalStorage("monthEarnz");
+    if (!localEarnz) {
+      let monthEarnzResult = [];
+
+      for (let i = 0; i < 7; i++) {
+        if (i == 0) {
+          monthEarnzResult[0] = { ids: [], obj: {}, sum: 0 };
+        } else {
+          monthEarnzResult[i] = [];
+        }
+      }
+      localEarnz = monthEarnzResult;
+      // mthds.toLocalStorage("monthEarnz", monthEarnzResult);
+    }
     const track = [];
+    const earnz = [];
     for (let i = 0; i < 7; i++) {
       track[i] = localTracker[i];
+      earnz[i] = localEarnz[i];
     }
-    const fxn = mthdss();
+
     let data = Number(fxn.fromLocalStorage("month"));
     function updateTrack(track) {
       track.pop();
       track.unshift({ obj: {}, ids: [] });
+    }
+
+    function updateEarnz() {
+      earnz.pop();
+      earnz.unshift({ obj: {}, ids: [], sum: 0 });
+      earnz[1] = earnz[1].sum;
     }
     let repeat = true;
 
@@ -251,15 +275,17 @@ function monthlyCheck(localTracker) {
       if (data) {
         if (data !== new Date().getMonth()) {
           updateTrack(track);
+          updateEarnz();
           data++;
         } else {
           repeat = false;
-          fxn.toLocalStorage("month", data);
-          fxn.toLocalStorage("trackState", track);
-          localTracker = track;
+          // fxn.toLocalStorage("month", data);
+          // fxn.toLocalStorage("trackState", track);
+          // localTracker = track;
         }
       } else {
         const track0 = track[0];
+        const earnz0 = earnz[0];
         if (track0.ids.length > 0) {
           const id = track0.ids[track0.ids.length - 1];
           const date = fxn.idtoDate(id);
@@ -271,9 +297,24 @@ function monthlyCheck(localTracker) {
             repeat = false;
             fxn.toLocalStorage("month", data1);
             fxn.toLocalStorage("trackState", track);
-            localTracker = track;
           }
         }
+        let repeatEarns = true;
+        do {
+          if (earnz0.ids.length > 0) {
+            const id = earnz0.ids[earnz0.ids.length - 1];
+            const date = fxn.idtoDate(id);
+            let data1 = date.getMonth();
+            if (data1 !== new Date().getMonth()) {
+              updateEarnz();
+              data1++;
+            } else {
+              repeatEarns = false;
+              fxn.toLocalStorage("month", data1);
+              fxn.toLocalStorage("monthEarnz", earnz);
+            }
+          }
+        } while (repeatEarns);
       }
     } while (repeat);
 
