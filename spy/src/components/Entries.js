@@ -136,7 +136,6 @@ function Entries({
     }
     text = mthds.tidyFig(text);
     const handleChange = (e) => {
-      
       stayFocused.current = false;
       if (!isChanging) {
         isChanging = true;
@@ -155,7 +154,7 @@ function Entries({
           className="entries-figures content-edit"
           disabled={edit[id]}
           html={text}
-          onClick={(e) => {
+          onDoubleClick={(e) => {
             try {
               navigator.clipboard.writeText(
                 Number(e.target.innerText.replaceAll(",", ""))
@@ -169,6 +168,7 @@ function Entries({
             let copiedData = e.clipboardData.getData("text/plain");
             copiedData = mthds.tidyFig(mthds.toDigits(copiedData));
             e.target.innerText = copiedData;
+            textz.current = copiedData;
 
             isChanging = true;
           }}
@@ -187,7 +187,7 @@ function Entries({
                     className="clear-contentedit"
                     onClick={(e) => {
                       stayFocused.current = true;
-
+                     
                       eFocus.target.innerText = 0;
                     }}
                   />

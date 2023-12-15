@@ -24,7 +24,7 @@ import MobLayout from "./components/MobLayout";
 import { PmState, SetTrackContext, TrackContext } from "./Context";
 
 function App() {
-  if(!mthdss().fromLocalStorage("otcheck")){
+  if (!mthdss().fromLocalStorage("otcheck")) {
     localStorage.removeItem("logged");
     mthdss().toLocalStorage("otcheck", true);
   }
@@ -66,14 +66,15 @@ function App() {
       }
       if (fetchedInfo) {
         setpmStates(fetchedInfo);
-      } else {
-        updatespyStore({ spyCollection: "pmstate", dataUpdate: pmStates });
-        if (fetchspyStore({ spyCollection: "pmstate" })) {
-          setpmStates(fetchedInfo);
-        } else {
-          console.error("PMSATE REFUSES TO UPLOAD TO FIREBASE");
-        }
       }
+      // } else {
+      //   updatespyStore({ spyCollection: "pmstate", dataUpdate: pmStates });
+      //   if (fetchspyStore({ spyCollection: "pmstate" })) {
+      //     setpmStates(fetchedInfo);
+      //   } else {
+      //     console.error("PMSATE REFUSES TO UPLOAD TO FIREBASE");
+      //   }
+      // }
     }
 
     if (loggedIn?.email === admin) {

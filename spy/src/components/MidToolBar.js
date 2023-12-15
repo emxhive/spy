@@ -34,38 +34,38 @@ function MidToolBar({
   setCurrentEntry,
   currentEntry,
 }) {
-
-
   const mthds = mthdss();
-
 
   const savebuttons = (
     <div className="save-buttons">
       <button
         onClick={() => {
           const entrydata = exportentryData();
-          const pm = currentEntry;
-          setEdit({ ...edit, [currentEntry]: true });
-          setshowbuttons(false);
 
-          setState({
-            ...state,
-            [pm]: {
-              ...state[pm],
-              ...entrydata,
-            },
-          });
+          if (Object.keys(entrydata) > 0) {
+            const pm = currentEntry;
+            setEdit({ ...edit, [currentEntry]: true });
+            setshowbuttons(false);
 
-          let json = "{";
-          for (const [key, value] of Object.entries(entrydata)) {
-            json += '"' + pm + "." + key + '" :' + value + ",";
+            setState({
+              ...state,
+              [pm]: {
+                ...state[pm],
+                ...entrydata,
+              },
+            });
+
+            let json = "{";
+            for (const [key, value] of Object.entries(entrydata)) {
+              json += '"' + pm + "." + key + '" :' + value + ",";
+            }
+            json = json.slice(0, json.length - 1) + "}";
+
+            pmUpdatespyStore({
+              dataUpdate: JSON.parse(json),
+              spyCollection: "pmstate",
+            });
           }
-          json = json.slice(0, json.length - 1) + "}";
-
-          pmUpdatespyStore({
-            dataUpdate: JSON.parse(json),
-            spyCollection: "pmstate",
-          });
 
           setCurrentEntry(null);
         }}
@@ -85,14 +85,11 @@ function MidToolBar({
   );
 
   function populatetracker() {
-
     if (!state.generalProps.isDefaultState) {
+      const localTracker = mthds.fromLocalStorage("trackState");
+      const historyWatch = mthds.fromLocalStorage("historyWatch");
+      const previousData = JSON.parse(localStorage.getItem("previousTrack"));
 
-      
-  const localTracker = mthds.fromLocalStorage("trackState");
-  const historyWatch = mthds.fromLocalStorage("historyWatch");
-  const previousData = JSON.parse(localStorage.getItem("previousTrack"));
-      
       const currentId = mthds.getTimeId(new Date());
       const currentObj = {
         r: state.generalProps.rate,
@@ -115,6 +112,7 @@ function MidToolBar({
         }
 
         pnl = mthds.twodp(currentObj.tiu + y - currentObj.prev.tiu);
+        mthds.toLocalStorage("historyWatch", null);
         const monthEarnz = mthds.fromLocalStorage("monthEarnz");
         let monthEarnzResult = monthEarnz;
 
@@ -123,7 +121,7 @@ function MidToolBar({
 
           for (let i = 0; i < 7; i++) {
             if (i == 0) {
-              monthEarnzResult[0] = { ids: [], obj: {}, sum: 0 }
+              monthEarnzResult[0] = { ids: [], obj: {}, sum: 0 };
             } else {
               monthEarnzResult[i] = [];
             }
@@ -138,7 +136,6 @@ function MidToolBar({
           month0.sum += pnl;
           mthds.toLocalStorage("monthEarnz", monthEarnzResult);
         }
-
       }
       let localTrack = {};
       Object.assign(localTrack, localTracker);
@@ -152,7 +149,7 @@ function MidToolBar({
         tin: currentObj.tin,
       };
       localStorage.setItem("previousTrack", JSON.stringify(prevD));
-    
+
       localStorage.setItem("trackState", JSON.stringify(localTrack));
     }
   }
@@ -162,7 +159,7 @@ function MidToolBar({
       {showsavebuttons && savebuttons}
       <div className="toolbar-left"></div>
       <ToolBar
-        isDefault={state.generalProps.isDefaultState + ''}
+        isDefault={state.generalProps.isDefaultState + ""}
         trackerFn={populatetracker}
         setaddpmS={setaddpmS}
       />
@@ -173,9 +170,9 @@ function MidToolBar({
 const ToolBar = ({ trackerFn, isDefault, setaddpmS }) => {
   const [open, setOpen] = useState(false);
 
-  let className = 'toolbar-right';
+  let className = "toolbar-right";
   return (
-    <div className={className + `${open ? '' : '-before'}`}>
+    <div className={className + `${open ? "" : "-before"}`}>
       {open ? (
         <>
           <BsPlusCircle onClick={() => setaddpmS(true)} />
@@ -187,14 +184,14 @@ const ToolBar = ({ trackerFn, isDefault, setaddpmS }) => {
           <BsChevronDoubleDown />
           <BsFilter />
         </>
-      ) : ''}
+      ) : (
+        ""
+      )}
       <span onClick={() => setOpen(!open)}>
         {!open ? <BsChevronLeft /> : <BsChevronRight />}
       </span>
     </div>
-  )
-}
+  );
+};
 
 export default MidToolBar;
-
-

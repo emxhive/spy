@@ -82,14 +82,13 @@ export default function Tracker({}) {
               switch (j) {
                 case 0:
                   obj0 = arr[j];
-                  if(arrEarnz?.[0]!==0 && arrEarnz){
+                  if (arrEarnz?.[0] !== 0 && arrEarnz) {
                     earnz0 = arrEarnz[0];
                   }
-                  
 
                   resultObj.current[0] = obj0?.keys?.length > 0 && (
                     <Collapsible
-                      trigger={`Today  •  ${earnz0} `}
+                      trigger={`Today  •  ${Math.trunc(earnz0)} `}
                       key={"m0w0"}
                     >
                       {obj0.keys.map((key) => {
@@ -102,12 +101,12 @@ export default function Tracker({}) {
 
                 default:
                   obj0 = arr[j];
-                   if(arrEarnz?.[j]!==0 && arrEarnz){
+                  if (arrEarnz?.[j] !== 0 && arrEarnz) {
                     earnz0 = arrEarnz[j];
                   }
                   resultObj.current[j] = obj0?.keys?.length > 0 && (
                     <Collapsible
-                      trigger={`WK ${j}  •   ${earnz0}  `}
+                      trigger={`WK ${j}  •   ${Math.trunc(earnz0)}  `}
                       key={`m0w${j}`}
                     >
                       {obj0.keys?.map((key) => {
@@ -126,9 +125,10 @@ export default function Tracker({}) {
 
             const obj = localTracker[i];
             const earnz = localEarnz?.[i];
+
             resultObj.past[i] = obj?.ids?.length > 0 && (
               <Collapsible
-                trigger={`${monthFromIndex(i)}  •  ${earnz && earnz}`}
+                trigger={`${monthFromIndex(i)}  •  ${Math.trunc(earnz)}`}
                 key={`m${i}w${++keyvar}`}
               >
                 {obj.ids?.map((key) => {
