@@ -88,7 +88,10 @@ export default function Tracker({}) {
 
                   resultObj.current[0] = obj0?.keys?.length > 0 && (
                     <Collapsible
-                      trigger={`Today  •  ${Math.trunc(earnz0)} `}
+                      trigger={[
+                        "Today     ",
+                        createEarnzSpanContainer(Math.trunc(earnz0)),
+                      ]}
                       key={"m0w0"}
                     >
                       {obj0.keys.map((key) => {
@@ -106,7 +109,10 @@ export default function Tracker({}) {
                   }
                   resultObj.current[j] = obj0?.keys?.length > 0 && (
                     <Collapsible
-                      trigger={`WK ${j}  •   ${Math.trunc(earnz0)}  `}
+                      trigger={[
+                        ` WK ${j}     `,
+                        createEarnzSpanContainer(Math.trunc(earnz0)),
+                      ]}
                       key={`m0w${j}`}
                     >
                       {obj0.keys?.map((key) => {
@@ -128,7 +134,10 @@ export default function Tracker({}) {
 
             resultObj.past[i] = obj?.ids?.length > 0 && (
               <Collapsible
-                trigger={`${monthFromIndex(i)}  •  ${Math.trunc(earnz)}`}
+                trigger={[
+                  ` ${monthFromIndex(i)}      `,
+                  createEarnzSpanContainer(Math.trunc(earnz)),
+                ]}
                 key={`m${i}w${++keyvar}`}
               >
                 {obj.ids?.map((key) => {
@@ -227,7 +236,6 @@ function setpnl(data) {
     }
 
     pnl = Math.trunc(data.tiu + y - data.prev.tiu);
-    mth.toLocalStorage("historyWatch", null);
 
     //TODO useStorage here send this to firebase when the time comes
     if (pnl < 0) {
@@ -254,4 +262,17 @@ function monthFromIndex(i) {
     diff += 11;
   }
   return monthsArr[diff];
+}
+
+function createEarnzSpanContainer(value) {
+  let classId = "mob-track-pnl-mini-gain";
+  if (value < 0) {
+    classId = "mob-track-pnl-mini-loss";
+  }
+
+  return (
+    <span key={new Date().getTime()} className={classId}>
+      {value}
+    </span>
+  );
 }
