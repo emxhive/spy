@@ -42,7 +42,7 @@ function MidToolBar({
         onClick={() => {
           const entrydata = exportentryData();
 
-          // if (Object.keys(entrydata) > 0) {
+          if (Object.keys(entrydata).length > 0) {
             const pm = currentEntry;
             setEdit({ ...edit, [currentEntry]: true });
             setshowbuttons(false);
@@ -65,7 +65,7 @@ function MidToolBar({
               dataUpdate: JSON.parse(json),
               spyCollection: "pmstate",
             });
-          // }
+          }
 
           setCurrentEntry(null);
         }}
