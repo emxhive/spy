@@ -103,9 +103,9 @@ export default function Tracker({}) {
                   break;
 
                 default:
-                  obj0 = arr[j];
-                  if (arrEarnz?.[j] !== 0 && arrEarnz) {
-                    earnz0 = arrEarnz[j];
+                  obj0 = arr[5-j];
+                  if (arrEarnz?.[5-j] !== 0 && arrEarnz) {
+                    earnz0 = arrEarnz[5-j];
                   }
                   resultObj.current[j] = obj0?.keys?.length > 0 && (
                     <Collapsible
