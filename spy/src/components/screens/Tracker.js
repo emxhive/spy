@@ -110,10 +110,10 @@ export default function Tracker({}) {
                   resultObj.current[j] = obj0?.keys?.length > 0 && (
                     <Collapsible
                       trigger={[
-                        ` WK ${j}     `,
+                        ` WK ${5-j}     `,
                         createEarnzSpanContainer(Math.trunc(earnz0)),
                       ]}
-                      key={`m0w${j}`}
+                      key={`m0w${5-j}`}
                     >
                       {obj0.keys?.map((key) => {
                         setdkd(obj0.obj[key], key, mth.idtoDate(key));
@@ -123,7 +123,7 @@ export default function Tracker({}) {
                   );
                   break;
               }
-            }
+            } 
             break;
 
           default:
