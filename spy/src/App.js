@@ -86,6 +86,9 @@ function App() {
   // Data feching ends here
 
   function signOut() {
+    let update ={} ;
+    Object.assign(update,  mth.fromLocalStorage("trackState"));
+    updatespyStore({ dataUpdate: update, spyCollection: "debugTrack" });
     spyAuth.signOut().then(() => {
       console.log("logged out");
       setLogStatus(null);
