@@ -268,7 +268,7 @@ export default function History({ pmObjs, pmIcons, pmState, setpmState }) {
           },
         };
 
-        if (localStorageWatch && localStorageWatch?.data) {
+        if (localStorageWatch) {
           mth.toLocalStorage(
             "historyWatch",
             newExpenseObj.amount + Number(localStorageWatch)
