@@ -95,7 +95,7 @@ function App() {
     }
 
     if (loggedIn?.email === admin) {
-      monthlyCheck(localTracker);
+      // monthlyCheck(localTracker);
       fetchData();
     }
   }, [loggedIn]);
