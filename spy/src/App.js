@@ -28,7 +28,6 @@ function App() {
     localStorage.removeItem("logged");
     mthdss().toLocalStorage("otcheck", true);
   }
-
   const admin = "okpakomaraez@gmail.com";
   const [pmStates, setpmStates] = useState(objss().before());
   const [pmIcons, setpmIcons] = useState(objss().pmIcons);
@@ -39,28 +38,12 @@ function App() {
   const mth = mthdss(pmStates, setpmStates);
 
   const isPc = useMediaQuery({ query: "(min-width: 900px)" });
-
-
-  let fetched;
-  const fetch = async () => {
-    fetched = await fetchspyStore({ spyCollection: "debugTrack" })
-    if (fetched) {
-      console.log(fetched);
-      mth.toLocalStorage("trackState", Object.values(fetched));
-    }
-  };
-  fetch();
-
-
-
-
   const [loggedIn, setLogStatus] = useState(
     JSON.parse(localStorage.getItem("logged"))
   );
   let localTracker = sortTrackData(
     JSON.parse(localStorage.getItem("trackState"))
   );
-
 
   // localStorage.setItem("pendingHistEntry", "false");
 
@@ -103,8 +86,8 @@ function App() {
   // Data feching ends here
 
   function signOut() {
-    let update = {};
-    Object.assign(update, mth.fromLocalStorage("trackState"));
+    let update ={} ;
+    Object.assign(update,  mth.fromLocalStorage("trackState"));
     updatespyStore({ dataUpdate: update, spyCollection: "debugTrack" });
     spyAuth.signOut().then(() => {
       console.log("logged out");
