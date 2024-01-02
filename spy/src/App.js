@@ -78,7 +78,6 @@ function App() {
     }
 
     if (loggedIn?.email === admin) {
-      const stopper = false;
       monthlyCheck(localTracker);
       fetchData();
     }
@@ -254,11 +253,11 @@ function monthlyCheck(localTracker) {
         if (i == 0) {
           monthEarnzResult[0] = { ids: [], obj: {}, sum: 0 };
         } else {
-          monthEarnzResult[i] = [];
+          monthEarnzResult[i] = 0;
         }
       }
       localEarnz = monthEarnzResult;
-      // mthds.toLocalStorage("monthEarnz", monthEarnzResult);
+      fxn.toLocalStorage("monthEarnz", monthEarnzResult);
     }
     const track = [];
     const earnz = [];
@@ -279,6 +278,7 @@ function monthlyCheck(localTracker) {
       earnz[1] = earnz[1].sum;
     }
     let repeat = true;
+    let repeatEarns = true;
 
     do {
       if (data || data === 0) {
@@ -299,7 +299,7 @@ function monthlyCheck(localTracker) {
         }
       } else {
         const track0 = track[0];
-        const earnz0 = earnz[0];
+
         if (track0.ids.length > 0) {
           const id = track0.ids[track0.ids.length - 1];
           const date = fxn.idtoDate(id);
@@ -317,27 +317,33 @@ function monthlyCheck(localTracker) {
             fxn.toLocalStorage("trackState", track);
           }
         }
-        let repeatEarns = true;
-        do {
-          if (earnz0.ids.length > 0) {
-            const id = earnz0.ids[earnz0.ids.length - 1];
-            const date = fxn.idtoDate(id);
-            let data1 = date.getMonth();
-            if (data1 !== new Date().getMonth()) {
-              updateEarnz();
-              if (data1 === 11) {
-                data1 = 0;
-              } else {
-                data1++;
-              }
-            } else {
-              repeatEarns = false;
-              fxn.toLocalStorage("month", data1);
-              fxn.toLocalStorage("monthEarnz", earnz);
-            }
-          }
-        } while (repeatEarns);
       }
+      const earnz0 = earnz[0];
+      let date = null;
+      let data1;
+      if (earnz0.ids.length > 0) {
+        const id = earnz0.ids[earnz0.ids.length - 1];
+        date = fxn.idtoDate(id);
+        data1 = date.getMonth();
+      }
+      do {
+        if (date) {
+          if (data1 !== new Date().getMonth()) {
+            updateEarnz();
+            if (data1 === 11) {
+              data1 = 0;
+            } else {
+              data1++;
+            }
+          } else {
+            repeatEarns = false;
+            fxn.toLocalStorage("month", data1);
+            fxn.toLocalStorage("monthEarnz", earnz);
+          }
+        } else {
+          repeatEarns = false;
+        }
+      } while (repeatEarns);
     } while (repeat);
 
     firstTime = false;

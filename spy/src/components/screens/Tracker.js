@@ -135,7 +135,7 @@ export default function Tracker({}) {
             resultObj.past[i] = obj?.ids?.length > 0 && (
               <Collapsible
                 trigger={[
-                  ` ${monthFromIndex(i)}      `,
+                  ` ${monthFromIndex(i)}     •  •  •  `,
                   createEarnzSpanContainer(Math.trunc(earnz)),
                 ]}
                 key={`m${i}w${++keyvar}`}
@@ -174,7 +174,7 @@ function generateCurrentMonthTrack(localTracker) {
     const resultArr = [];
     for (let i = 0; i < 5; i++) {
       resultArr[i] = { obj: {}, keys: [] };
-    }
+    } 
 
     const objs = localTracker[0].obj;
     const ids = localTracker[0].ids;
@@ -219,7 +219,7 @@ function generateCurrentMonthEarns(localEarnz) {
         const sKey = Math.trunc(day / 8);
         if (sKey > 3) {
           resultArr[sKey] += Number(objs[key]);
-        } else {
+        } else { 
           resultArr[sKey + 1] += Number(objs[key]);
         }
       }
@@ -272,7 +272,7 @@ function createEarnzSpanContainer(value) {
 
   return (
     <span key={new Date().getTime()} className={classId}>
-      {value}
+      { value}
     </span>
   );
 }

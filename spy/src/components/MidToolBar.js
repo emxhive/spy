@@ -123,7 +123,7 @@ function MidToolBar({
             if (i == 0) {
               monthEarnzResult[0] = { ids: [], obj: {}, sum: 0 };
             } else {
-              monthEarnzResult[i] = [];
+              monthEarnzResult[i] = 0;
             }
           }
           mthds.toLocalStorage("monthEarnz", monthEarnzResult);
