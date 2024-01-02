@@ -78,7 +78,8 @@ function App() {
     }
 
     if (loggedIn?.email === admin) {
-      // monthlyCheck(localTracker);
+      const stopper = false;
+      monthlyCheck(localTracker);
       fetchData();
     }
   }, [loggedIn]);
@@ -86,8 +87,8 @@ function App() {
   // Data feching ends here
 
   function signOut() {
-    let update ={} ;
-    Object.assign(update,  mth.fromLocalStorage("trackState"));
+    let update = {};
+    Object.assign(update, mth.fromLocalStorage("trackState"));
     updatespyStore({ dataUpdate: update, spyCollection: "debugTrack" });
     spyAuth.signOut().then(() => {
       console.log("logged out");
@@ -280,17 +281,21 @@ function monthlyCheck(localTracker) {
     let repeat = true;
 
     do {
-      if (data) {
+      if (data || data === 0) {
         if (data !== new Date().getMonth()) {
           updateTrack(track);
           updateEarnz();
           localStorage.removeItem("logged");
-          data++;
+          if (data === 11) {
+            data = 0;
+          } else {
+            data++;
+          }
         } else {
           repeat = false;
-          // fxn.toLocalStorage("month", data);
-          // fxn.toLocalStorage("trackState", track);
-          // localTracker = track;
+          fxn.toLocalStorage("month", data);
+          fxn.toLocalStorage("trackState", track);
+          localTracker = track;
         }
       } else {
         const track0 = track[0];
@@ -301,7 +306,11 @@ function monthlyCheck(localTracker) {
           let data1 = date.getMonth();
           if (data1 !== new Date().getMonth()) {
             updateTrack(track);
-            data1++;
+            if (data1 === 11) {
+              data1 = 0;
+            } else {
+              data1++;
+            }
           } else {
             repeat = false;
             fxn.toLocalStorage("month", data1);
@@ -316,7 +325,11 @@ function monthlyCheck(localTracker) {
             let data1 = date.getMonth();
             if (data1 !== new Date().getMonth()) {
               updateEarnz();
-              data1++;
+              if (data1 === 11) {
+                data1 = 0;
+              } else {
+                data1++;
+              }
             } else {
               repeatEarns = false;
               fxn.toLocalStorage("month", data1);

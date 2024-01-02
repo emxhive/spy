@@ -257,9 +257,9 @@ function setpnl(data) {
  */
 function monthFromIndex(i) {
   const monthsArr = require("moment").months();
-  const diff = new Date().getMonth() - i;
+  let diff = new Date().getMonth() - i;
   if (diff < 0) {
-    diff += 11;
+    diff += 12;
   }
   return monthsArr[diff];
 }
